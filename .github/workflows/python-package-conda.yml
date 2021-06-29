@@ -1,0 +1,45 @@
+name: Testing
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  build_and_test:
+    name: Testing (${{ matrix.python-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash -l {0}
+    strategy:
+      fail-fast: True
+      matrix:
+        os: ["ubuntu-latest"]
+        python-version: [3.7, 3.8]
+        
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Conda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        auto-update-conda: true
+        activate-environment: geoana-test
+        python-version: ${{ matrix.python-version }}
+    - name: Install Env
+      run: |
+        conda info
+        conda list
+        conda config --show
+        conda install --quiet --yes pip numpy scipy cython mkl
+        conda install --quiet --yes mkl-develop
+    - name: Install Our Package
+      run: |
+        pip install -e .
+        conda list
+    - name: Run Tests
+      run: |
+        pytest tests/test.py
