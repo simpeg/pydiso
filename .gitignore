@@ -1,0 +1,4 @@
+build
+*.so
+pydiso.egg-info
+__pycache__
