@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.sparse as sp
-from pardiso_solver import PardisoSolver, set_mkl_parallelism, get_mkl_max_threads, get_mkl_version
+from pydiso import PardisoSolver, get_mkl_max_threads, get_mkl_version
+import pytest
 
 np.random.seed(12345)
 n = 40
@@ -33,7 +34,17 @@ A_complex_dict = {'complex_structurally_symmetric': Lc@Uc,
 print(get_mkl_max_threads())
 print(get_mkl_version())
 
+# generate the input lists...
+inputs = []
+for dtype in (np.float32, np.float64):
+    for key, item in A_real_dict.items():
+        inputs.append((item.astype(dtype), key))
 
+for dtype in (np.complex64, np.complex128):
+    for key, item in A_complex_dict.items():
+        inputs.append((item.astype(dtype), key))
+
+@pytest.mark.parametrize("A, matrix_type", inputs)
 def test_solver(A, matrix_type):
     dtype = A.dtype
     if np.issubdtype(dtype, np.complexfloating):
@@ -42,20 +53,17 @@ def test_solver(A, matrix_type):
         x = xr.astype(dtype)
     b = A@x
 
-    solver = PardisoSolver(A, matrix_type=matrix_type, verbose=True)
+    solver = PardisoSolver(A, matrix_type=matrix_type)
     x2 = solver.solve(b)
 
     eps = np.finfo(dtype).eps
     rel_err = np.linalg.norm(x-x2)/np.linalg.norm(x)
-    print(matrix_type, A.dtype, rel_err, rel_err < 1E3*eps)
+    assert rel_err < 1E3*eps
+    return rel_err
 
-
-for dtype in (np.float32, np.float64):
-    for key, item in A_real_dict.items():
-        item = item.astype(dtype)
-        test_solver(item, key)
-
-for dtype in (np.complex64, np.complex128):
-    for key, item in A_complex_dict.items():
-        item = item.astype(dtype)
-        test_solver(item, key)
+if __name__ == '__main__':
+    for A, type in inputs:
+        try:
+            print(test_solver(A, type))
+        except:
+            pass

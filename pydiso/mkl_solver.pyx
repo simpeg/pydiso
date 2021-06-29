@@ -5,9 +5,18 @@ from cython cimport numeric
 import warnings
 import numpy as np
 import scipy.sparse as sp
+import os
 
-cdef extern from 'mkl_types.h':
-    ctypedef int MKL_INT # Might not actually be "int" but just a placeholder for cython
+ctypedef long long MKL_INT64
+ctypedef unsigned long long MKL_UINT64
+ctypedef int MKL_INT
+
+ctypedef MKL_INT int_t
+ctypedef MKL_INT64 long_t
+
+cdef extern from 'mkl.h':
+    int MKL_DOMAIN_PARDISO
+
     ctypedef struct MKLVersion:
         int MajorVersion
         int MinorVersion
@@ -17,32 +26,24 @@ cdef extern from 'mkl_types.h':
         char * Processor
         char * Platform
 
-ctypedef MKL_INT int_t
-ctypedef long long int long_t
+    void mkl_get_version(MKLVersion* pv)
 
-if sizeof(int_t)==4:
-    np_int = np.int32
-elif sizeof(int_t)==8:
-    np_int = np.int64
+    void mkl_set_num_threads(int nth)
+    int mkl_domain_set_num_threads(int nt, int domain)
+    int mkl_get_max_threads()
+    int mkl_domain_get_max_threads(int domain)
 
-cdef extern from 'mkl_service.h':
-    void MKL_Get_Version(MKLVersion *ver)
-    int MKL_Set_Num_Threads_Local(int nth)
-    void MKL_Set_Num_Threads(int nth)
-    int MKL_Get_Max_Threads()
     ctypedef int (*ProgressEntry)(int* thread, int* step, char* stage, int stage_len);
     ProgressEntry mkl_set_progress(ProgressEntry progress);
 
-cdef extern from 'mkl_dss.h':
     ctypedef void * _MKL_DSS_HANDLE_t
 
-cdef extern from 'mkl_pardiso.h':
-    void pardisoinit(_MKL_DSS_HANDLE_t, const int_t *, int_t *)
+    void pardisoinit(_MKL_DSS_HANDLE_t, const int *, int *)
 
-    void pardiso   (_MKL_DSS_HANDLE_t, const int_t *, const int_t *, const int_t *,
-                    const int_t *, const int_t *, const void *, const int_t *,
-                    const int_t *, int_t *, const int_t *, int_t *,
-                    const int_t *, void *, void *, int_t *)
+    void pardiso(_MKL_DSS_HANDLE_t, const int*, const int*, const int*,
+                 const int *, const int *, const void *, const int *,
+                 const int *, int *, const int *, int *,
+                 const int *, void *, void *, int *)
 
     void pardiso_64(_MKL_DSS_HANDLE_t, const long_t *, const long_t *, const long_t *,
                     const long_t *, const long_t *, const void *, const long_t *,
@@ -51,11 +52,11 @@ cdef extern from 'mkl_pardiso.h':
 
 
 #call pardiso (pt, maxfct, mnum, mtype, phase, n, a, ia, ja, perm, nrhs, iparm, msglvl, b, x, error)
-cdef int mkl_progress(int *thread, int* step, char* stage, int stage_len):
+cdef int mkl_progress(int_t *thread, int_t* step, char* stage, int_t stage_len):
     print(thread[0], step[0], stage, stage_len)
     return 0
 
-cdef int mkl_no_progress(int *thread, int* step, char* stage, int stage_len) nogil:
+cdef int mkl_no_progress(int_t *thread, int_t* step, char* stage, int_t stage_len) nogil:
     return 0
 
 MATRIX_TYPES ={
@@ -110,36 +111,58 @@ def _ensure_csr(A, sym=False):
     return A
 
 def get_mkl_max_threads():
-    """Returns the maximum number of openMP threads"""
-    return MKL_Get_Max_Threads()
-
-def set_mkl_parallelism(num_threads=None):
     """
-    Sets the number of openMP threads for the MKL library.
+    Returns the current number of openMP threads available to the MKL Library
+    """
+    return mkl_get_max_threads()
+
+def get_mkl_pardiso_max_threads():
+    """
+    Returns the current number of openMP threads available to the Pardiso functions
+    """
+    return mkl_domain_get_max_threads(MKL_DOMAIN_PARDISO)
+
+def set_mkl_threads(num_threads=None):
+    """
+    Sets the number of openMP threads available to the MKL library.
 
     Parameters
     ----------
     num_threads : None or int
-        number of threads to use for the MKL library. Defaults to `get_mkl_max_threads`.
+        number of threads to use for the MKL library.
+        None will set the number of threads to that returned by `os.cpu_count()`.
     """
     if num_threads is None:
-        MKL_Set_Num_Threads(MKL_Get_Max_Threads())
-    elif np.issubdtype(type(num_threads), np.integer) and num_threads>0:
-        MKL_Set_Num_Threads(num_threads)
+        num_threads = os.cpu_count()
     elif num_threads<=0:
         raise PardisoError('Number of threads must be greater than 0')
-    else:
-        raise PardisoError('cannot set number of threads')
+    mkl_set_num_threads(num_threads)
+
+def set_mkl_paradiso_threads(num_threads=None):
+    """
+    Sets the number of openMP threads available to the Pardiso functions
+
+    Parameters
+    ----------
+    num_threads : None or int
+        Number of threads to use for the MKL Pardiso routines.
+        None (or 0) will set the number of threads to `get_mkl_max_threads`
+    """
+    if num_threads is None:
+        num_threads = 0
+    elif num_threads<0:
+        raise PardisoError('Number of threads must be greater than 0')
+    mkl_domain_set_num_threads(num_threads, MKL_DOMAIN_PARDISO)
 
 def get_mkl_version():
     """
     Returns a dictionary describing the version of Intel Math Kernel Library used
     """
     cdef MKLVersion vers
-    MKL_Get_Version(&vers)
+    mkl_get_version(&vers)
     return vers
 
-cdef void * _array_pointer(numeric[:] arr):
+cdef inline void * _array_pointer(numeric[:] arr):
     return <void *> &arr[0]
 
 cdef class _PardisoParams:
@@ -317,9 +340,6 @@ cdef class PardisoSolver:
         if len(in_shape)>1:
             nrhs = in_shape[1]
 
-        #cdef double[:] bm = b
-        #cdef double[:] xm = x
-
         cdef void * bp
         cdef void * xp
         if(self._data_type==np.float32):
@@ -360,7 +380,7 @@ cdef class PardisoSolver:
         cdef _PardisoParams par = _PardisoParams()
 
         par.n = A.shape[0]
-        par.perm = np.empty(par.n, dtype=np_int)
+        par.perm = np.empty(par.n, dtype=np.int32)
 
         par.maxfct = 1
         par.mnum = 1
@@ -383,8 +403,8 @@ cdef class PardisoSolver:
         else:
             raise PardisoError("Unsupported data type")
 
-        indices = np.require(A.indices, dtype=np_int) #these should be satisfied already...
-        indptr = np.require(A.indptr, dtype=np_int) #these should be satisfied already...
+        indices = np.require(A.indices, dtype=np.int32) #these should be satisfied already...
+        indptr = np.require(A.indptr, dtype=np.int32) #these should be satisfied already...
 
         par.ia = indptr
         par.ja = indices
