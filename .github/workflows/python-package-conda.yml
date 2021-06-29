@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: True
       matrix:
-        os: ["ubuntu-latest", "macOS-latest"]
+        os: ["ubuntu-latest", "macOS-latest", "windows-latest"]
         python-version: [3.7, 3.8]
 
     steps:
@@ -36,6 +36,11 @@ jobs:
         conda config --show
         conda install --quiet --yes pip numpy scipy cython mkl pytest
         conda install --quiet --yes mkl-devel
+    - name: Set MKLROOT on Windows
+      if: ${{ matix.os }} == "windows-latest"
+      run: |
+        set MKLROOT=%CONDA_PREFIX\Library
+        echo %MKLROOT
     - name: Install Our Package
       run: |
         pip install -e .
