@@ -1222,7 +1222,7 @@ static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(do
 /*--- Type declarations ---*/
 struct __pyx_obj_6pydiso_10mkl_solver__PardisoParams;
 struct __pyx_obj_6pydiso_10mkl_solver__PardisoParams64;
-struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver;
+struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver;
 struct __pyx_array_obj;
 struct __pyx_MemviewEnum_obj;
 struct __pyx_memoryview_obj;
@@ -1263,7 +1263,7 @@ typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
  * cdef inline object PyArray_MultiIterNew1(a):
  */
 typedef npy_cdouble __pyx_t_5numpy_complex_t;
-struct __pyx_opt_args_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso;
+struct __pyx_opt_args_6pydiso_10mkl_solver_16MKLPardisoSolver__run_pardiso;
 
 /* "pydiso/mkl_solver.pyx":513
  *             raise PardisoError("Solve step error, "+_err_messages[err])
@@ -1272,7 +1272,7 @@ struct __pyx_opt_args_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso;
  *         cdef int_t error=0
  *         cdef long_t error64=0, phase64=phase, nrhs64=nrhs
  */
-struct __pyx_opt_args_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso {
+struct __pyx_opt_args_6pydiso_10mkl_solver_16MKLPardisoSolver__run_pardiso {
   int __pyx_n;
   void *b;
   void *x;
@@ -1324,13 +1324,13 @@ struct __pyx_obj_6pydiso_10mkl_solver__PardisoParams64 {
 /* "pydiso/mkl_solver.pyx":178
  *     cdef long_t[:] ia, ja, perm
  * 
- * cdef class PardisoSolver:             # <<<<<<<<<<<<<<
+ * cdef class MKLPardisoSolver:             # <<<<<<<<<<<<<<
  *     cdef _MKL_DSS_HANDLE_t handle[64]
  *     cdef _PardisoParams  _par
  */
-struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver {
+struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver {
   PyObject_HEAD
-  struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver *__pyx_vtab;
+  struct __pyx_vtabstruct_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_vtab;
   _MKL_DSS_HANDLE_t handle[64];
   struct __pyx_obj_6pydiso_10mkl_solver__PardisoParams *_par;
   struct __pyx_obj_6pydiso_10mkl_solver__PardisoParams64 *_par64;
@@ -1424,21 +1424,21 @@ struct __pyx_memoryviewslice_obj {
 /* "pydiso/mkl_solver.pyx":178
  *     cdef long_t[:] ia, ja, perm
  * 
- * cdef class PardisoSolver:             # <<<<<<<<<<<<<<
+ * cdef class MKLPardisoSolver:             # <<<<<<<<<<<<<<
  *     cdef _MKL_DSS_HANDLE_t handle[64]
  *     cdef _PardisoParams  _par
  */
 
-struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver {
-  PyObject *(*_initialize4)(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *, PyObject *, PyObject *, PyObject *);
-  PyObject *(*_initialize8)(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *, PyObject *, PyObject *, PyObject *);
-  PyObject *(*_set_A)(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *, PyObject *);
-  PyObject *(*_analyze)(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *);
-  PyObject *(*_factor)(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *);
-  PyObject *(*_solve)(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *, void *, void *, __pyx_t_6pydiso_10mkl_solver_int_t);
-  int (*_run_pardiso)(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *, __pyx_t_6pydiso_10mkl_solver_int_t, struct __pyx_opt_args_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso *__pyx_optional_args);
+struct __pyx_vtabstruct_6pydiso_10mkl_solver_MKLPardisoSolver {
+  PyObject *(*_initialize4)(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *, PyObject *, PyObject *, PyObject *);
+  PyObject *(*_initialize8)(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *, PyObject *, PyObject *, PyObject *);
+  PyObject *(*_set_A)(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *, PyObject *);
+  PyObject *(*_analyze)(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *);
+  PyObject *(*_factor)(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *);
+  PyObject *(*_solve)(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *, void *, void *, __pyx_t_6pydiso_10mkl_solver_int_t);
+  int (*_run_pardiso)(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *, __pyx_t_6pydiso_10mkl_solver_int_t, struct __pyx_opt_args_6pydiso_10mkl_solver_16MKLPardisoSolver__run_pardiso *__pyx_optional_args);
 };
-static struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver *__pyx_vtabptr_6pydiso_10mkl_solver_PardisoSolver;
+static struct __pyx_vtabstruct_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_vtabptr_6pydiso_10mkl_solver_MKLPardisoSolver;
 
 
 /* "View.MemoryView":105
@@ -2279,13 +2279,13 @@ static int __Pyx_check_binary_version(void);
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
-static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, PyObject *__pyx_v_A, PyObject *__pyx_v_matrix_type, PyObject *__pyx_v_verbose); /* proto*/
-static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, PyObject *__pyx_v_A, PyObject *__pyx_v_matrix_type, PyObject *__pyx_v_verbose); /* proto*/
-static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__set_A(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, PyObject *__pyx_v_data); /* proto*/
-static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__analyze(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self); /* proto*/
-static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__factor(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self); /* proto*/
-static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__solve(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, void *__pyx_v_b, void *__pyx_v_x, __pyx_t_6pydiso_10mkl_solver_int_t __pyx_v_nrhs_in); /* proto*/
-static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, __pyx_t_6pydiso_10mkl_solver_int_t __pyx_v_phase, struct __pyx_opt_args_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso *__pyx_optional_args); /* proto*/
+static PyObject *__pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__initialize4(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, PyObject *__pyx_v_A, PyObject *__pyx_v_matrix_type, PyObject *__pyx_v_verbose); /* proto*/
+static PyObject *__pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__initialize8(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, PyObject *__pyx_v_A, PyObject *__pyx_v_matrix_type, PyObject *__pyx_v_verbose); /* proto*/
+static PyObject *__pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__set_A(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, PyObject *__pyx_v_data); /* proto*/
+static PyObject *__pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__analyze(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self); /* proto*/
+static PyObject *__pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__factor(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self); /* proto*/
+static PyObject *__pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__solve(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, void *__pyx_v_b, void *__pyx_v_x, __pyx_t_6pydiso_10mkl_solver_int_t __pyx_v_nrhs_in); /* proto*/
+static int __pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__run_pardiso(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, __pyx_t_6pydiso_10mkl_solver_int_t __pyx_v_phase, struct __pyx_opt_args_6pydiso_10mkl_solver_16MKLPardisoSolver__run_pardiso *__pyx_optional_args); /* proto*/
 static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *__pyx_v_self); /* proto*/
 static char *__pyx_memoryview_get_item_pointer(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_index); /* proto*/
 static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_obj); /* proto*/
@@ -2333,7 +2333,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *, cha
 /* Module declarations from 'pydiso.mkl_solver' */
 static PyTypeObject *__pyx_ptype_6pydiso_10mkl_solver__PardisoParams = 0;
 static PyTypeObject *__pyx_ptype_6pydiso_10mkl_solver__PardisoParams64 = 0;
-static PyTypeObject *__pyx_ptype_6pydiso_10mkl_solver_PardisoSolver = 0;
+static PyTypeObject *__pyx_ptype_6pydiso_10mkl_solver_MKLPardisoSolver = 0;
 static PyTypeObject *__pyx_array_type = 0;
 static PyTypeObject *__pyx_MemviewEnum_type = 0;
 static PyTypeObject *__pyx_memoryview_type = 0;
@@ -2535,7 +2535,6 @@ static const char __pyx_k_sort_indices[] = "sort_indices";
 static const char __pyx_k_stringsource[] = "stringsource";
 static const char __pyx_k_OverflowError[] = "OverflowError";
 static const char __pyx_k_PardisoParams[] = "_PardisoParams";
-static const char __pyx_k_PardisoSolver[] = "PardisoSolver";
 static const char __pyx_k_ProductStatus[] = "ProductStatus";
 static const char __pyx_k_UpdateVersion[] = "UpdateVersion";
 static const char __pyx_k_pyx_getbuffer[] = "__pyx_getbuffer";
@@ -2552,6 +2551,7 @@ static const char __pyx_k_get_mkl_version[] = "get_mkl_version";
 static const char __pyx_k_pyx_PickleError[] = "__pyx_PickleError";
 static const char __pyx_k_set_mkl_threads[] = "set_mkl_threads";
 static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
+static const char __pyx_k_MKLPardisoSolver[] = "MKLPardisoSolver";
 static const char __pyx_k_Solve_step_error[] = "Solve step error, ";
 static const char __pyx_k_Factor_step_error[] = "Factor step error, ";
 static const char __pyx_k_complex_symmetric[] = "complex_symmetric";
@@ -2657,6 +2657,7 @@ static PyObject *__pyx_kp_s_Indirect_dimensions_not_supporte;
 static PyObject *__pyx_kp_s_Invalid_mode_expected_c_or_fortr;
 static PyObject *__pyx_kp_s_Invalid_shape_in_axis_d_d;
 static PyObject *__pyx_n_s_MATRIX_TYPES;
+static PyObject *__pyx_n_s_MKLPardisoSolver;
 static PyObject *__pyx_n_s_MajorVersion;
 static PyObject *__pyx_kp_u_Matrix_is_not_sparse;
 static PyObject *__pyx_kp_u_Memmory_release_error;
@@ -2672,7 +2673,6 @@ static PyObject *__pyx_n_s_OverflowError;
 static PyObject *__pyx_n_s_PardisoError;
 static PyObject *__pyx_n_s_PardisoParams;
 static PyObject *__pyx_n_s_PardisoParams64;
-static PyObject *__pyx_n_s_PardisoSolver;
 static PyObject *__pyx_n_s_PardisoTypeConversionWarning;
 static PyObject *__pyx_n_s_PardisoWarning;
 static PyObject *__pyx_n_s_PickleError;
@@ -2858,15 +2858,15 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_14_PardisoParams___reduce_cython_
 static PyObject *__pyx_pf_6pydiso_10mkl_solver_14_PardisoParams_2__setstate_cython__(struct __pyx_obj_6pydiso_10mkl_solver__PardisoParams *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_pf_6pydiso_10mkl_solver_16_PardisoParams64___reduce_cython__(struct __pyx_obj_6pydiso_10mkl_solver__PardisoParams64 *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_6pydiso_10mkl_solver_16_PardisoParams64_2__setstate_cython__(struct __pyx_obj_6pydiso_10mkl_solver__PardisoParams64 *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
-static int __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver___init__(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, PyObject *__pyx_v_A, PyObject *__pyx_v_matrix_type, PyObject *__pyx_v_factor, PyObject *__pyx_v_verbose); /* proto */
-static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_2refactor(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, PyObject *__pyx_v_A); /* proto */
-static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_4__call__(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, PyObject *__pyx_v_b); /* proto */
-static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_6solve(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, PyObject *__pyx_v_b, PyObject *__pyx_v_x); /* proto */
-static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_4perm___get__(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_5iparm___get__(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self); /* proto */
-static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_10__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_12__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver___init__(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, PyObject *__pyx_v_A, PyObject *__pyx_v_matrix_type, PyObject *__pyx_v_factor, PyObject *__pyx_v_verbose); /* proto */
+static PyObject *__pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_2refactor(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, PyObject *__pyx_v_A); /* proto */
+static PyObject *__pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_4__call__(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, PyObject *__pyx_v_b); /* proto */
+static PyObject *__pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_6solve(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, PyObject *__pyx_v_b, PyObject *__pyx_v_x); /* proto */
+static PyObject *__pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_4perm___get__(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_5iparm___get__(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self); /* proto */
+static void __pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_8__dealloc__(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_10__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_12__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_pf_6pydiso_10mkl_solver_12__pyx_unpickle__PardisoParams(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_pf_6pydiso_10mkl_solver_14__pyx_unpickle__PardisoParams64(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
@@ -2913,7 +2913,7 @@ static PyObject *__pyx_pf___pyx_memoryviewslice_2__setstate_cython__(CYTHON_UNUS
 static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_tp_new_6pydiso_10mkl_solver__PardisoParams(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_6pydiso_10mkl_solver__PardisoParams64(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_6pydiso_10mkl_solver_PardisoSolver(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_6pydiso_10mkl_solver_MKLPardisoSolver(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_array(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_Enum(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_memoryview(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -5001,12 +5001,12 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_16_PardisoParams64_2__setstate_cy
  */
 
 /* Python wrapper */
-static int __pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_6pydiso_10mkl_solver_13PardisoSolver___init__[] = "ParidsoSolver(A, matrix_type=None, factor=True, verbose=False)\n        A simple interface to the intel MKL pardiso sparse matrix solver.\n\n        This is a solver class for a scipy sparse matrix using the Pardiso sparse\n        solver in the Intel Math Kernel Library. It is inteded to solve the\n        equations:\n        \\math\n\n        It will factorize the sparse matrix in three steps: a symbolic\n        factorization stage, a numerical factorization stage, and a solve stage.\n\n        The purpose is to construct a sparse factorization that can be repeatedly\n        called to solve for multiple right-hand sides.\n\n        Note\n        ----\n\n        The supported matrix types are: real symmetric positive definite, real\n        symmetric indefinite, real structurally symmetric, real nonsymmetric,\n        complex hermitian positive definite, complex hermitian indefinite, complex\n        symmetric, complex structurally symmetric, and complex nonsymmetric.\n        The solver supports both single and double precision matrices.\n\n\n        Parameters\n        ----------\n        A : scipy sparse matrix\n            A sparse matrix preferably in a CSR format.\n        matrix_type : str, int, or None, optional\n            A string describing the matrix type, or it's corresponding int code.\n            If None, then assumed to be nonsymmetric matrix.\n        factor : bool, optional\n            Whether to perform the factorization stage upon instantiation of the class.\n        verbose : bool, optional\n            Enable verbose output from the pardiso solver.\n        ";
+static int __pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_6pydiso_10mkl_solver_16MKLPardisoSolver___init__[] = "ParidsoSolver(A, matrix_type=None, factor=True, verbose=False)\n        A simple interface to the intel MKL pardiso sparse matrix solver.\n\n        This is a solver class for a scipy sparse matrix using the Pardiso sparse\n        solver in the Intel Math Kernel Library. It is inteded to solve the\n        equations:\n        \\math\n\n        It will factorize the sparse matrix in three steps: a symbolic\n        factorization stage, a numerical factorization stage, and a solve stage.\n\n        The purpose is to construct a sparse factorization that can be repeatedly\n        called to solve for multiple right-hand sides.\n\n        Note\n        ----\n\n        The supported matrix types are: real symmetric positive definite, real\n        symmetric indefinite, real structurally symmetric, real nonsymmetric,\n        complex hermitian positive definite, complex hermitian indefinite, complex\n        symmetric, complex structurally symmetric, and complex nonsymmetric.\n        The solver supports both single and double precision matrices.\n\n\n        Parameters\n        ----------\n        A : scipy sparse matrix\n            A sparse matrix preferably in a CSR format.\n        matrix_type : str, int, or None, optional\n            A string describing the matrix type, or it's corresponding int code.\n            If None, then assumed to be nonsymmetric matrix.\n        factor : bool, optional\n            Whether to perform the factorization stage upon instantiation of the class.\n        verbose : bool, optional\n            Enable verbose output from the pardiso solver.\n        ";
 #if CYTHON_COMPILING_IN_CPYTHON
-struct wrapperbase __pyx_wrapperbase_6pydiso_10mkl_solver_13PardisoSolver___init__;
+struct wrapperbase __pyx_wrapperbase_6pydiso_10mkl_solver_16MKLPardisoSolver___init__;
 #endif
-static int __pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static int __pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_A = 0;
   PyObject *__pyx_v_matrix_type = 0;
   PyObject *__pyx_v_factor = 0;
@@ -5084,18 +5084,18 @@ static int __pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_1__init__(PyObject *__p
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__init__", 0, 1, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 191, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("pydiso.mkl_solver.PardisoSolver.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pydiso.mkl_solver.MKLPardisoSolver.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver___init__(((struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self), __pyx_v_A, __pyx_v_matrix_type, __pyx_v_factor, __pyx_v_verbose);
+  __pyx_r = __pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver___init__(((struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self), __pyx_v_A, __pyx_v_matrix_type, __pyx_v_factor, __pyx_v_verbose);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver___init__(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, PyObject *__pyx_v_A, PyObject *__pyx_v_matrix_type, PyObject *__pyx_v_factor, PyObject *__pyx_v_verbose) {
+static int __pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver___init__(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, PyObject *__pyx_v_A, PyObject *__pyx_v_matrix_type, PyObject *__pyx_v_factor, PyObject *__pyx_v_verbose) {
   PyObject *__pyx_v_integer_len = NULL;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -5648,7 +5648,7 @@ static int __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver___init__(struct __pyx_o
  *         elif integer_len == 8:
  *             self._initialize8(A, matrix_type, verbose)
  */
-    __pyx_t_6 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self->__pyx_vtab)->_initialize4(__pyx_v_self, __pyx_v_A, __pyx_v_matrix_type, __pyx_v_verbose); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 253, __pyx_L1_error)
+    __pyx_t_6 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self->__pyx_vtab)->_initialize4(__pyx_v_self, __pyx_v_A, __pyx_v_matrix_type, __pyx_v_verbose); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 253, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
@@ -5682,7 +5682,7 @@ static int __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver___init__(struct __pyx_o
  *         else:
  *             raise PardisoError("Unrecognized integer length")
  */
-    __pyx_t_6 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self->__pyx_vtab)->_initialize8(__pyx_v_self, __pyx_v_A, __pyx_v_matrix_type, __pyx_v_verbose); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 255, __pyx_L1_error)
+    __pyx_t_6 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self->__pyx_vtab)->_initialize8(__pyx_v_self, __pyx_v_A, __pyx_v_matrix_type, __pyx_v_verbose); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 255, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
@@ -5777,7 +5777,7 @@ static int __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver___init__(struct __pyx_o
  */
   __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_A, __pyx_n_s_data); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 265, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_5 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self->__pyx_vtab)->_set_A(__pyx_v_self, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 265, __pyx_L1_error)
+  __pyx_t_5 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self->__pyx_vtab)->_set_A(__pyx_v_self, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 265, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -5789,7 +5789,7 @@ static int __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver___init__(struct __pyx_o
  *         self._factored = False
  *         if factor:
  */
-  __pyx_t_5 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self->__pyx_vtab)->_analyze(__pyx_v_self); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 266, __pyx_L1_error)
+  __pyx_t_5 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self->__pyx_vtab)->_analyze(__pyx_v_self); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 266, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
@@ -5819,7 +5819,7 @@ static int __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver___init__(struct __pyx_o
  * 
  *     def refactor(self, A):
  */
-    __pyx_t_5 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self->__pyx_vtab)->_factor(__pyx_v_self); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 269, __pyx_L1_error)
+    __pyx_t_5 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self->__pyx_vtab)->_factor(__pyx_v_self); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 269, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
@@ -5849,7 +5849,7 @@ static int __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver___init__(struct __pyx_o
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_AddTraceback("pydiso.mkl_solver.PardisoSolver.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pydiso.mkl_solver.MKLPardisoSolver.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_integer_len);
@@ -5868,20 +5868,20 @@ static int __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver___init__(struct __pyx_o
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_3refactor(PyObject *__pyx_v_self, PyObject *__pyx_v_A); /*proto*/
-static char __pyx_doc_6pydiso_10mkl_solver_13PardisoSolver_2refactor[] = "solver.refactor(A)\n        re-use a symbolic factorization with a new `A` matrix.\n\n        Note\n        ----\n        Must have the same non-zero pattern as the initial `A` matrix.\n        If `full_refactor=False`, the initial factorization is used as a\n        preconditioner to a Krylov subspace solver in the solve step.\n\n        Parameters\n        ----------\n        A : scipy sparse matrix\n            A sparse matrix preferably in a CSR format.\n        ";
-static PyObject *__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_3refactor(PyObject *__pyx_v_self, PyObject *__pyx_v_A) {
+static PyObject *__pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_3refactor(PyObject *__pyx_v_self, PyObject *__pyx_v_A); /*proto*/
+static char __pyx_doc_6pydiso_10mkl_solver_16MKLPardisoSolver_2refactor[] = "solver.refactor(A)\n        re-use a symbolic factorization with a new `A` matrix.\n\n        Note\n        ----\n        Must have the same non-zero pattern as the initial `A` matrix.\n        If `full_refactor=False`, the initial factorization is used as a\n        preconditioner to a Krylov subspace solver in the solve step.\n\n        Parameters\n        ----------\n        A : scipy sparse matrix\n            A sparse matrix preferably in a CSR format.\n        ";
+static PyObject *__pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_3refactor(PyObject *__pyx_v_self, PyObject *__pyx_v_A) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("refactor (wrapper)", 0);
-  __pyx_r = __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_2refactor(((struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self), ((PyObject *)__pyx_v_A));
+  __pyx_r = __pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_2refactor(((struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self), ((PyObject *)__pyx_v_A));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_2refactor(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, PyObject *__pyx_v_A) {
+static PyObject *__pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_2refactor(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, PyObject *__pyx_v_A) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6006,7 +6006,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_2refactor(struct 
  */
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_A, __pyx_n_s_data); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 293, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self->__pyx_vtab)->_set_A(__pyx_v_self, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 293, __pyx_L1_error)
+  __pyx_t_3 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self->__pyx_vtab)->_set_A(__pyx_v_self, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 293, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -6018,7 +6018,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_2refactor(struct 
  * 
  *     def __call__(self, b):
  */
-  __pyx_t_3 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self->__pyx_vtab)->_factor(__pyx_v_self); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 294, __pyx_L1_error)
+  __pyx_t_3 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self->__pyx_vtab)->_factor(__pyx_v_self); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 294, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
@@ -6038,7 +6038,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_2refactor(struct 
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("pydiso.mkl_solver.PardisoSolver.refactor", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pydiso.mkl_solver.MKLPardisoSolver.refactor", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_A);
@@ -6056,8 +6056,8 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_2refactor(struct 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_5__call__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_5__call__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_5__call__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_5__call__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_b = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
@@ -6094,18 +6094,18 @@ static PyObject *__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_5__call__(PyObjec
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("__call__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 296, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("pydiso.mkl_solver.PardisoSolver.__call__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pydiso.mkl_solver.MKLPardisoSolver.__call__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_4__call__(((struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self), __pyx_v_b);
+  __pyx_r = __pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_4__call__(((struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self), __pyx_v_b);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_4__call__(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, PyObject *__pyx_v_b) {
+static PyObject *__pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_4__call__(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -6155,7 +6155,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_4__call__(struct 
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("pydiso.mkl_solver.PardisoSolver.__call__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pydiso.mkl_solver.MKLPardisoSolver.__call__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -6172,9 +6172,9 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_4__call__(struct 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_7solve(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_6pydiso_10mkl_solver_13PardisoSolver_6solve[] = "solver.solve(b, x=None)\n        Solves the equation AX=B using the factored A matrix\n\n        Note\n        ----\n        The data will be copied if not contiguous in all cases. If multiple rhs\n        are given, the input arrays will be copied if not in a contiguous\n        Fortran order.\n\n        Parameters\n        ----------\n        b : numpy array\n            array of shape 1D or 2D for the right hand side of the equation\n            (of the same data type as A).\n        x : numpy array, optional\n            A pre-allocated output array (of the same data type as A).\n            If None, a new array is constructed.\n\n        Returns\n        -------\n        numpy array\n            array containing the solution (in Fortran ordering)\n        ";
-static PyObject *__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_7solve(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_7solve(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_6pydiso_10mkl_solver_16MKLPardisoSolver_6solve[] = "solver.solve(b, x=None)\n        Solves the equation AX=B using the factored A matrix\n\n        Note\n        ----\n        The data will be copied if not contiguous in all cases. If multiple rhs\n        are given, the input arrays will be copied if not in a contiguous\n        Fortran order.\n\n        Parameters\n        ----------\n        b : numpy array\n            array of shape 1D or 2D for the right hand side of the equation\n            (of the same data type as A).\n        x : numpy array, optional\n            A pre-allocated output array (of the same data type as A).\n            If None, a new array is constructed.\n\n        Returns\n        -------\n        numpy array\n            array containing the solution (in Fortran ordering)\n        ";
+static PyObject *__pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_7solve(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_b = 0;
   PyObject *__pyx_v_x = 0;
   PyObject *__pyx_r = 0;
@@ -6226,18 +6226,18 @@ static PyObject *__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_7solve(PyObject *
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("solve", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 299, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("pydiso.mkl_solver.PardisoSolver.solve", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pydiso.mkl_solver.MKLPardisoSolver.solve", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_6solve(((struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self), __pyx_v_b, __pyx_v_x);
+  __pyx_r = __pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_6solve(((struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self), __pyx_v_b, __pyx_v_x);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_6solve(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, PyObject *__pyx_v_b, PyObject *__pyx_v_x) {
+static PyObject *__pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_6solve(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, PyObject *__pyx_v_b, PyObject *__pyx_v_x) {
   PyObject *__pyx_v_in_shape = NULL;
   __pyx_t_6pydiso_10mkl_solver_int_t __pyx_v_nrhs;
   void *__pyx_v_bp;
@@ -6909,7 +6909,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_6solve(struct __p
  *         return x.reshape(in_shape, order='F')
  * 
  */
-  __pyx_t_7 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self->__pyx_vtab)->_solve(__pyx_v_self, __pyx_v_bp, __pyx_v_xp, __pyx_v_nrhs); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 358, __pyx_L1_error)
+  __pyx_t_7 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self->__pyx_vtab)->_solve(__pyx_v_self, __pyx_v_bp, __pyx_v_xp, __pyx_v_nrhs); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 358, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
@@ -6959,7 +6959,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_6solve(struct __p
   __PYX_XDEC_MEMVIEW(&__pyx_t_12, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_13, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_14, 1);
-  __Pyx_AddTraceback("pydiso.mkl_solver.PardisoSolver.solve", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pydiso.mkl_solver.MKLPardisoSolver.solve", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_in_shape);
@@ -6979,19 +6979,19 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_6solve(struct __p
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_4perm_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_4perm_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_4perm_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_4perm_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_4perm___get__(((struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self));
+  __pyx_r = __pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_4perm___get__(((struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_4perm___get__(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self) {
+static PyObject *__pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_4perm___get__(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -7108,7 +7108,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_4perm___get__(str
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("pydiso.mkl_solver.PardisoSolver.perm.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pydiso.mkl_solver.MKLPardisoSolver.perm.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -7125,19 +7125,19 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_4perm___get__(str
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_5iparm_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_5iparm_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_5iparm_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_5iparm_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_5iparm___get__(((struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self));
+  __pyx_r = __pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_5iparm___get__(((struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_5iparm___get__(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self) {
+static PyObject *__pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_5iparm___get__(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -7252,7 +7252,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_5iparm___get__(st
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("pydiso.mkl_solver.PardisoSolver.iparm.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pydiso.mkl_solver.MKLPardisoSolver.iparm.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -7268,7 +7268,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_5iparm___get__(st
  * 
  */
 
-static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, PyObject *__pyx_v_A, PyObject *__pyx_v_matrix_type, PyObject *__pyx_v_verbose) {
+static PyObject *__pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__initialize4(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, PyObject *__pyx_v_A, PyObject *__pyx_v_matrix_type, PyObject *__pyx_v_verbose) {
   struct __pyx_obj_6pydiso_10mkl_solver__PardisoParams *__pyx_v_par = 0;
   PyObject *__pyx_v_indices = NULL;
   PyObject *__pyx_v_indptr = NULL;
@@ -7684,7 +7684,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struc
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
   __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
-  __Pyx_AddTraceback("pydiso.mkl_solver.PardisoSolver._initialize4", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pydiso.mkl_solver.MKLPardisoSolver._initialize4", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF((PyObject *)__pyx_v_par);
@@ -7703,7 +7703,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struc
  * 
  */
 
-static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, PyObject *__pyx_v_A, PyObject *__pyx_v_matrix_type, PyObject *__pyx_v_verbose) {
+static PyObject *__pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__initialize8(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, PyObject *__pyx_v_A, PyObject *__pyx_v_matrix_type, PyObject *__pyx_v_verbose) {
   struct __pyx_obj_6pydiso_10mkl_solver__PardisoParams64 *__pyx_v_par = 0;
   __pyx_t_6pydiso_10mkl_solver_int_t __pyx_v_mtype_temp;
   __pyx_t_6pydiso_10mkl_solver_int_t __pyx_v_iparm[64];
@@ -8154,7 +8154,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
   __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
-  __Pyx_AddTraceback("pydiso.mkl_solver.PardisoSolver._initialize8", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pydiso.mkl_solver.MKLPardisoSolver._initialize8", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF((PyObject *)__pyx_v_par);
@@ -8173,7 +8173,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
  *         self._Adata = data
  */
 
-static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__set_A(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, PyObject *__pyx_v_data) {
+static PyObject *__pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__set_A(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, PyObject *__pyx_v_data) {
   PyObject *__pyx_v_data_type = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -8426,7 +8426,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__set_A(struct __py
   __PYX_XDEC_MEMVIEW(&__pyx_t_6, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
   __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_AddTraceback("pydiso.mkl_solver.PardisoSolver._set_A", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pydiso.mkl_solver.MKLPardisoSolver._set_A", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_data_type);
@@ -8444,17 +8444,17 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__set_A(struct __py
  */
 
 /* Python wrapper */
-static void __pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_9__dealloc__(PyObject *__pyx_v_self); /*proto*/
-static void __pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_9__dealloc__(PyObject *__pyx_v_self) {
+static void __pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_9__dealloc__(PyObject *__pyx_v_self); /*proto*/
+static void __pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_9__dealloc__(PyObject *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__ (wrapper)", 0);
-  __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(((struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self));
+  __pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_8__dealloc__(((struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
 }
 
-static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self) {
+static void __pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_8__dealloc__(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self) {
   __pyx_t_6pydiso_10mkl_solver_int_t __pyx_v_phase;
   __pyx_t_6pydiso_10mkl_solver_int_t __pyx_v_nrhs;
   __pyx_t_6pydiso_10mkl_solver_int_t __pyx_v_error;
@@ -8754,7 +8754,7 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
   __Pyx_XDECREF(__pyx_t_11);
   __Pyx_XDECREF(__pyx_t_12);
   __Pyx_XDECREF(__pyx_t_13);
-  __Pyx_WriteUnraisable("pydiso.mkl_solver.PardisoSolver.__dealloc__", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __Pyx_WriteUnraisable("pydiso.mkl_solver.MKLPardisoSolver.__dealloc__", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
 }
@@ -8767,7 +8767,7 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
  *         err = self._run_pardiso(11)
  */
 
-static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__analyze(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self) {
+static PyObject *__pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__analyze(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self) {
   int __pyx_v_err;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -8785,7 +8785,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__analyze(struct __
  *         if err!=0:
  *             raise PardisoError("Analysis step error, "+_err_messages[err])
  */
-  __pyx_v_err = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self->__pyx_vtab)->_run_pardiso(__pyx_v_self, 11, NULL);
+  __pyx_v_err = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self->__pyx_vtab)->_run_pardiso(__pyx_v_self, 11, NULL);
 
   /* "pydiso/mkl_solver.pyx":492
  *         #phase = 11
@@ -8859,7 +8859,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__analyze(struct __
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("pydiso.mkl_solver.PardisoSolver._analyze", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pydiso.mkl_solver.MKLPardisoSolver._analyze", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -8875,7 +8875,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__analyze(struct __
  *         self._factored = False
  */
 
-static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__factor(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self) {
+static PyObject *__pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__factor(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self) {
   int __pyx_v_err;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -8902,7 +8902,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__factor(struct __p
  *         if err!=0:
  *             raise PardisoError("Factor step error, "+_err_messages[err])
  */
-  __pyx_v_err = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self->__pyx_vtab)->_run_pardiso(__pyx_v_self, 22, NULL);
+  __pyx_v_err = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self->__pyx_vtab)->_run_pardiso(__pyx_v_self, 22, NULL);
 
   /* "pydiso/mkl_solver.pyx":500
  * 
@@ -8985,7 +8985,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__factor(struct __p
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("pydiso.mkl_solver.PardisoSolver._factor", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pydiso.mkl_solver.MKLPardisoSolver._factor", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -9001,7 +9001,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__factor(struct __p
  *         if(not self._factored):
  */
 
-static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__solve(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, void *__pyx_v_b, void *__pyx_v_x, __pyx_t_6pydiso_10mkl_solver_int_t __pyx_v_nrhs_in) {
+static PyObject *__pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__solve(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, void *__pyx_v_b, void *__pyx_v_x, __pyx_t_6pydiso_10mkl_solver_int_t __pyx_v_nrhs_in) {
   int __pyx_v_err;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -9010,7 +9010,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__solve(struct __py
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
   int __pyx_t_5;
-  struct __pyx_opt_args_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso __pyx_t_6;
+  struct __pyx_opt_args_6pydiso_10mkl_solver_16MKLPardisoSolver__run_pardiso __pyx_t_6;
   PyObject *__pyx_t_7 = NULL;
   __Pyx_RefNannySetupContext("_solve", 0);
 
@@ -9072,7 +9072,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__solve(struct __py
   __pyx_t_6.b = __pyx_v_b;
   __pyx_t_6.x = __pyx_v_x;
   __pyx_t_6.nrhs = __pyx_v_nrhs_in;
-  __pyx_t_5 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self->__pyx_vtab)->_run_pardiso(__pyx_v_self, 33, &__pyx_t_6); 
+  __pyx_t_5 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self->__pyx_vtab)->_run_pardiso(__pyx_v_self, 33, &__pyx_t_6); 
   __pyx_v_err = __pyx_t_5;
 
   /* "pydiso/mkl_solver.pyx":510
@@ -9147,7 +9147,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__solve(struct __py
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("pydiso.mkl_solver.PardisoSolver._solve", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pydiso.mkl_solver.MKLPardisoSolver._solve", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -9163,7 +9163,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__solve(struct __py
  *         cdef long_t error64=0, phase64=phase, nrhs64=nrhs
  */
 
-static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, __pyx_t_6pydiso_10mkl_solver_int_t __pyx_v_phase, struct __pyx_opt_args_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso *__pyx_optional_args) {
+static int __pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__run_pardiso(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, __pyx_t_6pydiso_10mkl_solver_int_t __pyx_v_phase, struct __pyx_opt_args_6pydiso_10mkl_solver_16MKLPardisoSolver__run_pardiso *__pyx_optional_args) {
   void *__pyx_v_b = ((void *)NULL);
   void *__pyx_v_x = ((void *)NULL);
   __pyx_t_6pydiso_10mkl_solver_int_t __pyx_v_nrhs = ((__pyx_t_6pydiso_10mkl_solver_int_t)0);
@@ -9386,7 +9386,7 @@ static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __py
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_WriteUnraisable("pydiso.mkl_solver.PardisoSolver._run_pardiso", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __Pyx_WriteUnraisable("pydiso.mkl_solver.MKLPardisoSolver._run_pardiso", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -9400,19 +9400,19 @@ static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __py
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_11__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_11__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_11__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_11__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_10__reduce_cython__(((struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self));
+  __pyx_r = __pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_10__reduce_cython__(((struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_10__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self) {
+static PyObject *__pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_10__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -9439,7 +9439,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_10__reduce_cython
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("pydiso.mkl_solver.PardisoSolver.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pydiso.mkl_solver.MKLPardisoSolver.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
@@ -9454,19 +9454,19 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_10__reduce_cython
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_13__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static PyObject *__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_13__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_13__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static PyObject *__pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_13__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_12__setstate_cython__(((struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_12__setstate_cython__(((struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_12__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_6pydiso_10mkl_solver_16MKLPardisoSolver_12__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -9493,7 +9493,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_12__setstate_cyth
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("pydiso.mkl_solver.PardisoSolver.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pydiso.mkl_solver.MKLPardisoSolver.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
@@ -26121,10 +26121,10 @@ static PyTypeObject __pyx_type_6pydiso_10mkl_solver__PardisoParams64 = {
   0, /*tp_print*/
   #endif
 };
-static struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver __pyx_vtable_6pydiso_10mkl_solver_PardisoSolver;
+static struct __pyx_vtabstruct_6pydiso_10mkl_solver_MKLPardisoSolver __pyx_vtable_6pydiso_10mkl_solver_MKLPardisoSolver;
 
-static PyObject *__pyx_tp_new_6pydiso_10mkl_solver_PardisoSolver(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *p;
+static PyObject *__pyx_tp_new_6pydiso_10mkl_solver_MKLPardisoSolver(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+  struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *p;
   PyObject *o;
   if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
     o = (*t->tp_alloc)(t, 0);
@@ -26132,8 +26132,8 @@ static PyObject *__pyx_tp_new_6pydiso_10mkl_solver_PardisoSolver(PyTypeObject *t
     o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
   }
   if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *)o);
-  p->__pyx_vtab = __pyx_vtabptr_6pydiso_10mkl_solver_PardisoSolver;
+  p = ((struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *)o);
+  p->__pyx_vtab = __pyx_vtabptr_6pydiso_10mkl_solver_MKLPardisoSolver;
   p->_par = ((struct __pyx_obj_6pydiso_10mkl_solver__PardisoParams *)Py_None); Py_INCREF(Py_None);
   p->_par64 = ((struct __pyx_obj_6pydiso_10mkl_solver__PardisoParams64 *)Py_None); Py_INCREF(Py_None);
   p->_data_type = Py_None; Py_INCREF(Py_None);
@@ -26141,8 +26141,8 @@ static PyObject *__pyx_tp_new_6pydiso_10mkl_solver_PardisoSolver(PyTypeObject *t
   return o;
 }
 
-static void __pyx_tp_dealloc_6pydiso_10mkl_solver_PardisoSolver(PyObject *o) {
-  struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *p = (struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *)o;
+static void __pyx_tp_dealloc_6pydiso_10mkl_solver_MKLPardisoSolver(PyObject *o) {
+  struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *p = (struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *)o;
   #if CYTHON_USE_TP_FINALIZE
   if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && !_PyGC_FINALIZED(o)) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
@@ -26153,7 +26153,7 @@ static void __pyx_tp_dealloc_6pydiso_10mkl_solver_PardisoSolver(PyObject *o) {
     PyObject *etype, *eval, *etb;
     PyErr_Fetch(&etype, &eval, &etb);
     ++Py_REFCNT(o);
-    __pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_9__dealloc__(o);
+    __pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_9__dealloc__(o);
     --Py_REFCNT(o);
     PyErr_Restore(etype, eval, etb);
   }
@@ -26164,9 +26164,9 @@ static void __pyx_tp_dealloc_6pydiso_10mkl_solver_PardisoSolver(PyObject *o) {
   (*Py_TYPE(o)->tp_free)(o);
 }
 
-static int __pyx_tp_traverse_6pydiso_10mkl_solver_PardisoSolver(PyObject *o, visitproc v, void *a) {
+static int __pyx_tp_traverse_6pydiso_10mkl_solver_MKLPardisoSolver(PyObject *o, visitproc v, void *a) {
   int e;
-  struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *p = (struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *)o;
+  struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *p = (struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *)o;
   if (p->_par) {
     e = (*v)(((PyObject *)p->_par), a); if (e) return e;
   }
@@ -26182,9 +26182,9 @@ static int __pyx_tp_traverse_6pydiso_10mkl_solver_PardisoSolver(PyObject *o, vis
   return 0;
 }
 
-static int __pyx_tp_clear_6pydiso_10mkl_solver_PardisoSolver(PyObject *o) {
+static int __pyx_tp_clear_6pydiso_10mkl_solver_MKLPardisoSolver(PyObject *o) {
   PyObject* tmp;
-  struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *p = (struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *)o;
+  struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *p = (struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *)o;
   tmp = ((PyObject*)p->_par);
   p->_par = ((struct __pyx_obj_6pydiso_10mkl_solver__PardisoParams *)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
@@ -26200,34 +26200,34 @@ static int __pyx_tp_clear_6pydiso_10mkl_solver_PardisoSolver(PyObject *o) {
   return 0;
 }
 
-static PyObject *__pyx_getprop_6pydiso_10mkl_solver_13PardisoSolver_perm(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_4perm_1__get__(o);
+static PyObject *__pyx_getprop_6pydiso_10mkl_solver_16MKLPardisoSolver_perm(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_4perm_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_6pydiso_10mkl_solver_13PardisoSolver_iparm(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_5iparm_1__get__(o);
+static PyObject *__pyx_getprop_6pydiso_10mkl_solver_16MKLPardisoSolver_iparm(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_5iparm_1__get__(o);
 }
 
-static PyMethodDef __pyx_methods_6pydiso_10mkl_solver_PardisoSolver[] = {
-  {"refactor", (PyCFunction)__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_3refactor, METH_O, __pyx_doc_6pydiso_10mkl_solver_13PardisoSolver_2refactor},
-  {"solve", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_7solve, METH_VARARGS|METH_KEYWORDS, __pyx_doc_6pydiso_10mkl_solver_13PardisoSolver_6solve},
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_11__reduce_cython__, METH_NOARGS, 0},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_13__setstate_cython__, METH_O, 0},
+static PyMethodDef __pyx_methods_6pydiso_10mkl_solver_MKLPardisoSolver[] = {
+  {"refactor", (PyCFunction)__pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_3refactor, METH_O, __pyx_doc_6pydiso_10mkl_solver_16MKLPardisoSolver_2refactor},
+  {"solve", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_7solve, METH_VARARGS|METH_KEYWORDS, __pyx_doc_6pydiso_10mkl_solver_16MKLPardisoSolver_6solve},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_11__reduce_cython__, METH_NOARGS, 0},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_13__setstate_cython__, METH_O, 0},
   {0, 0, 0, 0}
 };
 
-static struct PyGetSetDef __pyx_getsets_6pydiso_10mkl_solver_PardisoSolver[] = {
-  {(char *)"perm", __pyx_getprop_6pydiso_10mkl_solver_13PardisoSolver_perm, 0, (char *)" Fill-reducing permutation vector used inside pardiso.\n        ", 0},
-  {(char *)"iparm", __pyx_getprop_6pydiso_10mkl_solver_13PardisoSolver_iparm, 0, (char *)" Parameter options for the pardiso solver.\n        ", 0},
+static struct PyGetSetDef __pyx_getsets_6pydiso_10mkl_solver_MKLPardisoSolver[] = {
+  {(char *)"perm", __pyx_getprop_6pydiso_10mkl_solver_16MKLPardisoSolver_perm, 0, (char *)" Fill-reducing permutation vector used inside pardiso.\n        ", 0},
+  {(char *)"iparm", __pyx_getprop_6pydiso_10mkl_solver_16MKLPardisoSolver_iparm, 0, (char *)" Parameter options for the pardiso solver.\n        ", 0},
   {0, 0, 0, 0, 0}
 };
 
-static PyTypeObject __pyx_type_6pydiso_10mkl_solver_PardisoSolver = {
+static PyTypeObject __pyx_type_6pydiso_10mkl_solver_MKLPardisoSolver = {
   PyVarObject_HEAD_INIT(0, 0)
-  "pydiso.mkl_solver.PardisoSolver", /*tp_name*/
-  sizeof(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver), /*tp_basicsize*/
+  "pydiso.mkl_solver.MKLPardisoSolver", /*tp_name*/
+  sizeof(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_6pydiso_10mkl_solver_PardisoSolver, /*tp_dealloc*/
+  __pyx_tp_dealloc_6pydiso_10mkl_solver_MKLPardisoSolver, /*tp_dealloc*/
   #if PY_VERSION_HEX < 0x030800b4
   0, /*tp_print*/
   #endif
@@ -26247,30 +26247,30 @@ static PyTypeObject __pyx_type_6pydiso_10mkl_solver_PardisoSolver = {
   0, /*tp_as_sequence*/
   0, /*tp_as_mapping*/
   0, /*tp_hash*/
-  __pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_5__call__, /*tp_call*/
+  __pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_5__call__, /*tp_call*/
   0, /*tp_str*/
   0, /*tp_getattro*/
   0, /*tp_setattro*/
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
   0, /*tp_doc*/
-  __pyx_tp_traverse_6pydiso_10mkl_solver_PardisoSolver, /*tp_traverse*/
-  __pyx_tp_clear_6pydiso_10mkl_solver_PardisoSolver, /*tp_clear*/
+  __pyx_tp_traverse_6pydiso_10mkl_solver_MKLPardisoSolver, /*tp_traverse*/
+  __pyx_tp_clear_6pydiso_10mkl_solver_MKLPardisoSolver, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
   0, /*tp_iternext*/
-  __pyx_methods_6pydiso_10mkl_solver_PardisoSolver, /*tp_methods*/
+  __pyx_methods_6pydiso_10mkl_solver_MKLPardisoSolver, /*tp_methods*/
   0, /*tp_members*/
-  __pyx_getsets_6pydiso_10mkl_solver_PardisoSolver, /*tp_getset*/
+  __pyx_getsets_6pydiso_10mkl_solver_MKLPardisoSolver, /*tp_getset*/
   0, /*tp_base*/
   0, /*tp_dict*/
   0, /*tp_descr_get*/
   0, /*tp_descr_set*/
   0, /*tp_dictoffset*/
-  __pyx_pw_6pydiso_10mkl_solver_13PardisoSolver_1__init__, /*tp_init*/
+  __pyx_pw_6pydiso_10mkl_solver_16MKLPardisoSolver_1__init__, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_6pydiso_10mkl_solver_PardisoSolver, /*tp_new*/
+  __pyx_tp_new_6pydiso_10mkl_solver_MKLPardisoSolver, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -27078,6 +27078,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_Invalid_mode_expected_c_or_fortr, __pyx_k_Invalid_mode_expected_c_or_fortr, sizeof(__pyx_k_Invalid_mode_expected_c_or_fortr), 0, 0, 1, 0},
   {&__pyx_kp_s_Invalid_shape_in_axis_d_d, __pyx_k_Invalid_shape_in_axis_d_d, sizeof(__pyx_k_Invalid_shape_in_axis_d_d), 0, 0, 1, 0},
   {&__pyx_n_s_MATRIX_TYPES, __pyx_k_MATRIX_TYPES, sizeof(__pyx_k_MATRIX_TYPES), 0, 0, 1, 1},
+  {&__pyx_n_s_MKLPardisoSolver, __pyx_k_MKLPardisoSolver, sizeof(__pyx_k_MKLPardisoSolver), 0, 0, 1, 1},
   {&__pyx_n_s_MajorVersion, __pyx_k_MajorVersion, sizeof(__pyx_k_MajorVersion), 0, 0, 1, 1},
   {&__pyx_kp_u_Matrix_is_not_sparse, __pyx_k_Matrix_is_not_sparse, sizeof(__pyx_k_Matrix_is_not_sparse), 0, 1, 0, 0},
   {&__pyx_kp_u_Memmory_release_error, __pyx_k_Memmory_release_error, sizeof(__pyx_k_Memmory_release_error), 0, 1, 0, 0},
@@ -27093,7 +27094,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_PardisoError, __pyx_k_PardisoError, sizeof(__pyx_k_PardisoError), 0, 0, 1, 1},
   {&__pyx_n_s_PardisoParams, __pyx_k_PardisoParams, sizeof(__pyx_k_PardisoParams), 0, 0, 1, 1},
   {&__pyx_n_s_PardisoParams64, __pyx_k_PardisoParams64, sizeof(__pyx_k_PardisoParams64), 0, 0, 1, 1},
-  {&__pyx_n_s_PardisoSolver, __pyx_k_PardisoSolver, sizeof(__pyx_k_PardisoSolver), 0, 0, 1, 1},
   {&__pyx_n_s_PardisoTypeConversionWarning, __pyx_k_PardisoTypeConversionWarning, sizeof(__pyx_k_PardisoTypeConversionWarning), 0, 0, 1, 1},
   {&__pyx_n_s_PardisoWarning, __pyx_k_PardisoWarning, sizeof(__pyx_k_PardisoWarning), 0, 0, 1, 1},
   {&__pyx_n_s_PickleError, __pyx_k_PickleError, sizeof(__pyx_k_PickleError), 0, 0, 1, 1},
@@ -27810,35 +27810,35 @@ static int __Pyx_modinit_type_init_code(void) {
   if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PardisoParams64, (PyObject *)&__pyx_type_6pydiso_10mkl_solver__PardisoParams64) < 0) __PYX_ERR(0, 173, __pyx_L1_error)
   if (__Pyx_setup_reduce((PyObject*)&__pyx_type_6pydiso_10mkl_solver__PardisoParams64) < 0) __PYX_ERR(0, 173, __pyx_L1_error)
   __pyx_ptype_6pydiso_10mkl_solver__PardisoParams64 = &__pyx_type_6pydiso_10mkl_solver__PardisoParams64;
-  __pyx_vtabptr_6pydiso_10mkl_solver_PardisoSolver = &__pyx_vtable_6pydiso_10mkl_solver_PardisoSolver;
-  __pyx_vtable_6pydiso_10mkl_solver_PardisoSolver._initialize4 = (PyObject *(*)(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *, PyObject *, PyObject *, PyObject *))__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4;
-  __pyx_vtable_6pydiso_10mkl_solver_PardisoSolver._initialize8 = (PyObject *(*)(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *, PyObject *, PyObject *, PyObject *))__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8;
-  __pyx_vtable_6pydiso_10mkl_solver_PardisoSolver._set_A = (PyObject *(*)(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *, PyObject *))__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__set_A;
-  __pyx_vtable_6pydiso_10mkl_solver_PardisoSolver._analyze = (PyObject *(*)(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *))__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__analyze;
-  __pyx_vtable_6pydiso_10mkl_solver_PardisoSolver._factor = (PyObject *(*)(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *))__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__factor;
-  __pyx_vtable_6pydiso_10mkl_solver_PardisoSolver._solve = (PyObject *(*)(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *, void *, void *, __pyx_t_6pydiso_10mkl_solver_int_t))__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__solve;
-  __pyx_vtable_6pydiso_10mkl_solver_PardisoSolver._run_pardiso = (int (*)(struct __pyx_obj_6pydiso_10mkl_solver_PardisoSolver *, __pyx_t_6pydiso_10mkl_solver_int_t, struct __pyx_opt_args_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso *__pyx_optional_args))__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso;
-  if (PyType_Ready(&__pyx_type_6pydiso_10mkl_solver_PardisoSolver) < 0) __PYX_ERR(0, 178, __pyx_L1_error)
+  __pyx_vtabptr_6pydiso_10mkl_solver_MKLPardisoSolver = &__pyx_vtable_6pydiso_10mkl_solver_MKLPardisoSolver;
+  __pyx_vtable_6pydiso_10mkl_solver_MKLPardisoSolver._initialize4 = (PyObject *(*)(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *, PyObject *, PyObject *, PyObject *))__pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__initialize4;
+  __pyx_vtable_6pydiso_10mkl_solver_MKLPardisoSolver._initialize8 = (PyObject *(*)(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *, PyObject *, PyObject *, PyObject *))__pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__initialize8;
+  __pyx_vtable_6pydiso_10mkl_solver_MKLPardisoSolver._set_A = (PyObject *(*)(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *, PyObject *))__pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__set_A;
+  __pyx_vtable_6pydiso_10mkl_solver_MKLPardisoSolver._analyze = (PyObject *(*)(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *))__pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__analyze;
+  __pyx_vtable_6pydiso_10mkl_solver_MKLPardisoSolver._factor = (PyObject *(*)(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *))__pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__factor;
+  __pyx_vtable_6pydiso_10mkl_solver_MKLPardisoSolver._solve = (PyObject *(*)(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *, void *, void *, __pyx_t_6pydiso_10mkl_solver_int_t))__pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__solve;
+  __pyx_vtable_6pydiso_10mkl_solver_MKLPardisoSolver._run_pardiso = (int (*)(struct __pyx_obj_6pydiso_10mkl_solver_MKLPardisoSolver *, __pyx_t_6pydiso_10mkl_solver_int_t, struct __pyx_opt_args_6pydiso_10mkl_solver_16MKLPardisoSolver__run_pardiso *__pyx_optional_args))__pyx_f_6pydiso_10mkl_solver_16MKLPardisoSolver__run_pardiso;
+  if (PyType_Ready(&__pyx_type_6pydiso_10mkl_solver_MKLPardisoSolver) < 0) __PYX_ERR(0, 178, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
-  __pyx_type_6pydiso_10mkl_solver_PardisoSolver.tp_print = 0;
+  __pyx_type_6pydiso_10mkl_solver_MKLPardisoSolver.tp_print = 0;
   #endif
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_6pydiso_10mkl_solver_PardisoSolver.tp_dictoffset && __pyx_type_6pydiso_10mkl_solver_PardisoSolver.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_6pydiso_10mkl_solver_PardisoSolver.tp_getattro = __Pyx_PyObject_GenericGetAttr;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_6pydiso_10mkl_solver_MKLPardisoSolver.tp_dictoffset && __pyx_type_6pydiso_10mkl_solver_MKLPardisoSolver.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_6pydiso_10mkl_solver_MKLPardisoSolver.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
   #if CYTHON_COMPILING_IN_CPYTHON
   {
-    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_6pydiso_10mkl_solver_PardisoSolver, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 178, __pyx_L1_error)
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_6pydiso_10mkl_solver_MKLPardisoSolver, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 178, __pyx_L1_error)
     if (Py_TYPE(wrapper) == &PyWrapperDescr_Type) {
-      __pyx_wrapperbase_6pydiso_10mkl_solver_13PardisoSolver___init__ = *((PyWrapperDescrObject *)wrapper)->d_base;
-      __pyx_wrapperbase_6pydiso_10mkl_solver_13PardisoSolver___init__.doc = __pyx_doc_6pydiso_10mkl_solver_13PardisoSolver___init__;
-      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_6pydiso_10mkl_solver_13PardisoSolver___init__;
+      __pyx_wrapperbase_6pydiso_10mkl_solver_16MKLPardisoSolver___init__ = *((PyWrapperDescrObject *)wrapper)->d_base;
+      __pyx_wrapperbase_6pydiso_10mkl_solver_16MKLPardisoSolver___init__.doc = __pyx_doc_6pydiso_10mkl_solver_16MKLPardisoSolver___init__;
+      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_6pydiso_10mkl_solver_16MKLPardisoSolver___init__;
     }
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_type_6pydiso_10mkl_solver_PardisoSolver.tp_dict, __pyx_vtabptr_6pydiso_10mkl_solver_PardisoSolver) < 0) __PYX_ERR(0, 178, __pyx_L1_error)
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PardisoSolver, (PyObject *)&__pyx_type_6pydiso_10mkl_solver_PardisoSolver) < 0) __PYX_ERR(0, 178, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_6pydiso_10mkl_solver_PardisoSolver) < 0) __PYX_ERR(0, 178, __pyx_L1_error)
-  __pyx_ptype_6pydiso_10mkl_solver_PardisoSolver = &__pyx_type_6pydiso_10mkl_solver_PardisoSolver;
+  if (__Pyx_SetVtable(__pyx_type_6pydiso_10mkl_solver_MKLPardisoSolver.tp_dict, __pyx_vtabptr_6pydiso_10mkl_solver_MKLPardisoSolver) < 0) __PYX_ERR(0, 178, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_MKLPardisoSolver, (PyObject *)&__pyx_type_6pydiso_10mkl_solver_MKLPardisoSolver) < 0) __PYX_ERR(0, 178, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_6pydiso_10mkl_solver_MKLPardisoSolver) < 0) __PYX_ERR(0, 178, __pyx_L1_error)
+  __pyx_ptype_6pydiso_10mkl_solver_MKLPardisoSolver = &__pyx_type_6pydiso_10mkl_solver_MKLPardisoSolver;
   __pyx_vtabptr_array = &__pyx_vtable_array;
   __pyx_vtable_array.get_memview = (PyObject *(*)(struct __pyx_array_obj *))__pyx_array_get_memview;
   if (PyType_Ready(&__pyx_type___pyx_array) < 0) __PYX_ERR(1, 105, __pyx_L1_error)
