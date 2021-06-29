@@ -9,7 +9,7 @@ on:
       - '*'
 
 jobs:
-  build_and_test:
+  build-and-test:
     name: Testing (${{ matrix.python-version }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     defaults:
@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: True
       matrix:
-        os: ["ubuntu-latest"]
+        os: ["ubuntu-latest", "macOS-latest"]
         python-version: [3.7, 3.8]
 
     steps:
