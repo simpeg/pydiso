@@ -39,10 +39,11 @@ jobs:
     - name: Set MKLROOT on Windows
       if: ${{ matrix.os }} == "windows-latest"
       run: |
-        set MKLROOT=%CONDA_PREFIX\Library
-        echo %MKLROOT
+        export MKLROOT=$CONDA_PREFIX\Library
+        echo $MKLROOT
     - name: Install Our Package
       run: |
+        echo $MKLROOT
         pip install -v -e .
         conda list
     - name: Run Tests
