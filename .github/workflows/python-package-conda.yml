@@ -43,7 +43,7 @@ jobs:
         echo %MKLROOT
     - name: Install Our Package
       run: |
-        pip install -e .
+        pip install -v -e .
         conda list
     - name: Run Tests
       run: |
