@@ -20,7 +20,7 @@ jobs:
       matrix:
         os: ["ubuntu-latest"]
         python-version: [3.7, 3.8]
-        
+
     steps:
     - uses: actions/checkout@v2
     - name: Setup Conda
@@ -35,7 +35,7 @@ jobs:
         conda list
         conda config --show
         conda install --quiet --yes pip numpy scipy cython mkl
-        conda install --quiet --yes mkl-develop
+        conda install --quiet --yes mkl-devel
     - name: Install Our Package
       run: |
         pip install -e .
