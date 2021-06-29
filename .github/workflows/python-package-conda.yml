@@ -37,7 +37,7 @@ jobs:
         conda install --quiet --yes pip numpy scipy cython mkl pytest
         conda install --quiet --yes mkl-devel
     - name: Set MKLROOT on Windows
-      if: ${{ matix.os }} == "windows-latest"
+      if: ${{ matrix.os }} == "windows-latest"
       run: |
         set MKLROOT=%CONDA_PREFIX\Library
         echo %MKLROOT
