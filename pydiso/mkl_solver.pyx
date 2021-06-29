@@ -175,7 +175,7 @@ cdef class _PardisoParams64:
     cdef long_t n, mtype, maxfct, mnum, msglvl
     cdef long_t[:] ia, ja, perm
 
-cdef class PardisoSolver:
+cdef class MKLPardisoSolver:
     cdef _MKL_DSS_HANDLE_t handle[64]
     cdef _PardisoParams  _par
     cdef _PardisoParams64 _par64

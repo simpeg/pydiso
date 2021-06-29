@@ -1265,7 +1265,7 @@ typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
 typedef npy_cdouble __pyx_t_5numpy_complex_t;
 struct __pyx_opt_args_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso;
 
-/* "pydiso/mkl_solver.pyx":516
+/* "pydiso/mkl_solver.pyx":513
  *             raise PardisoError("Solve step error, "+_err_messages[err])
  * 
  *     cdef int _run_pardiso(self, int_t phase, void* b=NULL, void* x=NULL, int_t nrhs=0):             # <<<<<<<<<<<<<<
@@ -3858,12 +3858,12 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_6set_mkl_threads(CYTHON_UNUSED Py
  * 
  * def set_mkl_paradiso_threads(num_threads=None):             # <<<<<<<<<<<<<<
  *     """
- *     Sets the number of openMP threads  available to the Pardiso functions
+ *     Sets the number of openMP threads available to the Pardiso functions
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_6pydiso_10mkl_solver_9set_mkl_paradiso_threads(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_6pydiso_10mkl_solver_8set_mkl_paradiso_threads[] = "\n    Sets the number of openMP threads  available to the Pardiso functions\n\n    Parameters\n    ----------\n    num_threads : None or int\n        Number of threads to use for the MKL Pardiso routines.\n        None (or 0) will set the number of threads to `get_mkl_max_threads`\n    ";
+static char __pyx_doc_6pydiso_10mkl_solver_8set_mkl_paradiso_threads[] = "\n    Sets the number of openMP threads available to the Pardiso functions\n\n    Parameters\n    ----------\n    num_threads : None or int\n        Number of threads to use for the MKL Pardiso routines.\n        None (or 0) will set the number of threads to `get_mkl_max_threads`\n    ";
 static PyMethodDef __pyx_mdef_6pydiso_10mkl_solver_9set_mkl_paradiso_threads = {"set_mkl_paradiso_threads", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6pydiso_10mkl_solver_9set_mkl_paradiso_threads, METH_VARARGS|METH_KEYWORDS, __pyx_doc_6pydiso_10mkl_solver_8set_mkl_paradiso_threads};
 static PyObject *__pyx_pw_6pydiso_10mkl_solver_9set_mkl_paradiso_threads(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_num_threads = 0;
@@ -4027,7 +4027,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_8set_mkl_paradiso_threads(CYTHON_
  * 
  * def set_mkl_paradiso_threads(num_threads=None):             # <<<<<<<<<<<<<<
  *     """
- *     Sets the number of openMP threads  available to the Pardiso functions
+ *     Sets the number of openMP threads available to the Pardiso functions
  */
 
   /* function exit code */
@@ -6669,7 +6669,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_6solve(struct __p
  *         if len(in_shape)>1:
  *             nrhs = in_shape[1]             # <<<<<<<<<<<<<<
  * 
- *         #cdef double[:] bm = b
+ *         cdef void * bp
  */
     __pyx_t_7 = __Pyx_GetItemInt(__pyx_v_in_shape, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 341, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
@@ -6686,16 +6686,70 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_6solve(struct __p
  */
   }
 
-  /* "pydiso/mkl_solver.pyx":348
+  /* "pydiso/mkl_solver.pyx":345
  *         cdef void * bp
  *         cdef void * xp
  *         if(self._data_type==np.float32):             # <<<<<<<<<<<<<<
  *             bp = _array_pointer[float](b)
  *             xp = _array_pointer[float](x)
  */
+  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 345, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_float32); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 345, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_t_7 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 345, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 345, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  if (__pyx_t_8) {
+
+    /* "pydiso/mkl_solver.pyx":346
+ *         cdef void * xp
+ *         if(self._data_type==np.float32):
+ *             bp = _array_pointer[float](b)             # <<<<<<<<<<<<<<
+ *             xp = _array_pointer[float](x)
+ *         elif(self._data_type==np.float64):
+ */
+    __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_ds_float(__pyx_v_b, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 346, __pyx_L1_error)
+    __pyx_v_bp = __pyx_fuse_3__pyx_f_6pydiso_10mkl_solver__array_pointer(__pyx_t_11);
+    __PYX_XDEC_MEMVIEW(&__pyx_t_11, 1);
+    __pyx_t_11.memview = NULL;
+    __pyx_t_11.data = NULL;
+
+    /* "pydiso/mkl_solver.pyx":347
+ *         if(self._data_type==np.float32):
+ *             bp = _array_pointer[float](b)
+ *             xp = _array_pointer[float](x)             # <<<<<<<<<<<<<<
+ *         elif(self._data_type==np.float64):
+ *             bp = _array_pointer[double](b)
+ */
+    __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_ds_float(__pyx_v_x, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 347, __pyx_L1_error)
+    __pyx_v_xp = __pyx_fuse_3__pyx_f_6pydiso_10mkl_solver__array_pointer(__pyx_t_11);
+    __PYX_XDEC_MEMVIEW(&__pyx_t_11, 1);
+    __pyx_t_11.memview = NULL;
+    __pyx_t_11.data = NULL;
+
+    /* "pydiso/mkl_solver.pyx":345
+ *         cdef void * bp
+ *         cdef void * xp
+ *         if(self._data_type==np.float32):             # <<<<<<<<<<<<<<
+ *             bp = _array_pointer[float](b)
+ *             xp = _array_pointer[float](x)
+ */
+    goto __pyx_L7;
+  }
+
+  /* "pydiso/mkl_solver.pyx":348
+ *             bp = _array_pointer[float](b)
+ *             xp = _array_pointer[float](x)
+ *         elif(self._data_type==np.float64):             # <<<<<<<<<<<<<<
+ *             bp = _array_pointer[double](b)
+ *             xp = _array_pointer[double](x)
+ */
   __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 348, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_float32); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 348, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_float64); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 348, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_t_7 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 348, __pyx_L1_error)
@@ -6705,51 +6759,51 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_6solve(struct __p
   if (__pyx_t_8) {
 
     /* "pydiso/mkl_solver.pyx":349
- *         cdef void * xp
- *         if(self._data_type==np.float32):
- *             bp = _array_pointer[float](b)             # <<<<<<<<<<<<<<
  *             xp = _array_pointer[float](x)
  *         elif(self._data_type==np.float64):
+ *             bp = _array_pointer[double](b)             # <<<<<<<<<<<<<<
+ *             xp = _array_pointer[double](x)
+ *         elif(self._data_type==np.complex64):
  */
-    __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_ds_float(__pyx_v_b, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 349, __pyx_L1_error)
-    __pyx_v_bp = __pyx_fuse_3__pyx_f_6pydiso_10mkl_solver__array_pointer(__pyx_t_11);
-    __PYX_XDEC_MEMVIEW(&__pyx_t_11, 1);
-    __pyx_t_11.memview = NULL;
-    __pyx_t_11.data = NULL;
+    __pyx_t_12 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_v_b, PyBUF_WRITABLE); if (unlikely(!__pyx_t_12.memview)) __PYX_ERR(0, 349, __pyx_L1_error)
+    __pyx_v_bp = __pyx_fuse_4__pyx_f_6pydiso_10mkl_solver__array_pointer(__pyx_t_12);
+    __PYX_XDEC_MEMVIEW(&__pyx_t_12, 1);
+    __pyx_t_12.memview = NULL;
+    __pyx_t_12.data = NULL;
 
     /* "pydiso/mkl_solver.pyx":350
- *         if(self._data_type==np.float32):
- *             bp = _array_pointer[float](b)
- *             xp = _array_pointer[float](x)             # <<<<<<<<<<<<<<
  *         elif(self._data_type==np.float64):
  *             bp = _array_pointer[double](b)
+ *             xp = _array_pointer[double](x)             # <<<<<<<<<<<<<<
+ *         elif(self._data_type==np.complex64):
+ *             bp = _array_pointer[floatcomplex](b)
  */
-    __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_ds_float(__pyx_v_x, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 350, __pyx_L1_error)
-    __pyx_v_xp = __pyx_fuse_3__pyx_f_6pydiso_10mkl_solver__array_pointer(__pyx_t_11);
-    __PYX_XDEC_MEMVIEW(&__pyx_t_11, 1);
-    __pyx_t_11.memview = NULL;
-    __pyx_t_11.data = NULL;
+    __pyx_t_12 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_v_x, PyBUF_WRITABLE); if (unlikely(!__pyx_t_12.memview)) __PYX_ERR(0, 350, __pyx_L1_error)
+    __pyx_v_xp = __pyx_fuse_4__pyx_f_6pydiso_10mkl_solver__array_pointer(__pyx_t_12);
+    __PYX_XDEC_MEMVIEW(&__pyx_t_12, 1);
+    __pyx_t_12.memview = NULL;
+    __pyx_t_12.data = NULL;
 
     /* "pydiso/mkl_solver.pyx":348
- *         cdef void * bp
- *         cdef void * xp
- *         if(self._data_type==np.float32):             # <<<<<<<<<<<<<<
- *             bp = _array_pointer[float](b)
- *             xp = _array_pointer[float](x)
- */
-    goto __pyx_L7;
-  }
-
-  /* "pydiso/mkl_solver.pyx":351
  *             bp = _array_pointer[float](b)
  *             xp = _array_pointer[float](x)
  *         elif(self._data_type==np.float64):             # <<<<<<<<<<<<<<
  *             bp = _array_pointer[double](b)
  *             xp = _array_pointer[double](x)
  */
+    goto __pyx_L7;
+  }
+
+  /* "pydiso/mkl_solver.pyx":351
+ *             bp = _array_pointer[double](b)
+ *             xp = _array_pointer[double](x)
+ *         elif(self._data_type==np.complex64):             # <<<<<<<<<<<<<<
+ *             bp = _array_pointer[floatcomplex](b)
+ *             xp = _array_pointer[floatcomplex](x)
+ */
   __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 351, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_float64); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 351, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_complex64); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 351, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_t_7 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 351, __pyx_L1_error)
@@ -6759,51 +6813,51 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_6solve(struct __p
   if (__pyx_t_8) {
 
     /* "pydiso/mkl_solver.pyx":352
- *             xp = _array_pointer[float](x)
- *         elif(self._data_type==np.float64):
- *             bp = _array_pointer[double](b)             # <<<<<<<<<<<<<<
  *             xp = _array_pointer[double](x)
  *         elif(self._data_type==np.complex64):
+ *             bp = _array_pointer[floatcomplex](b)             # <<<<<<<<<<<<<<
+ *             xp = _array_pointer[floatcomplex](x)
+ *         elif(self._data_type==np.complex128):
  */
-    __pyx_t_12 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_v_b, PyBUF_WRITABLE); if (unlikely(!__pyx_t_12.memview)) __PYX_ERR(0, 352, __pyx_L1_error)
-    __pyx_v_bp = __pyx_fuse_4__pyx_f_6pydiso_10mkl_solver__array_pointer(__pyx_t_12);
-    __PYX_XDEC_MEMVIEW(&__pyx_t_12, 1);
-    __pyx_t_12.memview = NULL;
-    __pyx_t_12.data = NULL;
+    __pyx_t_13 = __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_float_complex(__pyx_v_b, PyBUF_WRITABLE); if (unlikely(!__pyx_t_13.memview)) __PYX_ERR(0, 352, __pyx_L1_error)
+    __pyx_v_bp = __pyx_fuse_5__pyx_f_6pydiso_10mkl_solver__array_pointer(__pyx_t_13);
+    __PYX_XDEC_MEMVIEW(&__pyx_t_13, 1);
+    __pyx_t_13.memview = NULL;
+    __pyx_t_13.data = NULL;
 
     /* "pydiso/mkl_solver.pyx":353
- *         elif(self._data_type==np.float64):
- *             bp = _array_pointer[double](b)
- *             xp = _array_pointer[double](x)             # <<<<<<<<<<<<<<
  *         elif(self._data_type==np.complex64):
  *             bp = _array_pointer[floatcomplex](b)
+ *             xp = _array_pointer[floatcomplex](x)             # <<<<<<<<<<<<<<
+ *         elif(self._data_type==np.complex128):
+ *             bp = _array_pointer[doublecomplex](b)
  */
-    __pyx_t_12 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_v_x, PyBUF_WRITABLE); if (unlikely(!__pyx_t_12.memview)) __PYX_ERR(0, 353, __pyx_L1_error)
-    __pyx_v_xp = __pyx_fuse_4__pyx_f_6pydiso_10mkl_solver__array_pointer(__pyx_t_12);
-    __PYX_XDEC_MEMVIEW(&__pyx_t_12, 1);
-    __pyx_t_12.memview = NULL;
-    __pyx_t_12.data = NULL;
+    __pyx_t_13 = __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_float_complex(__pyx_v_x, PyBUF_WRITABLE); if (unlikely(!__pyx_t_13.memview)) __PYX_ERR(0, 353, __pyx_L1_error)
+    __pyx_v_xp = __pyx_fuse_5__pyx_f_6pydiso_10mkl_solver__array_pointer(__pyx_t_13);
+    __PYX_XDEC_MEMVIEW(&__pyx_t_13, 1);
+    __pyx_t_13.memview = NULL;
+    __pyx_t_13.data = NULL;
 
     /* "pydiso/mkl_solver.pyx":351
- *             bp = _array_pointer[float](b)
- *             xp = _array_pointer[float](x)
- *         elif(self._data_type==np.float64):             # <<<<<<<<<<<<<<
- *             bp = _array_pointer[double](b)
- *             xp = _array_pointer[double](x)
- */
-    goto __pyx_L7;
-  }
-
-  /* "pydiso/mkl_solver.pyx":354
  *             bp = _array_pointer[double](b)
  *             xp = _array_pointer[double](x)
  *         elif(self._data_type==np.complex64):             # <<<<<<<<<<<<<<
  *             bp = _array_pointer[floatcomplex](b)
  *             xp = _array_pointer[floatcomplex](x)
  */
+    goto __pyx_L7;
+  }
+
+  /* "pydiso/mkl_solver.pyx":354
+ *             bp = _array_pointer[floatcomplex](b)
+ *             xp = _array_pointer[floatcomplex](x)
+ *         elif(self._data_type==np.complex128):             # <<<<<<<<<<<<<<
+ *             bp = _array_pointer[doublecomplex](b)
+ *             xp = _array_pointer[doublecomplex](x)
+ */
   __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_complex64); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 354, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_complex128); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_t_7 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 354, __pyx_L1_error)
@@ -6813,86 +6867,32 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_6solve(struct __p
   if (__pyx_t_8) {
 
     /* "pydiso/mkl_solver.pyx":355
- *             xp = _array_pointer[double](x)
- *         elif(self._data_type==np.complex64):
- *             bp = _array_pointer[floatcomplex](b)             # <<<<<<<<<<<<<<
- *             xp = _array_pointer[floatcomplex](x)
- *         elif(self._data_type==np.complex128):
- */
-    __pyx_t_13 = __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_float_complex(__pyx_v_b, PyBUF_WRITABLE); if (unlikely(!__pyx_t_13.memview)) __PYX_ERR(0, 355, __pyx_L1_error)
-    __pyx_v_bp = __pyx_fuse_5__pyx_f_6pydiso_10mkl_solver__array_pointer(__pyx_t_13);
-    __PYX_XDEC_MEMVIEW(&__pyx_t_13, 1);
-    __pyx_t_13.memview = NULL;
-    __pyx_t_13.data = NULL;
-
-    /* "pydiso/mkl_solver.pyx":356
- *         elif(self._data_type==np.complex64):
- *             bp = _array_pointer[floatcomplex](b)
- *             xp = _array_pointer[floatcomplex](x)             # <<<<<<<<<<<<<<
- *         elif(self._data_type==np.complex128):
- *             bp = _array_pointer[doublecomplex](b)
- */
-    __pyx_t_13 = __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_float_complex(__pyx_v_x, PyBUF_WRITABLE); if (unlikely(!__pyx_t_13.memview)) __PYX_ERR(0, 356, __pyx_L1_error)
-    __pyx_v_xp = __pyx_fuse_5__pyx_f_6pydiso_10mkl_solver__array_pointer(__pyx_t_13);
-    __PYX_XDEC_MEMVIEW(&__pyx_t_13, 1);
-    __pyx_t_13.memview = NULL;
-    __pyx_t_13.data = NULL;
-
-    /* "pydiso/mkl_solver.pyx":354
- *             bp = _array_pointer[double](b)
- *             xp = _array_pointer[double](x)
- *         elif(self._data_type==np.complex64):             # <<<<<<<<<<<<<<
- *             bp = _array_pointer[floatcomplex](b)
- *             xp = _array_pointer[floatcomplex](x)
- */
-    goto __pyx_L7;
-  }
-
-  /* "pydiso/mkl_solver.pyx":357
- *             bp = _array_pointer[floatcomplex](b)
- *             xp = _array_pointer[floatcomplex](x)
- *         elif(self._data_type==np.complex128):             # <<<<<<<<<<<<<<
- *             bp = _array_pointer[doublecomplex](b)
- *             xp = _array_pointer[doublecomplex](x)
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 357, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_complex128); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 357, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 357, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 357, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (__pyx_t_8) {
-
-    /* "pydiso/mkl_solver.pyx":358
  *             xp = _array_pointer[floatcomplex](x)
  *         elif(self._data_type==np.complex128):
  *             bp = _array_pointer[doublecomplex](b)             # <<<<<<<<<<<<<<
  *             xp = _array_pointer[doublecomplex](x)
  * 
  */
-    __pyx_t_14 = __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_double_complex(__pyx_v_b, PyBUF_WRITABLE); if (unlikely(!__pyx_t_14.memview)) __PYX_ERR(0, 358, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_double_complex(__pyx_v_b, PyBUF_WRITABLE); if (unlikely(!__pyx_t_14.memview)) __PYX_ERR(0, 355, __pyx_L1_error)
     __pyx_v_bp = __pyx_fuse_6__pyx_f_6pydiso_10mkl_solver__array_pointer(__pyx_t_14);
     __PYX_XDEC_MEMVIEW(&__pyx_t_14, 1);
     __pyx_t_14.memview = NULL;
     __pyx_t_14.data = NULL;
 
-    /* "pydiso/mkl_solver.pyx":359
+    /* "pydiso/mkl_solver.pyx":356
  *         elif(self._data_type==np.complex128):
  *             bp = _array_pointer[doublecomplex](b)
  *             xp = _array_pointer[doublecomplex](x)             # <<<<<<<<<<<<<<
  * 
  *         self._solve(bp, xp, nrhs)
  */
-    __pyx_t_14 = __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_double_complex(__pyx_v_x, PyBUF_WRITABLE); if (unlikely(!__pyx_t_14.memview)) __PYX_ERR(0, 359, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_double_complex(__pyx_v_x, PyBUF_WRITABLE); if (unlikely(!__pyx_t_14.memview)) __PYX_ERR(0, 356, __pyx_L1_error)
     __pyx_v_xp = __pyx_fuse_6__pyx_f_6pydiso_10mkl_solver__array_pointer(__pyx_t_14);
     __PYX_XDEC_MEMVIEW(&__pyx_t_14, 1);
     __pyx_t_14.memview = NULL;
     __pyx_t_14.data = NULL;
 
-    /* "pydiso/mkl_solver.pyx":357
+    /* "pydiso/mkl_solver.pyx":354
  *             bp = _array_pointer[floatcomplex](b)
  *             xp = _array_pointer[floatcomplex](x)
  *         elif(self._data_type==np.complex128):             # <<<<<<<<<<<<<<
@@ -6902,18 +6902,18 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_6solve(struct __p
   }
   __pyx_L7:;
 
-  /* "pydiso/mkl_solver.pyx":361
+  /* "pydiso/mkl_solver.pyx":358
  *             xp = _array_pointer[doublecomplex](x)
  * 
  *         self._solve(bp, xp, nrhs)             # <<<<<<<<<<<<<<
  *         return x.reshape(in_shape, order='F')
  * 
  */
-  __pyx_t_7 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self->__pyx_vtab)->_solve(__pyx_v_self, __pyx_v_bp, __pyx_v_xp, __pyx_v_nrhs); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 361, __pyx_L1_error)
+  __pyx_t_7 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self->__pyx_vtab)->_solve(__pyx_v_self, __pyx_v_bp, __pyx_v_xp, __pyx_v_nrhs); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 358, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-  /* "pydiso/mkl_solver.pyx":362
+  /* "pydiso/mkl_solver.pyx":359
  * 
  *         self._solve(bp, xp, nrhs)
  *         return x.reshape(in_shape, order='F')             # <<<<<<<<<<<<<<
@@ -6921,17 +6921,17 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_6solve(struct __p
  *     @property
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_x, __pyx_n_s_reshape); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 362, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_x, __pyx_n_s_reshape); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 359, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 362, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 359, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_v_in_shape);
   __Pyx_GIVEREF(__pyx_v_in_shape);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_v_in_shape);
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 362, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 359, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_order, __pyx_n_u_F) < 0) __PYX_ERR(0, 362, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 362, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_order, __pyx_n_u_F) < 0) __PYX_ERR(0, 359, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 359, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -6970,7 +6970,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_6solve(struct __p
   return __pyx_r;
 }
 
-/* "pydiso/mkl_solver.pyx":365
+/* "pydiso/mkl_solver.pyx":362
  * 
  *     @property
  *     def perm(self):             # <<<<<<<<<<<<<<
@@ -7001,7 +7001,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_4perm___get__(str
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "pydiso/mkl_solver.pyx":368
+  /* "pydiso/mkl_solver.pyx":365
  *         """ Fill-reducing permutation vector used inside pardiso.
  *         """
  *         if self._is_32:             # <<<<<<<<<<<<<<
@@ -7011,7 +7011,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_4perm___get__(str
   __pyx_t_1 = (__pyx_v_self->_is_32 != 0);
   if (__pyx_t_1) {
 
-    /* "pydiso/mkl_solver.pyx":369
+    /* "pydiso/mkl_solver.pyx":366
  *         """
  *         if self._is_32:
  *             return np.array(self._par.perm)             # <<<<<<<<<<<<<<
@@ -7019,13 +7019,13 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_4perm___get__(str
  *             return np.array(self._par64.perm)
  */
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 369, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 366, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 369, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 366, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_v_self->_par->perm.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 369, __pyx_L1_error)}
-    __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_self->_par->perm, 1, (PyObject *(*)(char *)) __pyx_memview_get_nn___pyx_t_6pydiso_10mkl_solver_int_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn___pyx_t_6pydiso_10mkl_solver_int_t, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 369, __pyx_L1_error)
+    if (unlikely(!__pyx_v_self->_par->perm.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 366, __pyx_L1_error)}
+    __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_self->_par->perm, 1, (PyObject *(*)(char *)) __pyx_memview_get_nn___pyx_t_6pydiso_10mkl_solver_int_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn___pyx_t_6pydiso_10mkl_solver_int_t, 0);; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 366, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
@@ -7040,14 +7040,14 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_4perm___get__(str
     __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 369, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 366, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_r = __pyx_t_2;
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "pydiso/mkl_solver.pyx":368
+    /* "pydiso/mkl_solver.pyx":365
  *         """ Fill-reducing permutation vector used inside pardiso.
  *         """
  *         if self._is_32:             # <<<<<<<<<<<<<<
@@ -7056,7 +7056,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_4perm___get__(str
  */
   }
 
-  /* "pydiso/mkl_solver.pyx":371
+  /* "pydiso/mkl_solver.pyx":368
  *             return np.array(self._par.perm)
  *         else:
  *             return np.array(self._par64.perm)             # <<<<<<<<<<<<<<
@@ -7065,13 +7065,13 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_4perm___get__(str
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 371, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 368, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 371, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 368, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_v_self->_par64->perm.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 371, __pyx_L1_error)}
-    __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_self->_par64->perm, 1, (PyObject *(*)(char *)) __pyx_memview_get_nn___pyx_t_6pydiso_10mkl_solver_long_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn___pyx_t_6pydiso_10mkl_solver_long_t, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 371, __pyx_L1_error)
+    if (unlikely(!__pyx_v_self->_par64->perm.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 368, __pyx_L1_error)}
+    __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_self->_par64->perm, 1, (PyObject *(*)(char *)) __pyx_memview_get_nn___pyx_t_6pydiso_10mkl_solver_long_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn___pyx_t_6pydiso_10mkl_solver_long_t, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 368, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -7086,7 +7086,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_4perm___get__(str
     __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 371, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 368, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_r = __pyx_t_2;
@@ -7094,7 +7094,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_4perm___get__(str
     goto __pyx_L0;
   }
 
-  /* "pydiso/mkl_solver.pyx":365
+  /* "pydiso/mkl_solver.pyx":362
  * 
  *     @property
  *     def perm(self):             # <<<<<<<<<<<<<<
@@ -7116,7 +7116,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_4perm___get__(str
   return __pyx_r;
 }
 
-/* "pydiso/mkl_solver.pyx":374
+/* "pydiso/mkl_solver.pyx":371
  * 
  *     @property
  *     def iparm(self):             # <<<<<<<<<<<<<<
@@ -7147,7 +7147,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_5iparm___get__(st
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "pydiso/mkl_solver.pyx":377
+  /* "pydiso/mkl_solver.pyx":374
  *         """ Parameter options for the pardiso solver.
  *         """
  *         if self._is_32:             # <<<<<<<<<<<<<<
@@ -7157,7 +7157,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_5iparm___get__(st
   __pyx_t_1 = (__pyx_v_self->_is_32 != 0);
   if (__pyx_t_1) {
 
-    /* "pydiso/mkl_solver.pyx":378
+    /* "pydiso/mkl_solver.pyx":375
  *         """
  *         if self._is_32:
  *             return np.array(self._par.iparm)             # <<<<<<<<<<<<<<
@@ -7165,12 +7165,12 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_5iparm___get__(st
  *             return np.array(self._par64.iparm)
  */
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 378, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 375, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 378, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_array); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 375, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_carray_to_py___pyx_t_6pydiso_10mkl_solver_int_t(__pyx_v_self->_par->iparm, 64); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 378, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_carray_to_py___pyx_t_6pydiso_10mkl_solver_int_t(__pyx_v_self->_par->iparm, 64); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 375, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
@@ -7185,14 +7185,14 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_5iparm___get__(st
     __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 378, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 375, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_r = __pyx_t_2;
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "pydiso/mkl_solver.pyx":377
+    /* "pydiso/mkl_solver.pyx":374
  *         """ Parameter options for the pardiso solver.
  *         """
  *         if self._is_32:             # <<<<<<<<<<<<<<
@@ -7201,7 +7201,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_5iparm___get__(st
  */
   }
 
-  /* "pydiso/mkl_solver.pyx":380
+  /* "pydiso/mkl_solver.pyx":377
  *             return np.array(self._par.iparm)
  *         else:
  *             return np.array(self._par64.iparm)             # <<<<<<<<<<<<<<
@@ -7210,12 +7210,12 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_5iparm___get__(st
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 380, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 377, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 380, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 377, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_carray_to_py___pyx_t_6pydiso_10mkl_solver_long_t(__pyx_v_self->_par64->iparm, 64); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 380, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_carray_to_py___pyx_t_6pydiso_10mkl_solver_long_t(__pyx_v_self->_par64->iparm, 64); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 377, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -7230,7 +7230,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_5iparm___get__(st
     __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 380, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 377, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_r = __pyx_t_2;
@@ -7238,7 +7238,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_5iparm___get__(st
     goto __pyx_L0;
   }
 
-  /* "pydiso/mkl_solver.pyx":374
+  /* "pydiso/mkl_solver.pyx":371
  * 
  *     @property
  *     def iparm(self):             # <<<<<<<<<<<<<<
@@ -7260,7 +7260,7 @@ static PyObject *__pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_5iparm___get__(st
   return __pyx_r;
 }
 
-/* "pydiso/mkl_solver.pyx":382
+/* "pydiso/mkl_solver.pyx":379
  *             return np.array(self._par64.iparm)
  * 
  *     cdef _initialize4(self, A, matrix_type, verbose):             # <<<<<<<<<<<<<<
@@ -7285,75 +7285,75 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struc
   int __pyx_t_9;
   __Pyx_RefNannySetupContext("_initialize4", 0);
 
-  /* "pydiso/mkl_solver.pyx":383
+  /* "pydiso/mkl_solver.pyx":380
  * 
  *     cdef _initialize4(self, A, matrix_type, verbose):
  *         cdef _PardisoParams par = _PardisoParams()             # <<<<<<<<<<<<<<
  * 
  *         par.n = A.shape[0]
  */
-  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_6pydiso_10mkl_solver__PardisoParams)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 383, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_6pydiso_10mkl_solver__PardisoParams)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 380, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_par = ((struct __pyx_obj_6pydiso_10mkl_solver__PardisoParams *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pydiso/mkl_solver.pyx":385
+  /* "pydiso/mkl_solver.pyx":382
  *         cdef _PardisoParams par = _PardisoParams()
  * 
  *         par.n = A.shape[0]             # <<<<<<<<<<<<<<
  *         par.perm = np.empty(par.n, dtype=np.int32)
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_A, __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 385, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_A, __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 382, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 385, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 382, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 385, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 382, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_par->n = __pyx_t_3;
 
-  /* "pydiso/mkl_solver.pyx":386
+  /* "pydiso/mkl_solver.pyx":383
  * 
  *         par.n = A.shape[0]
  *         par.perm = np.empty(par.n, dtype=np.int32)             # <<<<<<<<<<<<<<
  * 
  *         par.maxfct = 1
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 386, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 383, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_empty); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 386, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_empty); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 383, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_par->n); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 386, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_par->n); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 383, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 386, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 383, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 386, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 383, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 386, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 383, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_int32); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 386, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_int32); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 383, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_dtype, __pyx_t_6) < 0) __PYX_ERR(0, 386, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_dtype, __pyx_t_6) < 0) __PYX_ERR(0, 383, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, __pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 386, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, __pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 383, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_6pydiso_10mkl_solver_int_t(__pyx_t_6, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 386, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_6pydiso_10mkl_solver_int_t(__pyx_t_6, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 383, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_par->perm, 0);
   __pyx_v_par->perm = __pyx_t_7;
   __pyx_t_7.memview = NULL;
   __pyx_t_7.data = NULL;
 
-  /* "pydiso/mkl_solver.pyx":388
+  /* "pydiso/mkl_solver.pyx":385
  *         par.perm = np.empty(par.n, dtype=np.int32)
  * 
  *         par.maxfct = 1             # <<<<<<<<<<<<<<
@@ -7362,7 +7362,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struc
  */
   __pyx_v_par->maxfct = 1;
 
-  /* "pydiso/mkl_solver.pyx":389
+  /* "pydiso/mkl_solver.pyx":386
  * 
  *         par.maxfct = 1
  *         par.mnum = 1             # <<<<<<<<<<<<<<
@@ -7371,27 +7371,27 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struc
  */
   __pyx_v_par->mnum = 1;
 
-  /* "pydiso/mkl_solver.pyx":391
+  /* "pydiso/mkl_solver.pyx":388
  *         par.mnum = 1
  * 
  *         par.mtype = matrix_type             # <<<<<<<<<<<<<<
  * 
  *         par.msglvl = verbose
  */
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_matrix_type); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 391, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_matrix_type); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 388, __pyx_L1_error)
   __pyx_v_par->mtype = __pyx_t_3;
 
-  /* "pydiso/mkl_solver.pyx":393
+  /* "pydiso/mkl_solver.pyx":390
  *         par.mtype = matrix_type
  * 
  *         par.msglvl = verbose             # <<<<<<<<<<<<<<
  * 
  *         pardisoinit(self.handle, &par.mtype, par.iparm)
  */
-  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_verbose); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 393, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_verbose); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 390, __pyx_L1_error)
   __pyx_v_par->msglvl = __pyx_t_3;
 
-  /* "pydiso/mkl_solver.pyx":395
+  /* "pydiso/mkl_solver.pyx":392
  *         par.msglvl = verbose
  * 
  *         pardisoinit(self.handle, &par.mtype, par.iparm)             # <<<<<<<<<<<<<<
@@ -7400,7 +7400,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struc
  */
   pardisoinit(__pyx_v_self->handle, (&__pyx_v_par->mtype), __pyx_v_par->iparm);
 
-  /* "pydiso/mkl_solver.pyx":398
+  /* "pydiso/mkl_solver.pyx":395
  * 
  *         #par.iparm[1] = 0
  *         par.iparm[4] = 2 #fill perm with computed permutation vector             # <<<<<<<<<<<<<<
@@ -7409,7 +7409,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struc
  */
   (__pyx_v_par->iparm[4]) = 2;
 
-  /* "pydiso/mkl_solver.pyx":399
+  /* "pydiso/mkl_solver.pyx":396
  *         #par.iparm[1] = 0
  *         par.iparm[4] = 2 #fill perm with computed permutation vector
  *         par.iparm[34] = 1 #zero based indexing             # <<<<<<<<<<<<<<
@@ -7418,41 +7418,41 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struc
  */
   (__pyx_v_par->iparm[34]) = 1;
 
-  /* "pydiso/mkl_solver.pyx":402
+  /* "pydiso/mkl_solver.pyx":399
  * 
  *         #set precision
  *         if self._data_type==np.float64 or self._data_type==np.complex128:             # <<<<<<<<<<<<<<
  *             par.iparm[27] = 0
  *         elif self._data_type==np.float32 or self._data_type==np.complex64:
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 402, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_float64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 402, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_float64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 402, __pyx_L1_error)
+  __pyx_t_6 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 402, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   if (!__pyx_t_9) {
   } else {
     __pyx_t_8 = __pyx_t_9;
     goto __pyx_L4_bool_binop_done;
   }
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 402, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_complex128); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 402, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_complex128); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 402, __pyx_L1_error)
+  __pyx_t_6 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 402, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_8 = __pyx_t_9;
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_8) {
 
-    /* "pydiso/mkl_solver.pyx":403
+    /* "pydiso/mkl_solver.pyx":400
  *         #set precision
  *         if self._data_type==np.float64 or self._data_type==np.complex128:
  *             par.iparm[27] = 0             # <<<<<<<<<<<<<<
@@ -7461,7 +7461,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struc
  */
     (__pyx_v_par->iparm[27]) = 0;
 
-    /* "pydiso/mkl_solver.pyx":402
+    /* "pydiso/mkl_solver.pyx":399
  * 
  *         #set precision
  *         if self._data_type==np.float64 or self._data_type==np.complex128:             # <<<<<<<<<<<<<<
@@ -7471,41 +7471,41 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struc
     goto __pyx_L3;
   }
 
-  /* "pydiso/mkl_solver.pyx":404
+  /* "pydiso/mkl_solver.pyx":401
  *         if self._data_type==np.float64 or self._data_type==np.complex128:
  *             par.iparm[27] = 0
  *         elif self._data_type==np.float32 or self._data_type==np.complex64:             # <<<<<<<<<<<<<<
  *             par.iparm[27] = 1
  *         else:
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 404, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 401, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_float32); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 404, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_float32); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 401, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 404, __pyx_L1_error)
+  __pyx_t_6 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 401, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 404, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 401, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   if (!__pyx_t_9) {
   } else {
     __pyx_t_8 = __pyx_t_9;
     goto __pyx_L6_bool_binop_done;
   }
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 404, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 401, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_complex64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 404, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_complex64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 401, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 404, __pyx_L1_error)
+  __pyx_t_6 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 401, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 404, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 401, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_8 = __pyx_t_9;
   __pyx_L6_bool_binop_done:;
   if (likely(__pyx_t_8)) {
 
-    /* "pydiso/mkl_solver.pyx":405
+    /* "pydiso/mkl_solver.pyx":402
  *             par.iparm[27] = 0
  *         elif self._data_type==np.float32 or self._data_type==np.complex64:
  *             par.iparm[27] = 1             # <<<<<<<<<<<<<<
@@ -7514,7 +7514,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struc
  */
     (__pyx_v_par->iparm[27]) = 1;
 
-    /* "pydiso/mkl_solver.pyx":404
+    /* "pydiso/mkl_solver.pyx":401
  *         if self._data_type==np.float64 or self._data_type==np.complex128:
  *             par.iparm[27] = 0
  *         elif self._data_type==np.float32 or self._data_type==np.complex64:             # <<<<<<<<<<<<<<
@@ -7524,7 +7524,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struc
     goto __pyx_L3;
   }
 
-  /* "pydiso/mkl_solver.pyx":407
+  /* "pydiso/mkl_solver.pyx":404
  *             par.iparm[27] = 1
  *         else:
  *             raise PardisoError("Unsupported data type")             # <<<<<<<<<<<<<<
@@ -7532,7 +7532,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struc
  *         indices = np.require(A.indices, dtype=np.int32) #these should be satisfied already...
  */
   /*else*/ {
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_PardisoError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 407, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_PardisoError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 404, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -7546,44 +7546,44 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struc
     }
     __pyx_t_6 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_kp_u_Unsupported_data_type) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_kp_u_Unsupported_data_type);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 407, __pyx_L1_error)
+    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 404, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 407, __pyx_L1_error)
+    __PYX_ERR(0, 404, __pyx_L1_error)
   }
   __pyx_L3:;
 
-  /* "pydiso/mkl_solver.pyx":409
+  /* "pydiso/mkl_solver.pyx":406
  *             raise PardisoError("Unsupported data type")
  * 
  *         indices = np.require(A.indices, dtype=np.int32) #these should be satisfied already...             # <<<<<<<<<<<<<<
  *         indptr = np.require(A.indptr, dtype=np.int32) #these should be satisfied already...
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 409, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 406, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_require); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 409, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_require); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 406, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_A, __pyx_n_s_indices); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 409, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_A, __pyx_n_s_indices); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 406, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 409, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 406, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_6);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 409, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 406, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 409, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 406, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 409, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 406, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 409, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 406, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 409, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 406, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -7591,35 +7591,35 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struc
   __pyx_v_indices = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "pydiso/mkl_solver.pyx":410
+  /* "pydiso/mkl_solver.pyx":407
  * 
  *         indices = np.require(A.indices, dtype=np.int32) #these should be satisfied already...
  *         indptr = np.require(A.indptr, dtype=np.int32) #these should be satisfied already...             # <<<<<<<<<<<<<<
  * 
  *         par.ia = indptr
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 410, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 407, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_require); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 410, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_require); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 407, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_A, __pyx_n_s_indptr); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 410, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_A, __pyx_n_s_indptr); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 407, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 410, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 407, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_5);
   __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 410, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 407, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 410, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 407, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_int32); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 410, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_int32); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 407, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_1) < 0) __PYX_ERR(0, 410, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_1) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 410, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 407, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -7627,33 +7627,33 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struc
   __pyx_v_indptr = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "pydiso/mkl_solver.pyx":412
+  /* "pydiso/mkl_solver.pyx":409
  *         indptr = np.require(A.indptr, dtype=np.int32) #these should be satisfied already...
  * 
  *         par.ia = indptr             # <<<<<<<<<<<<<<
  *         par.ja = indices
  * 
  */
-  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_6pydiso_10mkl_solver_int_t(__pyx_v_indptr, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 412, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_6pydiso_10mkl_solver_int_t(__pyx_v_indptr, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 409, __pyx_L1_error)
   __PYX_XDEC_MEMVIEW(&__pyx_v_par->ia, 0);
   __pyx_v_par->ia = __pyx_t_7;
   __pyx_t_7.memview = NULL;
   __pyx_t_7.data = NULL;
 
-  /* "pydiso/mkl_solver.pyx":413
+  /* "pydiso/mkl_solver.pyx":410
  * 
  *         par.ia = indptr
  *         par.ja = indices             # <<<<<<<<<<<<<<
  * 
  *         self._par = par
  */
-  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_6pydiso_10mkl_solver_int_t(__pyx_v_indices, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 413, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_6pydiso_10mkl_solver_int_t(__pyx_v_indices, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 410, __pyx_L1_error)
   __PYX_XDEC_MEMVIEW(&__pyx_v_par->ja, 0);
   __pyx_v_par->ja = __pyx_t_7;
   __pyx_t_7.memview = NULL;
   __pyx_t_7.data = NULL;
 
-  /* "pydiso/mkl_solver.pyx":415
+  /* "pydiso/mkl_solver.pyx":412
  *         par.ja = indices
  * 
  *         self._par = par             # <<<<<<<<<<<<<<
@@ -7666,7 +7666,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struc
   __Pyx_DECREF(((PyObject *)__pyx_v_self->_par));
   __pyx_v_self->_par = __pyx_v_par;
 
-  /* "pydiso/mkl_solver.pyx":382
+  /* "pydiso/mkl_solver.pyx":379
  *             return np.array(self._par64.iparm)
  * 
  *     cdef _initialize4(self, A, matrix_type, verbose):             # <<<<<<<<<<<<<<
@@ -7695,7 +7695,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize4(struc
   return __pyx_r;
 }
 
-/* "pydiso/mkl_solver.pyx":417
+/* "pydiso/mkl_solver.pyx":414
  *         self._par = par
  * 
  *     cdef _initialize8(self, A, matrix_type, verbose):             # <<<<<<<<<<<<<<
@@ -7725,75 +7725,75 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
   int __pyx_t_11;
   __Pyx_RefNannySetupContext("_initialize8", 0);
 
-  /* "pydiso/mkl_solver.pyx":418
+  /* "pydiso/mkl_solver.pyx":415
  * 
  *     cdef _initialize8(self, A, matrix_type, verbose):
  *         cdef _PardisoParams64 par = _PardisoParams64()             # <<<<<<<<<<<<<<
  * 
  *         par.n = A.shape[0]
  */
-  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_6pydiso_10mkl_solver__PardisoParams64)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 418, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_6pydiso_10mkl_solver__PardisoParams64)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 415, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_par = ((struct __pyx_obj_6pydiso_10mkl_solver__PardisoParams64 *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pydiso/mkl_solver.pyx":420
+  /* "pydiso/mkl_solver.pyx":417
  *         cdef _PardisoParams64 par = _PardisoParams64()
  * 
  *         par.n = A.shape[0]             # <<<<<<<<<<<<<<
  *         par.perm = np.empty(par.n, dtype=np.int64)
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_A, __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 420, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_A, __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 417, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 420, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 417, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyInt_As_PY_LONG_LONG(__pyx_t_2); if (unlikely((__pyx_t_3 == (PY_LONG_LONG)-1) && PyErr_Occurred())) __PYX_ERR(0, 420, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_PY_LONG_LONG(__pyx_t_2); if (unlikely((__pyx_t_3 == (PY_LONG_LONG)-1) && PyErr_Occurred())) __PYX_ERR(0, 417, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_par->n = __pyx_t_3;
 
-  /* "pydiso/mkl_solver.pyx":421
+  /* "pydiso/mkl_solver.pyx":418
  * 
  *         par.n = A.shape[0]
  *         par.perm = np.empty(par.n, dtype=np.int64)             # <<<<<<<<<<<<<<
  * 
  *         par.maxfct = 1
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 418, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_empty); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_empty); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 418, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyInt_From_PY_LONG_LONG(__pyx_v_par->n); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_PY_LONG_LONG(__pyx_v_par->n); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 418, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 418, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 418, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 418, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_int64); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_int64); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 418, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_dtype, __pyx_t_6) < 0) __PYX_ERR(0, 421, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_dtype, __pyx_t_6) < 0) __PYX_ERR(0, 418, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, __pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, __pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 418, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_6pydiso_10mkl_solver_long_t(__pyx_t_6, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_6pydiso_10mkl_solver_long_t(__pyx_t_6, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 418, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_par->perm, 0);
   __pyx_v_par->perm = __pyx_t_7;
   __pyx_t_7.memview = NULL;
   __pyx_t_7.data = NULL;
 
-  /* "pydiso/mkl_solver.pyx":423
+  /* "pydiso/mkl_solver.pyx":420
  *         par.perm = np.empty(par.n, dtype=np.int64)
  * 
  *         par.maxfct = 1             # <<<<<<<<<<<<<<
@@ -7802,7 +7802,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
  */
   __pyx_v_par->maxfct = 1;
 
-  /* "pydiso/mkl_solver.pyx":424
+  /* "pydiso/mkl_solver.pyx":421
  * 
  *         par.maxfct = 1
  *         par.mnum = 1             # <<<<<<<<<<<<<<
@@ -7811,37 +7811,37 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
  */
   __pyx_v_par->mnum = 1;
 
-  /* "pydiso/mkl_solver.pyx":426
+  /* "pydiso/mkl_solver.pyx":423
  *         par.mnum = 1
  * 
  *         par.mtype = matrix_type             # <<<<<<<<<<<<<<
  * 
  *         par.msglvl = verbose
  */
-  __pyx_t_3 = __Pyx_PyInt_As_PY_LONG_LONG(__pyx_v_matrix_type); if (unlikely((__pyx_t_3 == (PY_LONG_LONG)-1) && PyErr_Occurred())) __PYX_ERR(0, 426, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_PY_LONG_LONG(__pyx_v_matrix_type); if (unlikely((__pyx_t_3 == (PY_LONG_LONG)-1) && PyErr_Occurred())) __PYX_ERR(0, 423, __pyx_L1_error)
   __pyx_v_par->mtype = __pyx_t_3;
 
-  /* "pydiso/mkl_solver.pyx":428
+  /* "pydiso/mkl_solver.pyx":425
  *         par.mtype = matrix_type
  * 
  *         par.msglvl = verbose             # <<<<<<<<<<<<<<
  * 
  *         cdef int_t mtype_temp = matrix_type
  */
-  __pyx_t_3 = __Pyx_PyInt_As_PY_LONG_LONG(__pyx_v_verbose); if (unlikely((__pyx_t_3 == (PY_LONG_LONG)-1) && PyErr_Occurred())) __PYX_ERR(0, 428, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_As_PY_LONG_LONG(__pyx_v_verbose); if (unlikely((__pyx_t_3 == (PY_LONG_LONG)-1) && PyErr_Occurred())) __PYX_ERR(0, 425, __pyx_L1_error)
   __pyx_v_par->msglvl = __pyx_t_3;
 
-  /* "pydiso/mkl_solver.pyx":430
+  /* "pydiso/mkl_solver.pyx":427
  *         par.msglvl = verbose
  * 
  *         cdef int_t mtype_temp = matrix_type             # <<<<<<<<<<<<<<
  *         cdef int_t iparm[64]
  * 
  */
-  __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_v_matrix_type); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 430, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_v_matrix_type); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 427, __pyx_L1_error)
   __pyx_v_mtype_temp = __pyx_t_8;
 
-  /* "pydiso/mkl_solver.pyx":433
+  /* "pydiso/mkl_solver.pyx":430
  *         cdef int_t iparm[64]
  * 
  *         pardisoinit(self.handle, &mtype_temp, iparm)             # <<<<<<<<<<<<<<
@@ -7850,7 +7850,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
  */
   pardisoinit(__pyx_v_self->handle, (&__pyx_v_mtype_temp), __pyx_v_iparm);
 
-  /* "pydiso/mkl_solver.pyx":435
+  /* "pydiso/mkl_solver.pyx":432
  *         pardisoinit(self.handle, &mtype_temp, iparm)
  * 
  *         for i in range(64):             # <<<<<<<<<<<<<<
@@ -7860,7 +7860,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
   for (__pyx_t_9 = 0; __pyx_t_9 < 64; __pyx_t_9+=1) {
     __pyx_v_i = __pyx_t_9;
 
-    /* "pydiso/mkl_solver.pyx":436
+    /* "pydiso/mkl_solver.pyx":433
  * 
  *         for i in range(64):
  *             par.iparm[i] = iparm[i] # copy from iparm32 to iparm64             # <<<<<<<<<<<<<<
@@ -7870,7 +7870,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
     (__pyx_v_par->iparm[__pyx_v_i]) = (__pyx_v_iparm[__pyx_v_i]);
   }
 
-  /* "pydiso/mkl_solver.pyx":438
+  /* "pydiso/mkl_solver.pyx":435
  *             par.iparm[i] = iparm[i] # copy from iparm32 to iparm64
  * 
  *         par.iparm[4] = 2 # fill perm with computed permutation vector             # <<<<<<<<<<<<<<
@@ -7879,7 +7879,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
  */
   (__pyx_v_par->iparm[4]) = 2;
 
-  /* "pydiso/mkl_solver.pyx":439
+  /* "pydiso/mkl_solver.pyx":436
  * 
  *         par.iparm[4] = 2 # fill perm with computed permutation vector
  *         par.iparm[34] = 1 # zero based indexing             # <<<<<<<<<<<<<<
@@ -7888,41 +7888,41 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
  */
   (__pyx_v_par->iparm[34]) = 1;
 
-  /* "pydiso/mkl_solver.pyx":442
+  /* "pydiso/mkl_solver.pyx":439
  * 
  *         #set precision
  *         if self._data_type==np.float64 or self._data_type==np.complex128:             # <<<<<<<<<<<<<<
  *             par.iparm[27] = 0
  *         elif self._data_type==np.float32 or self._data_type==np.complex64:
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 442, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_float64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 442, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_float64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 442, __pyx_L1_error)
+  __pyx_t_6 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_11 < 0)) __PYX_ERR(0, 442, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_11 < 0)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   if (!__pyx_t_11) {
   } else {
     __pyx_t_10 = __pyx_t_11;
     goto __pyx_L6_bool_binop_done;
   }
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 442, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_complex128); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 442, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_complex128); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 442, __pyx_L1_error)
+  __pyx_t_6 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_11 < 0)) __PYX_ERR(0, 442, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_11 < 0)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_10 = __pyx_t_11;
   __pyx_L6_bool_binop_done:;
   if (__pyx_t_10) {
 
-    /* "pydiso/mkl_solver.pyx":443
+    /* "pydiso/mkl_solver.pyx":440
  *         #set precision
  *         if self._data_type==np.float64 or self._data_type==np.complex128:
  *             par.iparm[27] = 0             # <<<<<<<<<<<<<<
@@ -7931,7 +7931,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
  */
     (__pyx_v_par->iparm[27]) = 0;
 
-    /* "pydiso/mkl_solver.pyx":442
+    /* "pydiso/mkl_solver.pyx":439
  * 
  *         #set precision
  *         if self._data_type==np.float64 or self._data_type==np.complex128:             # <<<<<<<<<<<<<<
@@ -7941,41 +7941,41 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
     goto __pyx_L5;
   }
 
-  /* "pydiso/mkl_solver.pyx":444
+  /* "pydiso/mkl_solver.pyx":441
  *         if self._data_type==np.float64 or self._data_type==np.complex128:
  *             par.iparm[27] = 0
  *         elif self._data_type==np.float32 or self._data_type==np.complex64:             # <<<<<<<<<<<<<<
  *             par.iparm[27] = 1
  *         else:
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 444, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 441, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_float32); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 444, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_float32); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 441, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 444, __pyx_L1_error)
+  __pyx_t_6 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 441, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_11 < 0)) __PYX_ERR(0, 444, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_11 < 0)) __PYX_ERR(0, 441, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   if (!__pyx_t_11) {
   } else {
     __pyx_t_10 = __pyx_t_11;
     goto __pyx_L8_bool_binop_done;
   }
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 444, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 441, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_complex64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 444, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_complex64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 441, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 444, __pyx_L1_error)
+  __pyx_t_6 = PyObject_RichCompare(__pyx_v_self->_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 441, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_11 < 0)) __PYX_ERR(0, 444, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_11 < 0)) __PYX_ERR(0, 441, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_10 = __pyx_t_11;
   __pyx_L8_bool_binop_done:;
   if (likely(__pyx_t_10)) {
 
-    /* "pydiso/mkl_solver.pyx":445
+    /* "pydiso/mkl_solver.pyx":442
  *             par.iparm[27] = 0
  *         elif self._data_type==np.float32 or self._data_type==np.complex64:
  *             par.iparm[27] = 1             # <<<<<<<<<<<<<<
@@ -7984,7 +7984,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
  */
     (__pyx_v_par->iparm[27]) = 1;
 
-    /* "pydiso/mkl_solver.pyx":444
+    /* "pydiso/mkl_solver.pyx":441
  *         if self._data_type==np.float64 or self._data_type==np.complex128:
  *             par.iparm[27] = 0
  *         elif self._data_type==np.float32 or self._data_type==np.complex64:             # <<<<<<<<<<<<<<
@@ -7994,7 +7994,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
     goto __pyx_L5;
   }
 
-  /* "pydiso/mkl_solver.pyx":447
+  /* "pydiso/mkl_solver.pyx":444
  *             par.iparm[27] = 1
  *         else:
  *             raise PardisoError("Unsupported data type")             # <<<<<<<<<<<<<<
@@ -8002,7 +8002,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
  *         indices = np.require(A.indices, dtype=np.int64) #these should be satisfied already...
  */
   /*else*/ {
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_PardisoError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 447, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_PardisoError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 444, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -8016,44 +8016,44 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
     }
     __pyx_t_6 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_kp_u_Unsupported_data_type) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_kp_u_Unsupported_data_type);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 447, __pyx_L1_error)
+    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 444, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 447, __pyx_L1_error)
+    __PYX_ERR(0, 444, __pyx_L1_error)
   }
   __pyx_L5:;
 
-  /* "pydiso/mkl_solver.pyx":449
+  /* "pydiso/mkl_solver.pyx":446
  *             raise PardisoError("Unsupported data type")
  * 
  *         indices = np.require(A.indices, dtype=np.int64) #these should be satisfied already...             # <<<<<<<<<<<<<<
  *         indptr = np.require(A.indptr, dtype=np.int64) #these should be satisfied already...
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 449, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_require); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 449, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_require); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_A, __pyx_n_s_indices); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 449, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_A, __pyx_n_s_indices); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 449, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_6);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 449, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 449, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_int64); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 449, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_int64); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 449, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 449, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -8061,35 +8061,35 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
   __pyx_v_indices = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "pydiso/mkl_solver.pyx":450
+  /* "pydiso/mkl_solver.pyx":447
  * 
  *         indices = np.require(A.indices, dtype=np.int64) #these should be satisfied already...
  *         indptr = np.require(A.indptr, dtype=np.int64) #these should be satisfied already...             # <<<<<<<<<<<<<<
  * 
  *         par.ia = indptr
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 450, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 447, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_require); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 450, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_require); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 447, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_A, __pyx_n_s_indptr); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 450, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_A, __pyx_n_s_indptr); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 447, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 450, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 447, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_5);
   __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 450, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 447, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 450, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 447, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_int64); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 450, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_int64); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 447, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_1) < 0) __PYX_ERR(0, 450, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_1) < 0) __PYX_ERR(0, 447, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 450, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 447, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -8097,33 +8097,33 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
   __pyx_v_indptr = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "pydiso/mkl_solver.pyx":452
+  /* "pydiso/mkl_solver.pyx":449
  *         indptr = np.require(A.indptr, dtype=np.int64) #these should be satisfied already...
  * 
  *         par.ia = indptr             # <<<<<<<<<<<<<<
  *         par.ja = indices
  * 
  */
-  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_6pydiso_10mkl_solver_long_t(__pyx_v_indptr, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 452, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_6pydiso_10mkl_solver_long_t(__pyx_v_indptr, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 449, __pyx_L1_error)
   __PYX_XDEC_MEMVIEW(&__pyx_v_par->ia, 0);
   __pyx_v_par->ia = __pyx_t_7;
   __pyx_t_7.memview = NULL;
   __pyx_t_7.data = NULL;
 
-  /* "pydiso/mkl_solver.pyx":453
+  /* "pydiso/mkl_solver.pyx":450
  * 
  *         par.ia = indptr
  *         par.ja = indices             # <<<<<<<<<<<<<<
  * 
  *         self._par64 = par
  */
-  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_6pydiso_10mkl_solver_long_t(__pyx_v_indices, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 453, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds_nn___pyx_t_6pydiso_10mkl_solver_long_t(__pyx_v_indices, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 450, __pyx_L1_error)
   __PYX_XDEC_MEMVIEW(&__pyx_v_par->ja, 0);
   __pyx_v_par->ja = __pyx_t_7;
   __pyx_t_7.memview = NULL;
   __pyx_t_7.data = NULL;
 
-  /* "pydiso/mkl_solver.pyx":455
+  /* "pydiso/mkl_solver.pyx":452
  *         par.ja = indices
  * 
  *         self._par64 = par             # <<<<<<<<<<<<<<
@@ -8136,7 +8136,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
   __Pyx_DECREF(((PyObject *)__pyx_v_self->_par64));
   __pyx_v_self->_par64 = __pyx_v_par;
 
-  /* "pydiso/mkl_solver.pyx":417
+  /* "pydiso/mkl_solver.pyx":414
  *         self._par = par
  * 
  *     cdef _initialize8(self, A, matrix_type, verbose):             # <<<<<<<<<<<<<<
@@ -8165,7 +8165,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__initialize8(struc
   return __pyx_r;
 }
 
-/* "pydiso/mkl_solver.pyx":457
+/* "pydiso/mkl_solver.pyx":454
  *         self._par64 = par
  * 
  *     cdef _set_A(self, data):             # <<<<<<<<<<<<<<
@@ -8187,19 +8187,19 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__set_A(struct __py
   PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("_set_A", 0);
 
-  /* "pydiso/mkl_solver.pyx":458
+  /* "pydiso/mkl_solver.pyx":455
  * 
  *     cdef _set_A(self, data):
  *         data_type = data.dtype             # <<<<<<<<<<<<<<
  *         self._Adata = data
  *         #storing a reference so it doesn't get garbage collected
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_data, __pyx_n_s_dtype); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 458, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_data, __pyx_n_s_dtype); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 455, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_data_type = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "pydiso/mkl_solver.pyx":459
+  /* "pydiso/mkl_solver.pyx":456
  *     cdef _set_A(self, data):
  *         data_type = data.dtype
  *         self._Adata = data             # <<<<<<<<<<<<<<
@@ -8212,38 +8212,38 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__set_A(struct __py
   __Pyx_DECREF(__pyx_v_self->_Adata);
   __pyx_v_self->_Adata = __pyx_v_data;
 
-  /* "pydiso/mkl_solver.pyx":461
+  /* "pydiso/mkl_solver.pyx":458
  *         self._Adata = data
  *         #storing a reference so it doesn't get garbage collected
  *         if(data_type==np.float32):             # <<<<<<<<<<<<<<
  *             self.a = _array_pointer[float](data)
  *         elif(data_type==np.float64):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 461, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 458, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_float32); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 461, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_float32); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 458, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 461, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 458, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 461, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 458, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_3) {
 
-    /* "pydiso/mkl_solver.pyx":462
+    /* "pydiso/mkl_solver.pyx":459
  *         #storing a reference so it doesn't get garbage collected
  *         if(data_type==np.float32):
  *             self.a = _array_pointer[float](data)             # <<<<<<<<<<<<<<
  *         elif(data_type==np.float64):
  *             self.a = _array_pointer[double](data)
  */
-    __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_ds_float(__pyx_v_data, PyBUF_WRITABLE); if (unlikely(!__pyx_t_4.memview)) __PYX_ERR(0, 462, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_ds_float(__pyx_v_data, PyBUF_WRITABLE); if (unlikely(!__pyx_t_4.memview)) __PYX_ERR(0, 459, __pyx_L1_error)
     __pyx_v_self->a = __pyx_fuse_3__pyx_f_6pydiso_10mkl_solver__array_pointer(__pyx_t_4);
     __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
     __pyx_t_4.memview = NULL;
     __pyx_t_4.data = NULL;
 
-    /* "pydiso/mkl_solver.pyx":461
+    /* "pydiso/mkl_solver.pyx":458
  *         self._Adata = data
  *         #storing a reference so it doesn't get garbage collected
  *         if(data_type==np.float32):             # <<<<<<<<<<<<<<
@@ -8253,38 +8253,38 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__set_A(struct __py
     goto __pyx_L3;
   }
 
-  /* "pydiso/mkl_solver.pyx":463
+  /* "pydiso/mkl_solver.pyx":460
  *         if(data_type==np.float32):
  *             self.a = _array_pointer[float](data)
  *         elif(data_type==np.float64):             # <<<<<<<<<<<<<<
  *             self.a = _array_pointer[double](data)
  *         elif(data_type==np.complex64):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 463, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 460, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_float64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 463, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_float64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 460, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 463, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 460, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 463, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 460, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_3) {
 
-    /* "pydiso/mkl_solver.pyx":464
+    /* "pydiso/mkl_solver.pyx":461
  *             self.a = _array_pointer[float](data)
  *         elif(data_type==np.float64):
  *             self.a = _array_pointer[double](data)             # <<<<<<<<<<<<<<
  *         elif(data_type==np.complex64):
  *             self.a = _array_pointer[floatcomplex](data)
  */
-    __pyx_t_5 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_v_data, PyBUF_WRITABLE); if (unlikely(!__pyx_t_5.memview)) __PYX_ERR(0, 464, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_to_MemoryviewSlice_ds_double(__pyx_v_data, PyBUF_WRITABLE); if (unlikely(!__pyx_t_5.memview)) __PYX_ERR(0, 461, __pyx_L1_error)
     __pyx_v_self->a = __pyx_fuse_4__pyx_f_6pydiso_10mkl_solver__array_pointer(__pyx_t_5);
     __PYX_XDEC_MEMVIEW(&__pyx_t_5, 1);
     __pyx_t_5.memview = NULL;
     __pyx_t_5.data = NULL;
 
-    /* "pydiso/mkl_solver.pyx":463
+    /* "pydiso/mkl_solver.pyx":460
  *         if(data_type==np.float32):
  *             self.a = _array_pointer[float](data)
  *         elif(data_type==np.float64):             # <<<<<<<<<<<<<<
@@ -8294,38 +8294,38 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__set_A(struct __py
     goto __pyx_L3;
   }
 
-  /* "pydiso/mkl_solver.pyx":465
+  /* "pydiso/mkl_solver.pyx":462
  *         elif(data_type==np.float64):
  *             self.a = _array_pointer[double](data)
  *         elif(data_type==np.complex64):             # <<<<<<<<<<<<<<
  *             self.a = _array_pointer[floatcomplex](data)
  *         elif(data_type==np.complex128):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 465, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 462, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_complex64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 465, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_complex64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 462, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 465, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 462, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 465, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 462, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_3) {
 
-    /* "pydiso/mkl_solver.pyx":466
+    /* "pydiso/mkl_solver.pyx":463
  *             self.a = _array_pointer[double](data)
  *         elif(data_type==np.complex64):
  *             self.a = _array_pointer[floatcomplex](data)             # <<<<<<<<<<<<<<
  *         elif(data_type==np.complex128):
  *             self.a = _array_pointer[doublecomplex](data)
  */
-    __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_float_complex(__pyx_v_data, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 466, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_float_complex(__pyx_v_data, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 463, __pyx_L1_error)
     __pyx_v_self->a = __pyx_fuse_5__pyx_f_6pydiso_10mkl_solver__array_pointer(__pyx_t_6);
     __PYX_XDEC_MEMVIEW(&__pyx_t_6, 1);
     __pyx_t_6.memview = NULL;
     __pyx_t_6.data = NULL;
 
-    /* "pydiso/mkl_solver.pyx":465
+    /* "pydiso/mkl_solver.pyx":462
  *         elif(data_type==np.float64):
  *             self.a = _array_pointer[double](data)
  *         elif(data_type==np.complex64):             # <<<<<<<<<<<<<<
@@ -8335,38 +8335,38 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__set_A(struct __py
     goto __pyx_L3;
   }
 
-  /* "pydiso/mkl_solver.pyx":467
+  /* "pydiso/mkl_solver.pyx":464
  *         elif(data_type==np.complex64):
  *             self.a = _array_pointer[floatcomplex](data)
  *         elif(data_type==np.complex128):             # <<<<<<<<<<<<<<
  *             self.a = _array_pointer[doublecomplex](data)
  *         else:
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 467, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 464, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_complex128); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 467, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_complex128); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 464, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 467, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_data_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 464, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 467, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 464, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (likely(__pyx_t_3)) {
 
-    /* "pydiso/mkl_solver.pyx":468
+    /* "pydiso/mkl_solver.pyx":465
  *             self.a = _array_pointer[floatcomplex](data)
  *         elif(data_type==np.complex128):
  *             self.a = _array_pointer[doublecomplex](data)             # <<<<<<<<<<<<<<
  *         else:
  *             raise PardisoError("Unsorported data type for A")
  */
-    __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_double_complex(__pyx_v_data, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 468, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_ds___pyx_t_double_complex(__pyx_v_data, PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 465, __pyx_L1_error)
     __pyx_v_self->a = __pyx_fuse_6__pyx_f_6pydiso_10mkl_solver__array_pointer(__pyx_t_7);
     __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
     __pyx_t_7.memview = NULL;
     __pyx_t_7.data = NULL;
 
-    /* "pydiso/mkl_solver.pyx":467
+    /* "pydiso/mkl_solver.pyx":464
  *         elif(data_type==np.complex64):
  *             self.a = _array_pointer[floatcomplex](data)
  *         elif(data_type==np.complex128):             # <<<<<<<<<<<<<<
@@ -8376,7 +8376,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__set_A(struct __py
     goto __pyx_L3;
   }
 
-  /* "pydiso/mkl_solver.pyx":470
+  /* "pydiso/mkl_solver.pyx":467
  *             self.a = _array_pointer[doublecomplex](data)
  *         else:
  *             raise PardisoError("Unsorported data type for A")             # <<<<<<<<<<<<<<
@@ -8384,7 +8384,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__set_A(struct __py
  *     def __dealloc__(self):
  */
   /*else*/ {
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_PardisoError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 470, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_PardisoError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 467, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_8 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -8398,16 +8398,16 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__set_A(struct __py
     }
     __pyx_t_1 = (__pyx_t_8) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_8, __pyx_kp_u_Unsorported_data_type_for_A) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_kp_u_Unsorported_data_type_for_A);
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 470, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 467, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 470, __pyx_L1_error)
+    __PYX_ERR(0, 467, __pyx_L1_error)
   }
   __pyx_L3:;
 
-  /* "pydiso/mkl_solver.pyx":457
+  /* "pydiso/mkl_solver.pyx":454
  *         self._par64 = par
  * 
  *     cdef _set_A(self, data):             # <<<<<<<<<<<<<<
@@ -8435,7 +8435,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__set_A(struct __py
   return __pyx_r;
 }
 
-/* "pydiso/mkl_solver.pyx":472
+/* "pydiso/mkl_solver.pyx":469
  *             raise PardisoError("Unsorported data type for A")
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -8480,7 +8480,7 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
   PyObject *__pyx_t_13 = NULL;
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "pydiso/mkl_solver.pyx":474
+  /* "pydiso/mkl_solver.pyx":471
  *     def __dealloc__(self):
  *         #Need to call paradiso with phase=-1 to release memory
  *         cdef int_t phase = -1, nrhs=0, error=0             # <<<<<<<<<<<<<<
@@ -8491,7 +8491,7 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
   __pyx_v_nrhs = 0;
   __pyx_v_error = 0;
 
-  /* "pydiso/mkl_solver.pyx":475
+  /* "pydiso/mkl_solver.pyx":472
  *         #Need to call paradiso with phase=-1 to release memory
  *         cdef int_t phase = -1, nrhs=0, error=0
  *         cdef long_t phase64=-1, nrhs64=0, error64=0             # <<<<<<<<<<<<<<
@@ -8502,7 +8502,7 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
   __pyx_v_nrhs64 = 0;
   __pyx_v_error64 = 0;
 
-  /* "pydiso/mkl_solver.pyx":477
+  /* "pydiso/mkl_solver.pyx":474
  *         cdef long_t phase64=-1, nrhs64=0, error64=0
  * 
  *         cdef void *x = NULL             # <<<<<<<<<<<<<<
@@ -8511,7 +8511,7 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
  */
   __pyx_v_x = NULL;
 
-  /* "pydiso/mkl_solver.pyx":478
+  /* "pydiso/mkl_solver.pyx":475
  * 
  *         cdef void *x = NULL
  *         cdef void *b = NULL             # <<<<<<<<<<<<<<
@@ -8520,7 +8520,7 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
  */
   __pyx_v_b = NULL;
 
-  /* "pydiso/mkl_solver.pyx":480
+  /* "pydiso/mkl_solver.pyx":477
  *         cdef void *b = NULL
  * 
  *         if self._is_32:             # <<<<<<<<<<<<<<
@@ -8530,14 +8530,14 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
   __pyx_t_1 = (__pyx_v_self->_is_32 != 0);
   if (__pyx_t_1) {
 
-    /* "pydiso/mkl_solver.pyx":482
+    /* "pydiso/mkl_solver.pyx":479
  *         if self._is_32:
  *             pardiso(self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,
  *                     &phase, &self._par.n, self.a, &self._par.ia[0], &self._par.ja[0],             # <<<<<<<<<<<<<<
  *                     &self._par.perm[0], &nrhs, self._par.iparm, &self._par.msglvl, b, x, &error)
  *         else:
  */
-    if (unlikely(!__pyx_v_self->_par->ia.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 482, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_par->ia.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 479, __pyx_L1_error)}
     __pyx_t_2 = 0;
     __pyx_t_3 = -1;
     if (__pyx_t_2 < 0) {
@@ -8546,9 +8546,9 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
     } else if (unlikely(__pyx_t_2 >= __pyx_v_self->_par->ia.shape[0])) __pyx_t_3 = 0;
     if (unlikely(__pyx_t_3 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_3);
-      __PYX_ERR(0, 482, __pyx_L1_error)
+      __PYX_ERR(0, 479, __pyx_L1_error)
     }
-    if (unlikely(!__pyx_v_self->_par->ja.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 482, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_par->ja.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 479, __pyx_L1_error)}
     __pyx_t_4 = 0;
     __pyx_t_3 = -1;
     if (__pyx_t_4 < 0) {
@@ -8557,17 +8557,17 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
     } else if (unlikely(__pyx_t_4 >= __pyx_v_self->_par->ja.shape[0])) __pyx_t_3 = 0;
     if (unlikely(__pyx_t_3 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_3);
-      __PYX_ERR(0, 482, __pyx_L1_error)
+      __PYX_ERR(0, 479, __pyx_L1_error)
     }
 
-    /* "pydiso/mkl_solver.pyx":483
+    /* "pydiso/mkl_solver.pyx":480
  *             pardiso(self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,
  *                     &phase, &self._par.n, self.a, &self._par.ia[0], &self._par.ja[0],
  *                     &self._par.perm[0], &nrhs, self._par.iparm, &self._par.msglvl, b, x, &error)             # <<<<<<<<<<<<<<
  *         else:
  *             pardiso_64(self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,
  */
-    if (unlikely(!__pyx_v_self->_par->perm.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 483, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_par->perm.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 480, __pyx_L1_error)}
     __pyx_t_5 = 0;
     __pyx_t_3 = -1;
     if (__pyx_t_5 < 0) {
@@ -8576,10 +8576,10 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
     } else if (unlikely(__pyx_t_5 >= __pyx_v_self->_par->perm.shape[0])) __pyx_t_3 = 0;
     if (unlikely(__pyx_t_3 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_3);
-      __PYX_ERR(0, 483, __pyx_L1_error)
+      __PYX_ERR(0, 480, __pyx_L1_error)
     }
 
-    /* "pydiso/mkl_solver.pyx":481
+    /* "pydiso/mkl_solver.pyx":478
  * 
  *         if self._is_32:
  *             pardiso(self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,             # <<<<<<<<<<<<<<
@@ -8588,7 +8588,7 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
  */
     pardiso(__pyx_v_self->handle, (&__pyx_v_self->_par->maxfct), (&__pyx_v_self->_par->mnum), (&__pyx_v_self->_par->mtype), (&__pyx_v_phase), (&__pyx_v_self->_par->n), __pyx_v_self->a, (&(*((__pyx_t_6pydiso_10mkl_solver_int_t *) ( /* dim=0 */ (__pyx_v_self->_par->ia.data + __pyx_t_2 * __pyx_v_self->_par->ia.strides[0]) )))), (&(*((__pyx_t_6pydiso_10mkl_solver_int_t *) ( /* dim=0 */ (__pyx_v_self->_par->ja.data + __pyx_t_4 * __pyx_v_self->_par->ja.strides[0]) )))), (&(*((__pyx_t_6pydiso_10mkl_solver_int_t *) ( /* dim=0 */ (__pyx_v_self->_par->perm.data + __pyx_t_5 * __pyx_v_self->_par->perm.strides[0]) )))), (&__pyx_v_nrhs), __pyx_v_self->_par->iparm, (&__pyx_v_self->_par->msglvl), __pyx_v_b, __pyx_v_x, (&__pyx_v_error));
 
-    /* "pydiso/mkl_solver.pyx":480
+    /* "pydiso/mkl_solver.pyx":477
  *         cdef void *b = NULL
  * 
  *         if self._is_32:             # <<<<<<<<<<<<<<
@@ -8598,7 +8598,7 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
     goto __pyx_L3;
   }
 
-  /* "pydiso/mkl_solver.pyx":485
+  /* "pydiso/mkl_solver.pyx":482
  *                     &self._par.perm[0], &nrhs, self._par.iparm, &self._par.msglvl, b, x, &error)
  *         else:
  *             pardiso_64(self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,             # <<<<<<<<<<<<<<
@@ -8607,14 +8607,14 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
  */
   /*else*/ {
 
-    /* "pydiso/mkl_solver.pyx":486
+    /* "pydiso/mkl_solver.pyx":483
  *         else:
  *             pardiso_64(self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,
  *                     &phase64, &self._par64.n, self.a, &self._par64.ia[0], &self._par64.ja[0],             # <<<<<<<<<<<<<<
  *                     &self._par64.perm[0], &nrhs64, self._par64.iparm, &self._par64.msglvl, b, x, &error64)
  *         err = error or error64
  */
-    if (unlikely(!__pyx_v_self->_par64->ia.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 486, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_par64->ia.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 483, __pyx_L1_error)}
     __pyx_t_6 = 0;
     __pyx_t_3 = -1;
     if (__pyx_t_6 < 0) {
@@ -8623,9 +8623,9 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
     } else if (unlikely(__pyx_t_6 >= __pyx_v_self->_par64->ia.shape[0])) __pyx_t_3 = 0;
     if (unlikely(__pyx_t_3 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_3);
-      __PYX_ERR(0, 486, __pyx_L1_error)
+      __PYX_ERR(0, 483, __pyx_L1_error)
     }
-    if (unlikely(!__pyx_v_self->_par64->ja.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 486, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_par64->ja.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 483, __pyx_L1_error)}
     __pyx_t_7 = 0;
     __pyx_t_3 = -1;
     if (__pyx_t_7 < 0) {
@@ -8634,17 +8634,17 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
     } else if (unlikely(__pyx_t_7 >= __pyx_v_self->_par64->ja.shape[0])) __pyx_t_3 = 0;
     if (unlikely(__pyx_t_3 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_3);
-      __PYX_ERR(0, 486, __pyx_L1_error)
+      __PYX_ERR(0, 483, __pyx_L1_error)
     }
 
-    /* "pydiso/mkl_solver.pyx":487
+    /* "pydiso/mkl_solver.pyx":484
  *             pardiso_64(self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,
  *                     &phase64, &self._par64.n, self.a, &self._par64.ia[0], &self._par64.ja[0],
  *                     &self._par64.perm[0], &nrhs64, self._par64.iparm, &self._par64.msglvl, b, x, &error64)             # <<<<<<<<<<<<<<
  *         err = error or error64
  *         if err!=0:
  */
-    if (unlikely(!__pyx_v_self->_par64->perm.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 487, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_par64->perm.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 484, __pyx_L1_error)}
     __pyx_t_8 = 0;
     __pyx_t_3 = -1;
     if (__pyx_t_8 < 0) {
@@ -8653,10 +8653,10 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
     } else if (unlikely(__pyx_t_8 >= __pyx_v_self->_par64->perm.shape[0])) __pyx_t_3 = 0;
     if (unlikely(__pyx_t_3 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_3);
-      __PYX_ERR(0, 487, __pyx_L1_error)
+      __PYX_ERR(0, 484, __pyx_L1_error)
     }
 
-    /* "pydiso/mkl_solver.pyx":485
+    /* "pydiso/mkl_solver.pyx":482
  *                     &self._par.perm[0], &nrhs, self._par.iparm, &self._par.msglvl, b, x, &error)
  *         else:
  *             pardiso_64(self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,             # <<<<<<<<<<<<<<
@@ -8667,7 +8667,7 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
   }
   __pyx_L3:;
 
-  /* "pydiso/mkl_solver.pyx":488
+  /* "pydiso/mkl_solver.pyx":485
  *                     &phase64, &self._par64.n, self.a, &self._par64.ia[0], &self._par64.ja[0],
  *                     &self._par64.perm[0], &nrhs64, self._par64.iparm, &self._par64.msglvl, b, x, &error64)
  *         err = error or error64             # <<<<<<<<<<<<<<
@@ -8683,7 +8683,7 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
   __pyx_L4_bool_binop_done:;
   __pyx_v_err = __pyx_t_9;
 
-  /* "pydiso/mkl_solver.pyx":489
+  /* "pydiso/mkl_solver.pyx":486
  *                     &self._par64.perm[0], &nrhs64, self._par64.iparm, &self._par64.msglvl, b, x, &error64)
  *         err = error or error64
  *         if err!=0:             # <<<<<<<<<<<<<<
@@ -8693,21 +8693,21 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
   __pyx_t_1 = ((__pyx_v_err != 0) != 0);
   if (unlikely(__pyx_t_1)) {
 
-    /* "pydiso/mkl_solver.pyx":490
+    /* "pydiso/mkl_solver.pyx":487
  *         err = error or error64
  *         if err!=0:
  *             raise PardisoError("Memmory release error "+_err_messages[err])             # <<<<<<<<<<<<<<
  * 
  *     cdef _analyze(self):
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_n_s_PardisoError); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 490, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_n_s_PardisoError); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 487, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
-    __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_n_s_err_messages); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 490, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_n_s_err_messages); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 487, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
-    __pyx_t_13 = __Pyx_GetItemInt(__pyx_t_12, __pyx_v_err, __pyx_t_6pydiso_10mkl_solver_long_t, 1, __Pyx_PyInt_From_PY_LONG_LONG, 0, 1, 1); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 490, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_GetItemInt(__pyx_t_12, __pyx_v_err, __pyx_t_6pydiso_10mkl_solver_long_t, 1, __Pyx_PyInt_From_PY_LONG_LONG, 0, 1, 1); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 487, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    __pyx_t_12 = PyNumber_Add(__pyx_kp_u_Memmory_release_error, __pyx_t_13); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 490, __pyx_L1_error)
+    __pyx_t_12 = PyNumber_Add(__pyx_kp_u_Memmory_release_error, __pyx_t_13); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 487, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __pyx_t_13 = NULL;
@@ -8723,14 +8723,14 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
     __pyx_t_10 = (__pyx_t_13) ? __Pyx_PyObject_Call2Args(__pyx_t_11, __pyx_t_13, __pyx_t_12) : __Pyx_PyObject_CallOneArg(__pyx_t_11, __pyx_t_12);
     __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 490, __pyx_L1_error)
+    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 487, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
     __Pyx_Raise(__pyx_t_10, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __PYX_ERR(0, 490, __pyx_L1_error)
+    __PYX_ERR(0, 487, __pyx_L1_error)
 
-    /* "pydiso/mkl_solver.pyx":489
+    /* "pydiso/mkl_solver.pyx":486
  *                     &self._par64.perm[0], &nrhs64, self._par64.iparm, &self._par64.msglvl, b, x, &error64)
  *         err = error or error64
  *         if err!=0:             # <<<<<<<<<<<<<<
@@ -8739,7 +8739,7 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
  */
   }
 
-  /* "pydiso/mkl_solver.pyx":472
+  /* "pydiso/mkl_solver.pyx":469
  *             raise PardisoError("Unsorported data type for A")
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -8759,7 +8759,7 @@ static void __pyx_pf_6pydiso_10mkl_solver_13PardisoSolver_8__dealloc__(struct __
   __Pyx_RefNannyFinishContext();
 }
 
-/* "pydiso/mkl_solver.pyx":492
+/* "pydiso/mkl_solver.pyx":489
  *             raise PardisoError("Memmory release error "+_err_messages[err])
  * 
  *     cdef _analyze(self):             # <<<<<<<<<<<<<<
@@ -8778,7 +8778,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__analyze(struct __
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("_analyze", 0);
 
-  /* "pydiso/mkl_solver.pyx":494
+  /* "pydiso/mkl_solver.pyx":491
  *     cdef _analyze(self):
  *         #phase = 11
  *         err = self._run_pardiso(11)             # <<<<<<<<<<<<<<
@@ -8787,7 +8787,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__analyze(struct __
  */
   __pyx_v_err = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self->__pyx_vtab)->_run_pardiso(__pyx_v_self, 11, NULL);
 
-  /* "pydiso/mkl_solver.pyx":495
+  /* "pydiso/mkl_solver.pyx":492
  *         #phase = 11
  *         err = self._run_pardiso(11)
  *         if err!=0:             # <<<<<<<<<<<<<<
@@ -8797,21 +8797,21 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__analyze(struct __
   __pyx_t_1 = ((__pyx_v_err != 0) != 0);
   if (unlikely(__pyx_t_1)) {
 
-    /* "pydiso/mkl_solver.pyx":496
+    /* "pydiso/mkl_solver.pyx":493
  *         err = self._run_pardiso(11)
  *         if err!=0:
  *             raise PardisoError("Analysis step error, "+_err_messages[err])             # <<<<<<<<<<<<<<
  * 
  *     cdef _factor(self):
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_PardisoError); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 496, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_PardisoError); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 493, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_err_messages); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 496, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_err_messages); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 493, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_GetItemInt(__pyx_t_4, __pyx_v_err, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 496, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_GetItemInt(__pyx_t_4, __pyx_v_err, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 493, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = PyNumber_Add(__pyx_kp_u_Analysis_step_error, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 496, __pyx_L1_error)
+    __pyx_t_4 = PyNumber_Add(__pyx_kp_u_Analysis_step_error, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 493, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_t_5 = NULL;
@@ -8827,14 +8827,14 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__analyze(struct __
     __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 496, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 493, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __PYX_ERR(0, 496, __pyx_L1_error)
+    __PYX_ERR(0, 493, __pyx_L1_error)
 
-    /* "pydiso/mkl_solver.pyx":495
+    /* "pydiso/mkl_solver.pyx":492
  *         #phase = 11
  *         err = self._run_pardiso(11)
  *         if err!=0:             # <<<<<<<<<<<<<<
@@ -8843,7 +8843,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__analyze(struct __
  */
   }
 
-  /* "pydiso/mkl_solver.pyx":492
+  /* "pydiso/mkl_solver.pyx":489
  *             raise PardisoError("Memmory release error "+_err_messages[err])
  * 
  *     cdef _analyze(self):             # <<<<<<<<<<<<<<
@@ -8867,7 +8867,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__analyze(struct __
   return __pyx_r;
 }
 
-/* "pydiso/mkl_solver.pyx":498
+/* "pydiso/mkl_solver.pyx":495
  *             raise PardisoError("Analysis step error, "+_err_messages[err])
  * 
  *     cdef _factor(self):             # <<<<<<<<<<<<<<
@@ -8886,7 +8886,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__factor(struct __p
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("_factor", 0);
 
-  /* "pydiso/mkl_solver.pyx":500
+  /* "pydiso/mkl_solver.pyx":497
  *     cdef _factor(self):
  *         #phase = 22
  *         self._factored = False             # <<<<<<<<<<<<<<
@@ -8895,7 +8895,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__factor(struct __p
  */
   __pyx_v_self->_factored = 0;
 
-  /* "pydiso/mkl_solver.pyx":502
+  /* "pydiso/mkl_solver.pyx":499
  *         self._factored = False
  * 
  *         err = self._run_pardiso(22)             # <<<<<<<<<<<<<<
@@ -8904,7 +8904,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__factor(struct __p
  */
   __pyx_v_err = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self->__pyx_vtab)->_run_pardiso(__pyx_v_self, 22, NULL);
 
-  /* "pydiso/mkl_solver.pyx":503
+  /* "pydiso/mkl_solver.pyx":500
  * 
  *         err = self._run_pardiso(22)
  *         if err!=0:             # <<<<<<<<<<<<<<
@@ -8914,21 +8914,21 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__factor(struct __p
   __pyx_t_1 = ((__pyx_v_err != 0) != 0);
   if (unlikely(__pyx_t_1)) {
 
-    /* "pydiso/mkl_solver.pyx":504
+    /* "pydiso/mkl_solver.pyx":501
  *         err = self._run_pardiso(22)
  *         if err!=0:
  *             raise PardisoError("Factor step error, "+_err_messages[err])             # <<<<<<<<<<<<<<
  *         self._factored = True
  * 
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_PardisoError); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 504, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_PardisoError); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 501, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_err_messages); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 504, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_err_messages); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 501, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_GetItemInt(__pyx_t_4, __pyx_v_err, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 504, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_GetItemInt(__pyx_t_4, __pyx_v_err, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 501, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = PyNumber_Add(__pyx_kp_u_Factor_step_error, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 504, __pyx_L1_error)
+    __pyx_t_4 = PyNumber_Add(__pyx_kp_u_Factor_step_error, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 501, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_t_5 = NULL;
@@ -8944,14 +8944,14 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__factor(struct __p
     __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 504, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 501, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __PYX_ERR(0, 504, __pyx_L1_error)
+    __PYX_ERR(0, 501, __pyx_L1_error)
 
-    /* "pydiso/mkl_solver.pyx":503
+    /* "pydiso/mkl_solver.pyx":500
  * 
  *         err = self._run_pardiso(22)
  *         if err!=0:             # <<<<<<<<<<<<<<
@@ -8960,7 +8960,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__factor(struct __p
  */
   }
 
-  /* "pydiso/mkl_solver.pyx":505
+  /* "pydiso/mkl_solver.pyx":502
  *         if err!=0:
  *             raise PardisoError("Factor step error, "+_err_messages[err])
  *         self._factored = True             # <<<<<<<<<<<<<<
@@ -8969,7 +8969,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__factor(struct __p
  */
   __pyx_v_self->_factored = 1;
 
-  /* "pydiso/mkl_solver.pyx":498
+  /* "pydiso/mkl_solver.pyx":495
  *             raise PardisoError("Analysis step error, "+_err_messages[err])
  * 
  *     cdef _factor(self):             # <<<<<<<<<<<<<<
@@ -8993,7 +8993,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__factor(struct __p
   return __pyx_r;
 }
 
-/* "pydiso/mkl_solver.pyx":507
+/* "pydiso/mkl_solver.pyx":504
  *         self._factored = True
  * 
  *     cdef _solve(self, void* b, void* x, int_t nrhs_in):             # <<<<<<<<<<<<<<
@@ -9014,7 +9014,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__solve(struct __py
   PyObject *__pyx_t_7 = NULL;
   __Pyx_RefNannySetupContext("_solve", 0);
 
-  /* "pydiso/mkl_solver.pyx":509
+  /* "pydiso/mkl_solver.pyx":506
  *     cdef _solve(self, void* b, void* x, int_t nrhs_in):
  *         #phase = 33
  *         if(not self._factored):             # <<<<<<<<<<<<<<
@@ -9024,14 +9024,14 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__solve(struct __py
   __pyx_t_1 = ((!(__pyx_v_self->_factored != 0)) != 0);
   if (unlikely(__pyx_t_1)) {
 
-    /* "pydiso/mkl_solver.pyx":510
+    /* "pydiso/mkl_solver.pyx":507
  *         #phase = 33
  *         if(not self._factored):
  *             raise PardisoError("Cannot solve without a previous factorization.")             # <<<<<<<<<<<<<<
  * 
  *         err = self._run_pardiso(33, b, x, nrhs_in)
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_PardisoError); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 510, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_PardisoError); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 507, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
@@ -9045,14 +9045,14 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__solve(struct __py
     }
     __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_kp_u_Cannot_solve_without_a_previous) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_kp_u_Cannot_solve_without_a_previous);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 510, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 507, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __PYX_ERR(0, 510, __pyx_L1_error)
+    __PYX_ERR(0, 507, __pyx_L1_error)
 
-    /* "pydiso/mkl_solver.pyx":509
+    /* "pydiso/mkl_solver.pyx":506
  *     cdef _solve(self, void* b, void* x, int_t nrhs_in):
  *         #phase = 33
  *         if(not self._factored):             # <<<<<<<<<<<<<<
@@ -9061,7 +9061,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__solve(struct __py
  */
   }
 
-  /* "pydiso/mkl_solver.pyx":512
+  /* "pydiso/mkl_solver.pyx":509
  *             raise PardisoError("Cannot solve without a previous factorization.")
  * 
  *         err = self._run_pardiso(33, b, x, nrhs_in)             # <<<<<<<<<<<<<<
@@ -9075,7 +9075,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__solve(struct __py
   __pyx_t_5 = ((struct __pyx_vtabstruct_6pydiso_10mkl_solver_PardisoSolver *)__pyx_v_self->__pyx_vtab)->_run_pardiso(__pyx_v_self, 33, &__pyx_t_6); 
   __pyx_v_err = __pyx_t_5;
 
-  /* "pydiso/mkl_solver.pyx":513
+  /* "pydiso/mkl_solver.pyx":510
  * 
  *         err = self._run_pardiso(33, b, x, nrhs_in)
  *         if err!=0:             # <<<<<<<<<<<<<<
@@ -9085,21 +9085,21 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__solve(struct __py
   __pyx_t_1 = ((__pyx_v_err != 0) != 0);
   if (unlikely(__pyx_t_1)) {
 
-    /* "pydiso/mkl_solver.pyx":514
+    /* "pydiso/mkl_solver.pyx":511
  *         err = self._run_pardiso(33, b, x, nrhs_in)
  *         if err!=0:
  *             raise PardisoError("Solve step error, "+_err_messages[err])             # <<<<<<<<<<<<<<
  * 
  *     cdef int _run_pardiso(self, int_t phase, void* b=NULL, void* x=NULL, int_t nrhs=0):
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_PardisoError); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 514, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_PardisoError); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 511, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_err_messages); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 514, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_err_messages); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 511, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_7 = __Pyx_GetItemInt(__pyx_t_4, __pyx_v_err, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 514, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_GetItemInt(__pyx_t_4, __pyx_v_err, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 511, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = PyNumber_Add(__pyx_kp_u_Solve_step_error, __pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 514, __pyx_L1_error)
+    __pyx_t_4 = PyNumber_Add(__pyx_kp_u_Solve_step_error, __pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 511, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_t_7 = NULL;
@@ -9115,14 +9115,14 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__solve(struct __py
     __pyx_t_2 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_7, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4);
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 514, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 511, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __PYX_ERR(0, 514, __pyx_L1_error)
+    __PYX_ERR(0, 511, __pyx_L1_error)
 
-    /* "pydiso/mkl_solver.pyx":513
+    /* "pydiso/mkl_solver.pyx":510
  * 
  *         err = self._run_pardiso(33, b, x, nrhs_in)
  *         if err!=0:             # <<<<<<<<<<<<<<
@@ -9131,7 +9131,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__solve(struct __py
  */
   }
 
-  /* "pydiso/mkl_solver.pyx":507
+  /* "pydiso/mkl_solver.pyx":504
  *         self._factored = True
  * 
  *     cdef _solve(self, void* b, void* x, int_t nrhs_in):             # <<<<<<<<<<<<<<
@@ -9155,7 +9155,7 @@ static PyObject *__pyx_f_6pydiso_10mkl_solver_13PardisoSolver__solve(struct __py
   return __pyx_r;
 }
 
-/* "pydiso/mkl_solver.pyx":516
+/* "pydiso/mkl_solver.pyx":513
  *             raise PardisoError("Solve step error, "+_err_messages[err])
  * 
  *     cdef int _run_pardiso(self, int_t phase, void* b=NULL, void* x=NULL, int_t nrhs=0):             # <<<<<<<<<<<<<<
@@ -9194,7 +9194,7 @@ static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __py
     }
   }
 
-  /* "pydiso/mkl_solver.pyx":517
+  /* "pydiso/mkl_solver.pyx":514
  * 
  *     cdef int _run_pardiso(self, int_t phase, void* b=NULL, void* x=NULL, int_t nrhs=0):
  *         cdef int_t error=0             # <<<<<<<<<<<<<<
@@ -9203,7 +9203,7 @@ static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __py
  */
   __pyx_v_error = 0;
 
-  /* "pydiso/mkl_solver.pyx":518
+  /* "pydiso/mkl_solver.pyx":515
  *     cdef int _run_pardiso(self, int_t phase, void* b=NULL, void* x=NULL, int_t nrhs=0):
  *         cdef int_t error=0
  *         cdef long_t error64=0, phase64=phase, nrhs64=nrhs             # <<<<<<<<<<<<<<
@@ -9214,7 +9214,7 @@ static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __py
   __pyx_v_phase64 = __pyx_v_phase;
   __pyx_v_nrhs64 = __pyx_v_nrhs;
 
-  /* "pydiso/mkl_solver.pyx":520
+  /* "pydiso/mkl_solver.pyx":517
  *         cdef long_t error64=0, phase64=phase, nrhs64=nrhs
  * 
  *         if self._is_32:             # <<<<<<<<<<<<<<
@@ -9224,14 +9224,14 @@ static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __py
   __pyx_t_1 = (__pyx_v_self->_is_32 != 0);
   if (__pyx_t_1) {
 
-    /* "pydiso/mkl_solver.pyx":522
+    /* "pydiso/mkl_solver.pyx":519
  *         if self._is_32:
  *             pardiso(self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,
  *                     &phase, &self._par.n, self.a, &self._par.ia[0], &self._par.ja[0],             # <<<<<<<<<<<<<<
  *                     &self._par.perm[0], &nrhs, self._par.iparm, &self._par.msglvl, b, x, &error)
  *             return error
  */
-    if (unlikely(!__pyx_v_self->_par->ia.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 522, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_par->ia.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 519, __pyx_L1_error)}
     __pyx_t_2 = 0;
     __pyx_t_3 = -1;
     if (__pyx_t_2 < 0) {
@@ -9240,9 +9240,9 @@ static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __py
     } else if (unlikely(__pyx_t_2 >= __pyx_v_self->_par->ia.shape[0])) __pyx_t_3 = 0;
     if (unlikely(__pyx_t_3 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_3);
-      __PYX_ERR(0, 522, __pyx_L1_error)
+      __PYX_ERR(0, 519, __pyx_L1_error)
     }
-    if (unlikely(!__pyx_v_self->_par->ja.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 522, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_par->ja.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 519, __pyx_L1_error)}
     __pyx_t_4 = 0;
     __pyx_t_3 = -1;
     if (__pyx_t_4 < 0) {
@@ -9251,17 +9251,17 @@ static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __py
     } else if (unlikely(__pyx_t_4 >= __pyx_v_self->_par->ja.shape[0])) __pyx_t_3 = 0;
     if (unlikely(__pyx_t_3 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_3);
-      __PYX_ERR(0, 522, __pyx_L1_error)
+      __PYX_ERR(0, 519, __pyx_L1_error)
     }
 
-    /* "pydiso/mkl_solver.pyx":523
+    /* "pydiso/mkl_solver.pyx":520
  *             pardiso(self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,
  *                     &phase, &self._par.n, self.a, &self._par.ia[0], &self._par.ja[0],
  *                     &self._par.perm[0], &nrhs, self._par.iparm, &self._par.msglvl, b, x, &error)             # <<<<<<<<<<<<<<
  *             return error
  *         else:
  */
-    if (unlikely(!__pyx_v_self->_par->perm.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 523, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_par->perm.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 520, __pyx_L1_error)}
     __pyx_t_5 = 0;
     __pyx_t_3 = -1;
     if (__pyx_t_5 < 0) {
@@ -9270,10 +9270,10 @@ static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __py
     } else if (unlikely(__pyx_t_5 >= __pyx_v_self->_par->perm.shape[0])) __pyx_t_3 = 0;
     if (unlikely(__pyx_t_3 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_3);
-      __PYX_ERR(0, 523, __pyx_L1_error)
+      __PYX_ERR(0, 520, __pyx_L1_error)
     }
 
-    /* "pydiso/mkl_solver.pyx":521
+    /* "pydiso/mkl_solver.pyx":518
  * 
  *         if self._is_32:
  *             pardiso(self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,             # <<<<<<<<<<<<<<
@@ -9282,7 +9282,7 @@ static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __py
  */
     pardiso(__pyx_v_self->handle, (&__pyx_v_self->_par->maxfct), (&__pyx_v_self->_par->mnum), (&__pyx_v_self->_par->mtype), (&__pyx_v_phase), (&__pyx_v_self->_par->n), __pyx_v_self->a, (&(*((__pyx_t_6pydiso_10mkl_solver_int_t *) ( /* dim=0 */ (__pyx_v_self->_par->ia.data + __pyx_t_2 * __pyx_v_self->_par->ia.strides[0]) )))), (&(*((__pyx_t_6pydiso_10mkl_solver_int_t *) ( /* dim=0 */ (__pyx_v_self->_par->ja.data + __pyx_t_4 * __pyx_v_self->_par->ja.strides[0]) )))), (&(*((__pyx_t_6pydiso_10mkl_solver_int_t *) ( /* dim=0 */ (__pyx_v_self->_par->perm.data + __pyx_t_5 * __pyx_v_self->_par->perm.strides[0]) )))), (&__pyx_v_nrhs), __pyx_v_self->_par->iparm, (&__pyx_v_self->_par->msglvl), __pyx_v_b, __pyx_v_x, (&__pyx_v_error));
 
-    /* "pydiso/mkl_solver.pyx":524
+    /* "pydiso/mkl_solver.pyx":521
  *                     &phase, &self._par.n, self.a, &self._par.ia[0], &self._par.ja[0],
  *                     &self._par.perm[0], &nrhs, self._par.iparm, &self._par.msglvl, b, x, &error)
  *             return error             # <<<<<<<<<<<<<<
@@ -9292,7 +9292,7 @@ static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __py
     __pyx_r = __pyx_v_error;
     goto __pyx_L0;
 
-    /* "pydiso/mkl_solver.pyx":520
+    /* "pydiso/mkl_solver.pyx":517
  *         cdef long_t error64=0, phase64=phase, nrhs64=nrhs
  * 
  *         if self._is_32:             # <<<<<<<<<<<<<<
@@ -9301,7 +9301,7 @@ static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __py
  */
   }
 
-  /* "pydiso/mkl_solver.pyx":526
+  /* "pydiso/mkl_solver.pyx":523
  *             return error
  *         else:
  *             pardiso_64(self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,             # <<<<<<<<<<<<<<
@@ -9310,14 +9310,14 @@ static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __py
  */
   /*else*/ {
 
-    /* "pydiso/mkl_solver.pyx":527
+    /* "pydiso/mkl_solver.pyx":524
  *         else:
  *             pardiso_64(self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,
  *                     &phase64, &self._par64.n, self.a, &self._par64.ia[0], &self._par64.ja[0],             # <<<<<<<<<<<<<<
  *                     &self._par64.perm[0], &nrhs64, self._par64.iparm, &self._par64.msglvl, b, x, &error64)
  *             return error64
  */
-    if (unlikely(!__pyx_v_self->_par64->ia.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 527, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_par64->ia.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 524, __pyx_L1_error)}
     __pyx_t_6 = 0;
     __pyx_t_3 = -1;
     if (__pyx_t_6 < 0) {
@@ -9326,9 +9326,9 @@ static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __py
     } else if (unlikely(__pyx_t_6 >= __pyx_v_self->_par64->ia.shape[0])) __pyx_t_3 = 0;
     if (unlikely(__pyx_t_3 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_3);
-      __PYX_ERR(0, 527, __pyx_L1_error)
+      __PYX_ERR(0, 524, __pyx_L1_error)
     }
-    if (unlikely(!__pyx_v_self->_par64->ja.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 527, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_par64->ja.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 524, __pyx_L1_error)}
     __pyx_t_7 = 0;
     __pyx_t_3 = -1;
     if (__pyx_t_7 < 0) {
@@ -9337,16 +9337,16 @@ static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __py
     } else if (unlikely(__pyx_t_7 >= __pyx_v_self->_par64->ja.shape[0])) __pyx_t_3 = 0;
     if (unlikely(__pyx_t_3 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_3);
-      __PYX_ERR(0, 527, __pyx_L1_error)
+      __PYX_ERR(0, 524, __pyx_L1_error)
     }
 
-    /* "pydiso/mkl_solver.pyx":528
+    /* "pydiso/mkl_solver.pyx":525
  *             pardiso_64(self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,
  *                     &phase64, &self._par64.n, self.a, &self._par64.ia[0], &self._par64.ja[0],
  *                     &self._par64.perm[0], &nrhs64, self._par64.iparm, &self._par64.msglvl, b, x, &error64)             # <<<<<<<<<<<<<<
  *             return error64
  */
-    if (unlikely(!__pyx_v_self->_par64->perm.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 528, __pyx_L1_error)}
+    if (unlikely(!__pyx_v_self->_par64->perm.memview)) {PyErr_SetString(PyExc_AttributeError,"Memoryview is not initialized");__PYX_ERR(0, 525, __pyx_L1_error)}
     __pyx_t_8 = 0;
     __pyx_t_3 = -1;
     if (__pyx_t_8 < 0) {
@@ -9355,10 +9355,10 @@ static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __py
     } else if (unlikely(__pyx_t_8 >= __pyx_v_self->_par64->perm.shape[0])) __pyx_t_3 = 0;
     if (unlikely(__pyx_t_3 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_3);
-      __PYX_ERR(0, 528, __pyx_L1_error)
+      __PYX_ERR(0, 525, __pyx_L1_error)
     }
 
-    /* "pydiso/mkl_solver.pyx":526
+    /* "pydiso/mkl_solver.pyx":523
  *             return error
  *         else:
  *             pardiso_64(self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,             # <<<<<<<<<<<<<<
@@ -9367,7 +9367,7 @@ static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __py
  */
     pardiso_64(__pyx_v_self->handle, (&__pyx_v_self->_par64->maxfct), (&__pyx_v_self->_par64->mnum), (&__pyx_v_self->_par64->mtype), (&__pyx_v_phase64), (&__pyx_v_self->_par64->n), __pyx_v_self->a, (&(*((__pyx_t_6pydiso_10mkl_solver_long_t *) ( /* dim=0 */ (__pyx_v_self->_par64->ia.data + __pyx_t_6 * __pyx_v_self->_par64->ia.strides[0]) )))), (&(*((__pyx_t_6pydiso_10mkl_solver_long_t *) ( /* dim=0 */ (__pyx_v_self->_par64->ja.data + __pyx_t_7 * __pyx_v_self->_par64->ja.strides[0]) )))), (&(*((__pyx_t_6pydiso_10mkl_solver_long_t *) ( /* dim=0 */ (__pyx_v_self->_par64->perm.data + __pyx_t_8 * __pyx_v_self->_par64->perm.strides[0]) )))), (&__pyx_v_nrhs64), __pyx_v_self->_par64->iparm, (&__pyx_v_self->_par64->msglvl), __pyx_v_b, __pyx_v_x, (&__pyx_v_error64));
 
-    /* "pydiso/mkl_solver.pyx":529
+    /* "pydiso/mkl_solver.pyx":526
  *                     &phase64, &self._par64.n, self.a, &self._par64.ia[0], &self._par64.ja[0],
  *                     &self._par64.perm[0], &nrhs64, self._par64.iparm, &self._par64.msglvl, b, x, &error64)
  *             return error64             # <<<<<<<<<<<<<<
@@ -9376,7 +9376,7 @@ static int __pyx_f_6pydiso_10mkl_solver_13PardisoSolver__run_pardiso(struct __py
     goto __pyx_L0;
   }
 
-  /* "pydiso/mkl_solver.pyx":516
+  /* "pydiso/mkl_solver.pyx":513
  *             raise PardisoError("Solve step error, "+_err_messages[err])
  * 
  *     cdef int _run_pardiso(self, int_t phase, void* b=NULL, void* x=NULL, int_t nrhs=0):             # <<<<<<<<<<<<<<
@@ -27274,7 +27274,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_UserWarning = __Pyx_GetBuiltinName(__pyx_n_s_UserWarning); if (!__pyx_builtin_UserWarning) __PYX_ERR(0, 94, __pyx_L1_error)
   __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 56, __pyx_L1_error)
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 435, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 432, __pyx_L1_error)
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(1, 2, __pyx_L1_error)
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(2, 777, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(2, 781, __pyx_L1_error)
@@ -27615,7 +27615,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * def set_mkl_paradiso_threads(num_threads=None):             # <<<<<<<<<<<<<<
  *     """
- *     Sets the number of openMP threads  available to the Pardiso functions
+ *     Sets the number of openMP threads available to the Pardiso functions
  */
   __pyx_tuple__34 = PyTuple_Pack(1, __pyx_n_s_num_threads); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__34);
@@ -28388,7 +28388,7 @@ if (!__Pyx_RefNanny) {
  * 
  * def set_mkl_paradiso_threads(num_threads=None):             # <<<<<<<<<<<<<<
  *     """
- *     Sets the number of openMP threads  available to the Pardiso functions
+ *     Sets the number of openMP threads available to the Pardiso functions
  */
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_6pydiso_10mkl_solver_9set_mkl_paradiso_threads, NULL, __pyx_n_s_pydiso_mkl_solver); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);

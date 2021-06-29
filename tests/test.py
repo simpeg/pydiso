@@ -1,6 +1,6 @@
 import numpy as np
 import scipy.sparse as sp
-from pydiso import PardisoSolver, get_mkl_max_threads, get_mkl_version
+from pydiso.mkl_solver import MKLPardisoSolver as Solver, get_mkl_max_threads, get_mkl_version
 import pytest
 
 np.random.seed(12345)
@@ -53,7 +53,7 @@ def test_solver(A, matrix_type):
         x = xr.astype(dtype)
     b = A@x
 
-    solver = PardisoSolver(A, matrix_type=matrix_type)
+    solver = Solver(A, matrix_type=matrix_type)
     x2 = solver.solve(b)
 
     eps = np.finfo(dtype).eps
