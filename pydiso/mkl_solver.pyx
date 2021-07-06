@@ -175,6 +175,10 @@ cdef class _PardisoParams64:
     cdef long_t n, mtype, maxfct, mnum, msglvl
     cdef long_t[:] ia, ja, perm
 
+ctypedef fused _par_params:
+    _PardisoParams
+    _PardisoParams64
+
 cdef class MKLPardisoSolver:
     cdef _MKL_DSS_HANDLE_t handle[64]
     cdef _PardisoParams  _par
@@ -250,9 +254,13 @@ cdef class MKLPardisoSolver:
         integer_len = A.indices.itemsize
         self._is_32 = integer_len == sizeof(int_t)
         if self._is_32:
-            self._initialize4(A, matrix_type, verbose)
+            self._par = _PardisoParams()
+            self._initialize(self._par, A, matrix_type, verbose)
+            #self._initialize4(A, matrix_type, verbose)
         elif integer_len == 8:
-            self._initialize8(A, matrix_type, verbose)
+            self._par64 = _PardisoParams64()
+            self._initialize(self._par64, A, matrix_type, verbose)
+            #self._initialize8(A, matrix_type, verbose)
         else:
             raise PardisoError("Unrecognized integer length")
 
@@ -296,7 +304,7 @@ cdef class MKLPardisoSolver:
     def __call__(self, b):
         return self.solve(b)
 
-    def solve(self, b, x=None):
+    def solve(self, b, x=None, inplace=False):
         """solver.solve(b, x=None)
         Solves the equation AX=B using the factored A matrix
 
@@ -321,20 +329,24 @@ cdef class MKLPardisoSolver:
             array containing the solution (in Fortran ordering)
         """
         in_shape = b.shape
-        if(b.dtype!=self._data_type):
+        if b.dtype != self._data_type:
             warnings.warn("rhs does not have the same data type as A",
                             PardisoTypeConversionWarning)
             b = b.astype(self._data_type)
-        if x is None:
-            x = np.empty_like(b)
-        if(x.dtype!=self._data_type):
-            warnings.warn("output does not have the same data type as A",
-                            PardisoTypeConversionWarning)
-            x = x.astype(self._data_type)
+        if not inplace:
+            if x is None:
+                x = np.empty_like(b)
+            if(x.dtype!=self._data_type):
+                warnings.warn("output does not have the same data type as A",
+                                PardisoTypeConversionWarning)
+                x = x.astype(self._data_type)
 
         #get contiguous F ordering of vectors
         b = np.require(b, requirements='F').reshape(-1, order='F')
-        x = np.require(x, requirements='F').reshape(-1, order='F')
+        if not inplace:
+            x = np.require(x, requirements='F').reshape(-1, order='F')
+        else:
+            x = b
 
         cdef int_t nrhs = 1
         if len(in_shape)>1:
@@ -354,6 +366,17 @@ cdef class MKLPardisoSolver:
         elif(self._data_type==np.complex128):
             bp = _array_pointer[doublecomplex](b)
             xp = _array_pointer[doublecomplex](x)
+
+        # if inplace:
+        #     if self._is_32:
+        #         self._par.iparm[5] = 1
+        #     else:
+        #         self._par64.iparm[5] = 1
+        # else:
+        #     if self._is_32:
+        #         self._par.iparm[5] = 0
+        #     else:
+        #         self._par64.iparm[5] = 0
 
         self._solve(bp, xp, nrhs)
         return x.reshape(in_shape, order='F')
@@ -376,9 +399,11 @@ cdef class MKLPardisoSolver:
         else:
             return np.array(self._par64.iparm)
 
-    cdef _initialize4(self, A, matrix_type, verbose):
-        cdef _PardisoParams par = _PardisoParams()
+    @property
+    def nnz(self):
+        return self.iparm[17]
 
+    cdef _initialize(self, _par_params par, A, matrix_type, verbose):
         par.n = A.shape[0]
         par.perm = np.empty(par.n, dtype=np.int32)
 
@@ -389,7 +414,13 @@ cdef class MKLPardisoSolver:
 
         par.msglvl = verbose
 
-        pardisoinit(self.handle, &par.mtype, par.iparm)
+
+        cdef int_t iparm[64]
+        cdef int_t mtype_temp = matrix_type
+        pardisoinit(self.handle, &mtype_temp, iparm)
+
+        for i in range(64):
+            par.iparm[i] = iparm[i] # copy from iparm32 to iparm64
 
         #par.iparm[1] = 0
         par.iparm[4] = 2 #fill perm with computed permutation vector
@@ -408,48 +439,6 @@ cdef class MKLPardisoSolver:
 
         par.ia = indptr
         par.ja = indices
-
-        self._par = par
-
-    cdef _initialize8(self, A, matrix_type, verbose):
-        cdef _PardisoParams64 par = _PardisoParams64()
-
-        par.n = A.shape[0]
-        par.perm = np.empty(par.n, dtype=np.int64)
-
-        par.maxfct = 1
-        par.mnum = 1
-
-        par.mtype = matrix_type
-
-        par.msglvl = verbose
-
-        cdef int_t mtype_temp = matrix_type
-        cdef int_t iparm[64]
-
-        pardisoinit(self.handle, &mtype_temp, iparm)
-
-        for i in range(64):
-            par.iparm[i] = iparm[i] # copy from iparm32 to iparm64
-
-        par.iparm[4] = 2 # fill perm with computed permutation vector
-        par.iparm[34] = 1 # zero based indexing
-
-        #set precision
-        if self._data_type==np.float64 or self._data_type==np.complex128:
-            par.iparm[27] = 0
-        elif self._data_type==np.float32 or self._data_type==np.complex64:
-            par.iparm[27] = 1
-        else:
-            raise PardisoError("Unsupported data type")
-
-        indices = np.require(A.indices, dtype=np.int64) #these should be satisfied already...
-        indptr = np.require(A.indptr, dtype=np.int64) #these should be satisfied already...
-
-        par.ia = indptr
-        par.ja = indices
-
-        self._par64 = par
 
     cdef _set_A(self, data):
         data_type = data.dtype

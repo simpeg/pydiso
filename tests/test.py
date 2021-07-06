@@ -61,9 +61,21 @@ def test_solver(A, matrix_type):
     assert rel_err < 1E3*eps
     return rel_err
 
+def test_inplace():
+    A = L @ L.T
+    x = xr
+    b = A @ xr
+    solver = Solver(A, "real_symmetric_positive_definite")
+
+    print(b)
+    x2 = solver.solve(b)
+    print(x2, b, x)
+    print(solver.nnz)
+
 if __name__ == '__main__':
     for A, type in inputs:
         try:
             print(test_solver(A, type))
         except:
             pass
+    test_inplace()
