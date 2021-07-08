@@ -38,8 +38,6 @@ cdef extern from 'mkl.h':
 
     ctypedef void * _MKL_DSS_HANDLE_t
 
-    void pardisoinit(_MKL_DSS_HANDLE_t, const int *, int *)
-
     void pardiso(_MKL_DSS_HANDLE_t, const int*, const int*, const int*,
                  const int *, const int *, const void *, const int *,
                  const int *, int *, const int *, int *,
@@ -138,7 +136,7 @@ def set_mkl_threads(num_threads=None):
         raise PardisoError('Number of threads must be greater than 0')
     mkl_set_num_threads(num_threads)
 
-def set_mkl_paradiso_threads(num_threads=None):
+def set_mkl_pardiso_threads(num_threads=None):
     """
     Sets the number of openMP threads available to the Pardiso functions
 
@@ -162,9 +160,6 @@ def get_mkl_version():
     mkl_get_version(&vers)
     return vers
 
-cdef inline void * _array_pointer(numeric[:] arr):
-    return <void *> &arr[0]
-
 cdef class _PardisoParams:
     cdef int_t iparm[64]
     cdef int_t n, mtype, maxfct, mnum, msglvl
@@ -186,6 +181,7 @@ cdef class MKLPardisoSolver:
     cdef int_t _is_32
     cdef int_t mat_type
     cdef int_t _factored
+    cdef size_t[2] shape
 
     cdef void * a
 
@@ -194,28 +190,16 @@ cdef class MKLPardisoSolver:
 
     def __init__(self, A, matrix_type=None, factor=True, verbose=False):
         '''ParidsoSolver(A, matrix_type=None, factor=True, verbose=False)
-        A simple interface to the intel MKL pardiso sparse matrix solver.
+        An interface to the intel MKL pardiso sparse matrix solver.
 
         This is a solver class for a scipy sparse matrix using the Pardiso sparse
-        solver in the Intel Math Kernel Library. It is inteded to solve the
-        equations:
-        \math
+        solver in the Intel Math Kernel Library.
 
         It will factorize the sparse matrix in three steps: a symbolic
         factorization stage, a numerical factorization stage, and a solve stage.
 
         The purpose is to construct a sparse factorization that can be repeatedly
         called to solve for multiple right-hand sides.
-
-        Note
-        ----
-
-        The supported matrix types are: real symmetric positive definite, real
-        symmetric indefinite, real structurally symmetric, real nonsymmetric,
-        complex hermitian positive definite, complex hermitian indefinite, complex
-        symmetric, complex structurally symmetric, and complex nonsymmetric.
-        The solver supports both single and double precision matrices.
-
 
         Parameters
         ----------
@@ -228,7 +212,44 @@ cdef class MKLPardisoSolver:
             Whether to perform the factorization stage upon instantiation of the class.
         verbose : bool, optional
             Enable verbose output from the pardiso solver.
+
+        Notes
+        -----
+
+        The supported matrix types are: real symmetric positive definite, real
+        symmetric indefinite, real structurally symmetric, real nonsymmetric,
+        complex hermitian positive definite, complex hermitian indefinite, complex
+        symmetric, complex structurally symmetric, and complex nonsymmetric.
+        The solver supports both single and double precision matrices.
+
+        Examples
+        --------
+
+        Solve a symmetric positive definite system by first forming a simple 5 point
+        laplacian stencil with a zero boundary condition. Then we create a known
+        solution vector to compare to result with.
+
+        >>> import scipy.sparse as sp
+        >>> from pydiso.mkl_solver import MKLPardisoSolver
+        >>> nx, ny = 5, 7
+        >>> Dx = sp.diags((-1, 1), (-1, 0), (nx+1, nx))
+        >>> Dy = sp.diags((-1, 1), (-1, 0), (ny+1, ny))
+        >>> A = sp.kron(sp.eye(nx), Dy.T @ Dy) + sp.kron(Dx.T @ Dx, sp.eye(ny))
+        >>> x = np.linspace(-10, 10, nx*ny)
+        >>> b = A @ x
+
+        Next we create the solver object using pardiso
+
+        >>> Ainv = MKLPardisoSolver(A, matrix_type='real_symmetric_positive_definite')
+        >>> x_solved = Ainv.solve(b)
+        >>> np.allclose(x, x_solved)
+        True
         '''
+
+        n_row, n_col = A.shape
+        if n_row != n_col:
+            raise ValueError("Matrix is not square")
+        self.shape = n_row, n_col
 
         self._data_type = A.dtype
         if matrix_type is None:
@@ -256,11 +277,9 @@ cdef class MKLPardisoSolver:
         if self._is_32:
             self._par = _PardisoParams()
             self._initialize(self._par, A, matrix_type, verbose)
-            #self._initialize4(A, matrix_type, verbose)
         elif integer_len == 8:
             self._par64 = _PardisoParams64()
             self._initialize(self._par64, A, matrix_type, verbose)
-            #self._initialize8(A, matrix_type, verbose)
         else:
             raise PardisoError("Unrecognized integer length")
 
@@ -304,7 +323,7 @@ cdef class MKLPardisoSolver:
     def __call__(self, b):
         return self.solve(b)
 
-    def solve(self, b, x=None, inplace=False):
+    def solve(self, b, x=None):
         """solver.solve(b, x=None)
         Solves the equation AX=B using the factored A matrix
 
@@ -328,58 +347,33 @@ cdef class MKLPardisoSolver:
         numpy array
             array containing the solution (in Fortran ordering)
         """
-        in_shape = b.shape
         if b.dtype != self._data_type:
             warnings.warn("rhs does not have the same data type as A",
                             PardisoTypeConversionWarning)
             b = b.astype(self._data_type)
-        if not inplace:
-            if x is None:
-                x = np.empty_like(b)
-            if(x.dtype!=self._data_type):
-                warnings.warn("output does not have the same data type as A",
-                                PardisoTypeConversionWarning)
-                x = x.astype(self._data_type)
+        b = np.atleast_1d(b)
+        if b.shape[0] != self.shape[0]:
+            raise ValueError(f"incorrect length of b, expected {self.shape[0]}, got {b.shape[0]}")
+        b = np.require(b, requirements='F')
 
-        #get contiguous F ordering of vectors
-        b = np.require(b, requirements='F').reshape(-1, order='F')
-        if not inplace:
-            x = np.require(x, requirements='F').reshape(-1, order='F')
-        else:
-            x = b
+        if x is None:
+            x = np.empty_like(b)
+        if(x.dtype!=self._data_type):
+            warnings.warn("output does not have the same data type as A",
+                            PardisoTypeConversionWarning)
+            x = x.astype(self._data_type)
+        x = np.atleast_1d(x)
+        if x.shape[0] != self.shape[0]:
+            raise ValueError(f"incorrect length of x, expected {self.shape[0]}, got {x.shape[0]}")
+        x = np.require(x, requirements='F')
 
-        cdef int_t nrhs = 1
-        if len(in_shape)>1:
-            nrhs = in_shape[1]
+        cdef void * bp = np.PyArray_DATA(b)
+        cdef void * xp = np.PyArray_DATA(x)
 
-        cdef void * bp
-        cdef void * xp
-        if(self._data_type==np.float32):
-            bp = _array_pointer[float](b)
-            xp = _array_pointer[float](x)
-        elif(self._data_type==np.float64):
-            bp = _array_pointer[double](b)
-            xp = _array_pointer[double](x)
-        elif(self._data_type==np.complex64):
-            bp = _array_pointer[floatcomplex](b)
-            xp = _array_pointer[floatcomplex](x)
-        elif(self._data_type==np.complex128):
-            bp = _array_pointer[doublecomplex](b)
-            xp = _array_pointer[doublecomplex](x)
-
-        # if inplace:
-        #     if self._is_32:
-        #         self._par.iparm[5] = 1
-        #     else:
-        #         self._par64.iparm[5] = 1
-        # else:
-        #     if self._is_32:
-        #         self._par.iparm[5] = 0
-        #     else:
-        #         self._par64.iparm[5] = 0
+        cdef int_t nrhs = b.shape[1] if b.ndim == 2 else 1
 
         self._solve(bp, xp, nrhs)
-        return x.reshape(in_shape, order='F')
+        return x
 
     @property
     def perm(self):
@@ -399,6 +393,19 @@ cdef class MKLPardisoSolver:
         else:
             return np.array(self._par64.iparm)
 
+    def set_iparm(self, int_t i, int_t val):
+        if i > 63 or i < 0:
+            raise IndexError(f"index {i} is out of bounds for size 64 array")
+        if i not in [
+            1, 3, 4, 5, 7, 9, 10, 11, 12, 17, 18, 20, 23,
+            24, 26, 30, 33, 34, 35, 36, 38, 42, 55, 59
+        ]:
+            raise PardisoError(f"cannot set parameter {i} of the iparm array")
+        if self._is_32:
+            self._par.iparm[i] = val
+        else:
+            self._par.iparm[i] = val
+
     @property
     def nnz(self):
         return self.iparm[17]
@@ -411,21 +418,25 @@ cdef class MKLPardisoSolver:
         par.mnum = 1
 
         par.mtype = matrix_type
-
         par.msglvl = verbose
 
-
-        cdef int_t iparm[64]
-        cdef int_t mtype_temp = matrix_type
-        pardisoinit(self.handle, &mtype_temp, iparm)
-
-        for i in range(64):
-            par.iparm[i] = iparm[i] # copy from iparm32 to iparm64
-
-        #par.iparm[1] = 0
-        par.iparm[4] = 2 #fill perm with computed permutation vector
-        par.iparm[34] = 1 #zero based indexing
-
+        # set default parameters
+        par.iparm[0] = 1  # tell pardiso to not reset these values on the first call
+        par.iparm[1] = 2  # The nested dissection algorithm from the METIS
+        par.iparm[3] = 0  # The factorization is always computed as required by phase.
+        par.iparm[4] = 2  # fill perm with computed permutation vector
+        par.iparm[5] = 0  # The array x contains the solution; right-hand side vector b is kept unchanged.
+        par.iparm[7] = 0  # The solver automatically performs two steps of iterative refinement when perterbed pivots are obtained
+        par.iparm[9] = 13 if matrix_type in [11, 13] else 8
+        par.iparm[10] = 1 if matrix_type in [11, 13] else 0
+        par.iparm[11] = 0  # Solve a linear system AX = B (as opposed to A.T or A.H)
+        par.iparm[12] = 1 if matrix_type in [11, 13] else 0
+        par.iparm[17] = -1  # Return the number of non-zeros in this value after first call
+        par.iparm[18] = 0  # do not report flop count
+        par.iparm[20] = 1 if matrix_type in [-2, -4, 6] else 0
+        par.iparm[23] = 0  # classic (not parallel) factorization
+        par.iparm[24] = 0  # default behavoir of parallel solving
+        par.iparm[26] = 0  # Do not check the input matrix
         #set precision
         if self._data_type==np.float64 or self._data_type==np.complex128:
             par.iparm[27] = 0
@@ -433,30 +444,32 @@ cdef class MKLPardisoSolver:
             par.iparm[27] = 1
         else:
             raise PardisoError("Unsupported data type")
+        par.iparm[30] = 0  # this would be used to enable sparse input/output for solves
+        par.iparm[33] = 0  # optimal number of thread for CNR mode
+        par.iparm[34] = 1  # zero based indexing
+        par.iparm[35] = 0  # Do not compute schur complement
+        par.iparm[36] = 0  # use CSR storage format
+        par.iparm[38] = 0  # Do not use low rank update
+        par.iparm[42] = 0  # Do not compute the diagonal of the inverse
+        par.iparm[55] = 0  # Internal function used to work with pivot and calculation of diagonal arrays turned off.
+        par.iparm[59] = 0  # operate in-core mode
 
-        indices = np.require(A.indices, dtype=np.int32) #these should be satisfied already...
-        indptr = np.require(A.indptr, dtype=np.int32) #these should be satisfied already...
+        if _par_params is _PardisoParams:
+            indices = np.require(A.indices, dtype=np.int32)
+            indptr = np.require(A.indptr, dtype=np.int32)
+        else:
+            indices = np.require(A.indices, dtype=np.int64)
+            indptr = np.require(A.indptr, dtype=np.int64)
 
         par.ia = indptr
         par.ja = indices
 
     cdef _set_A(self, data):
-        data_type = data.dtype
         self._Adata = data
-        #storing a reference so it doesn't get garbage collected
-        if(data_type==np.float32):
-            self.a = _array_pointer[float](data)
-        elif(data_type==np.float64):
-            self.a = _array_pointer[double](data)
-        elif(data_type==np.complex64):
-            self.a = _array_pointer[floatcomplex](data)
-        elif(data_type==np.complex128):
-            self.a = _array_pointer[doublecomplex](data)
-        else:
-            raise PardisoError("Unsorported data type for A")
+        self.a = np.PyArray_DATA(data)
 
     def __dealloc__(self):
-        #Need to call paradiso with phase=-1 to release memory
+        # Need to call pardiso with phase=-1 to release memory
         cdef int_t phase = -1, nrhs=0, error=0
         cdef long_t phase64=-1, nrhs64=0, error64=0
 

@@ -1,6 +1,13 @@
 import numpy as np
 import scipy.sparse as sp
-from pydiso.mkl_solver import MKLPardisoSolver as Solver, get_mkl_max_threads, get_mkl_version
+from pydiso.mkl_solver import (
+    MKLPardisoSolver as Solver,
+    get_mkl_max_threads,
+    get_mkl_pardiso_max_threads,
+    get_mkl_version,
+    set_mkl_threads,
+    set_mkl_pardiso_threads,
+)
 import pytest
 
 np.random.seed(12345)
@@ -31,8 +38,31 @@ A_complex_dict = {'complex_structurally_symmetric': Lc@Uc,
                   'complex_nonsymmetric': Lc@U2c
                   }
 
-print(get_mkl_max_threads())
-print(get_mkl_version())
+def test_thread_setting():
+    n1 = get_mkl_max_threads()
+    n2 = get_mkl_pardiso_max_threads()
+    assert n1 == n2
+
+    if n1 > 2:
+        set_mkl_threads(n1-1)
+        assert get_mkl_max_threads() == n1-1
+
+    set_mkl_pardiso_threads(1)
+    assert get_mkl_pardiso_max_threads() == 1
+
+    if n1 > 3:
+        assert get_mkl_pardiso_max_threads() != get_mkl_max_threads()
+
+def test_version():
+    version_info = get_mkl_version()
+    assert "MajorVersion" in version_info
+    assert "MinorVersion" in version_info
+    assert "UpdateVersion" in version_info
+    assert "ProductStatus" in version_info
+    assert "Build" in version_info
+    assert "Processor" in version_info
+    assert "Platform" in version_info
+    print(get_mkl_version())
 
 # generate the input lists...
 inputs = []
@@ -61,21 +91,9 @@ def test_solver(A, matrix_type):
     assert rel_err < 1E3*eps
     return rel_err
 
-def test_inplace():
-    A = L @ L.T
-    x = xr
-    b = A @ xr
-    solver = Solver(A, "real_symmetric_positive_definite")
-
-    print(b)
-    x2 = solver.solve(b)
-    print(x2, b, x)
-    print(solver.nnz)
-
 if __name__ == '__main__':
     for A, type in inputs:
         try:
             print(test_solver(A, type))
         except:
             pass
-    test_inplace()
