@@ -176,12 +176,12 @@ ctypedef fused _par_params:
 
 cdef class MKLPardisoSolver:
     cdef _MKL_DSS_HANDLE_t handle[64]
-    cdef _PardisoParams  _par
+    cdef _PardisoParams _par
     cdef _PardisoParams64 _par64
     cdef int_t _is_32
     cdef int_t mat_type
     cdef int_t _factored
-    cdef size_t[2] shape
+    cdef size_t shape[2]
 
     cdef void * a
 
@@ -245,7 +245,6 @@ cdef class MKLPardisoSolver:
         >>> np.allclose(x, x_solved)
         True
         '''
-
         n_row, n_col = A.shape
         if n_row != n_col:
             raise ValueError("Matrix is not square")
@@ -264,6 +263,18 @@ cdef class MKLPardisoSolver:
         if matrix_type in MATRIX_TYPES:
             matrix_type = MATRIX_TYPES[matrix_type]
         self.mat_type = matrix_type
+
+        if self.mat_type in [1, 2, -2, 11]:
+            if not np.issubdtype(self._data_type, np.floating):
+                raise TypeError(
+                    "matrix dtype and matrix_type not consistent, expected a real matrix"
+                )
+        else:
+            if not np.issubdtype(self._data_type, np.complexfloating):
+                raise TypeError(
+                    "matrix dtype and matrix_type not consistent, expected a complex matrix"
+                )
+
 
         if self.mat_type in [-2, 2, -4, 4, 6]:
             A = sp.triu(A, format='csr')
@@ -470,20 +481,21 @@ cdef class MKLPardisoSolver:
 
     def __dealloc__(self):
         # Need to call pardiso with phase=-1 to release memory
-        cdef int_t phase = -1, nrhs=0, error=0
+        cdef int_t phase=-1, nrhs=0, error=0
         cdef long_t phase64=-1, nrhs64=0, error64=0
 
-        cdef void *x = NULL
-        cdef void *b = NULL
-
         if self._is_32:
-            pardiso(self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,
-                    &phase, &self._par.n, self.a, &self._par.ia[0], &self._par.ja[0],
-                    &self._par.perm[0], &nrhs, self._par.iparm, &self._par.msglvl, b, x, &error)
+            pardiso(
+                self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,
+                &phase, &self._par.n, self.a, NULL, NULL, NULL, &nrhs, self._par.iparm,
+                &self._par.msglvl, NULL, NULL, &error
+            )
         else:
-            pardiso_64(self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,
-                    &phase64, &self._par64.n, self.a, &self._par64.ia[0], &self._par64.ja[0],
-                    &self._par64.perm[0], &nrhs64, self._par64.iparm, &self._par64.msglvl, b, x, &error64)
+            pardiso_64(
+                self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,
+                &phase64, &self._par64.n, self.a, NULL, NULL, NULL, &nrhs64,
+                self._par64.iparm, &self._par64.msglvl, NULL, NULL, &error64
+            )
         err = error or error64
         if err!=0:
             raise PardisoError("Memmory release error "+_err_messages[err])

@@ -74,6 +74,7 @@ for dtype in (np.complex64, np.complex128):
     for key, item in A_complex_dict.items():
         inputs.append((item.astype(dtype), key))
 
+
 @pytest.mark.parametrize("A, matrix_type", inputs)
 def test_solver(A, matrix_type):
     dtype = A.dtype
@@ -90,6 +91,18 @@ def test_solver(A, matrix_type):
     rel_err = np.linalg.norm(x-x2)/np.linalg.norm(x)
     assert rel_err < 1E3*eps
     return rel_err
+
+
+def test_matrix_type_errors():
+    A = A_real_dict["real_symmetric_positive_definite"]
+    with pytest.raises(TypeError):
+        solver = Solver(A, matrix_type="complex_hermitian_positive_definite")
+
+    A = A_complex_dict["complex_structurally_symmetric"]
+    with pytest.raises(TypeError):
+        solver = Solver(A, matrix_type="real_symmetric_positive_definite")
+
+
 
 if __name__ == '__main__':
     for A, type in inputs:
