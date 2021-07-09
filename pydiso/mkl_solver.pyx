@@ -203,7 +203,7 @@ cdef class MKLPardisoSolver:
 
         Parameters
         ----------
-        A : scipy sparse matrix
+        A : scipy.sparse.spmatrix
             A sparse matrix preferably in a CSR format.
         matrix_type : str, int, or None, optional
             A string describing the matrix type, or it's corresponding int code.
@@ -318,7 +318,7 @@ cdef class MKLPardisoSolver:
 
         Parameters
         ----------
-        A : scipy sparse matrix
+        A : scipy.sparse.spmatrix
             A sparse matrix preferably in a CSR format.
         """
         #Assumes that the matrix A has the same non-zero pattern and ordering
@@ -335,7 +335,7 @@ cdef class MKLPardisoSolver:
         return self.solve(b)
 
     def solve(self, b, x=None):
-        """solver.solve(b, x=None)
+        """solve(self, b, x=None, transpose=False)
         Solves the equation AX=B using the factored A matrix
 
         Note
@@ -346,10 +346,10 @@ cdef class MKLPardisoSolver:
 
         Parameters
         ----------
-        b : numpy array
+        b : numpy.ndarray
             array of shape 1D or 2D for the right hand side of the equation
             (of the same data type as A).
-        x : numpy array, optional
+        x : numpy.ndarray, optional
             A pre-allocated output array (of the same data type as A).
             If None, a new array is constructed.
 
@@ -380,6 +380,9 @@ cdef class MKLPardisoSolver:
 
         cdef void * bp = np.PyArray_DATA(b)
         cdef void * xp = np.PyArray_DATA(x)
+
+        if bp == xp:
+            raise PardisoError("b and x must be different arrays")
 
         cdef int_t nrhs = b.shape[1] if b.ndim == 2 else 1
 
@@ -454,7 +457,7 @@ cdef class MKLPardisoSolver:
         elif self._data_type==np.float32 or self._data_type==np.complex64:
             par.iparm[27] = 1
         else:
-            raise PardisoError("Unsupported data type")
+            raise TypeError("Unsupported data type")
         par.iparm[30] = 0  # this would be used to enable sparse input/output for solves
         par.iparm[33] = 0  # optimal number of thread for CNR mode
         par.iparm[34] = 1  # zero based indexing

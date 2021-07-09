@@ -38,6 +38,7 @@ A_complex_dict = {'complex_structurally_symmetric': Lc@Uc,
                   'complex_nonsymmetric': Lc@U2c
                   }
 
+
 def test_thread_setting():
     n1 = get_mkl_max_threads()
     n2 = get_mkl_pardiso_max_threads()
@@ -53,6 +54,7 @@ def test_thread_setting():
     if n1 > 3:
         assert get_mkl_pardiso_max_threads() != get_mkl_max_threads()
 
+
 def test_version():
     version_info = get_mkl_version()
     assert "MajorVersion" in version_info
@@ -62,7 +64,10 @@ def test_version():
     assert "Build" in version_info
     assert "Processor" in version_info
     assert "Platform" in version_info
-    print(get_mkl_version())
+
+    for item in version_info:
+        print(item, version_info[item])
+
 
 # generate the input lists...
 inputs = []
@@ -92,6 +97,19 @@ def test_solver(A, matrix_type):
     assert rel_err < 1E3*eps
     return rel_err
 
+def test_multiple_RHS():
+    A = A_real_dict["real_symmetric_positive_definite"]
+    x = np.c_[xr, xr]
+    b = A @ x
+
+    solver = Solver(A, "real_symmetric_positive_definite")
+    x2 = solver.solve(b)
+
+    eps = np.finfo(np.float64).eps
+    rel_err = np.linalg.norm(x-x2)/np.linalg.norm(x)
+    assert rel_err < 1E3*eps
+    return rel_err
+
 
 def test_matrix_type_errors():
     A = A_real_dict["real_symmetric_positive_definite"]
@@ -102,6 +120,19 @@ def test_matrix_type_errors():
     with pytest.raises(TypeError):
         solver = Solver(A, matrix_type="real_symmetric_positive_definite")
 
+
+def test_rhs_size_error():
+    A = A_real_dict["real_symmetric_positive_definite"]
+    solver = Solver(A, "real_symmetric_positive_definite")
+    n = A.shape[0]
+    x = np.random.rand(n)
+    b = np.random.rand(n)
+    b_bad = np.random.rand(n-1)
+    x_bad = np.random.rand(n-1)
+    with pytest.raises(ValueError):
+        solver.solve(b_bad)
+    with pytest.raises(ValueError):
+        solver.solve(b, x_bad)
 
 
 if __name__ == '__main__':
