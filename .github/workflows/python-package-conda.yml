@@ -54,7 +54,7 @@ jobs:
         pytest --cov-report=xml --cov=pydiso -s -v tests/test.py
     
     - name: Upload coverage
-      if: ${{ matrix.os == 'ubuntu-latest' & matrix.python-version == '3.8' }}
+      if: ${{ matrix.os == 'ubuntu-latest' }} and {{ matrix.python-version == '3.8' }}
       uses: codecov/codecov-action@v2
       with:
         files: ./coverage1.xml
