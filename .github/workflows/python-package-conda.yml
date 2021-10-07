@@ -34,7 +34,7 @@ jobs:
         conda info
         conda list
         conda config --show
-        conda install --quiet --yes pip numpy scipy cython mkl pytest mkl-devel
+        conda install --quiet --yes pip numpy scipy cython mkl pytest pytest-cov mkl-devel
     - name: Install Our Package
       if: ${{ matrix.os != 'windows-latest' }}
       run: |
@@ -51,4 +51,11 @@ jobs:
         conda list
     - name: Run Tests
       run: |
-        pytest tests/test.py
+        pytest --cov-report=xml --cov=pydiso -s -v tests/test.py
+    
+    - name: Upload coverage
+      if: ${{ matrix.os == 'ubuntu-latest' & matrix.python-version == '3.8' }}
+      uses: codecov/codecov-action@v2
+      with:
+        files: ./coverage1.xml
+        verbose: true # optional (default = false)
