@@ -35,12 +35,15 @@ jobs:
         conda list
         conda config --show
         conda install --quiet --yes pip numpy scipy cython mkl pytest pytest-cov mkl-devel
+
     - name: Install Our Package
       if: ${{ matrix.os != 'windows-latest' }}
       run: |
         echo $CONDA_PREFIX
+        export TEST_COV=1
         pip install -v -e .
         conda list
+
     - name: Install Our Package on Windows
       if: ${{ matrix.os == 'windows-latest' }}
       run: |
@@ -49,10 +52,11 @@ jobs:
         echo $MKLROOT
         pip install -v -e .
         conda list
+
     - name: Run Tests
       run: |
-        pytest --cov-report=xml --cov=pydiso -s -v tests/test.py
-    
+        pytest  --cov-config=.coveragerc --cov-report=xml --cov=pydiso -s -v tests/test.py
+
     - name: Upload coverage
       if: ${{ matrix.os == 'ubuntu-latest' }} and {{ matrix.python-version == '3.8' }}
       uses: codecov/codecov-action@v2
