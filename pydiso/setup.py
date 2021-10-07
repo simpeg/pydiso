@@ -4,6 +4,12 @@ from os.path import join, abspath, dirname
 base_path = abspath(dirname(__file__))
 
 
+# Enable line tracing for coverage of cython files conditionally
+ext_kwargs = {}
+if os.environ.get("TEST_COV", None) is not None:
+    ext_kwargs["define_macros"] = [("CYTHON_TRACE_NOGIL", 1)]
+
+
 def configuration(parent_package="", top_path=None):
     from numpy.distutils.misc_util import Configuration, get_numpy_include_dirs
     import numpy.distutils.system_info as sysinfo
@@ -37,6 +43,7 @@ def configuration(parent_package="", top_path=None):
         include_dirs=get_numpy_include_dirs() + mkl_include_dirs,
         library_dirs=mkl_library_dirs,
         extra_compile_args=['-w'],
+        **ext_kwargs
     )
 
     return config

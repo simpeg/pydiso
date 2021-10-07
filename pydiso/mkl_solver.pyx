@@ -1,4 +1,5 @@
 #cython: language_level=3
+#cython: linetrace=True
 cimport numpy as np
 from cython cimport numeric
 
