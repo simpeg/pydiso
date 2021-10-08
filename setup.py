@@ -20,7 +20,7 @@ def configuration(parent_package="", top_path=None):
 
 metadata = dict(
     name='pydiso',
-    version='0.0.3',
+    version='0.0.2',
     python_requires=">=3.6",
     setup_requires=[
         "numpy>=1.8",
