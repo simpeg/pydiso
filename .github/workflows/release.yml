@@ -1,0 +1,53 @@
+name: Publishing Release
+
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  build:
+    name: Building on (${{ matrix.python-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash -l {0}
+    strategy:
+      fail-fast: True
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.8]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Conda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        auto-update-conda: true
+        activate-environment: dev
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Env
+      run: |
+        conda info
+        conda list
+        conda config --show
+        conda install --quiet --yes pip numpy scipy cython mkl mkl-devel pytest pytest-cov twine
+
+    - name: Install Our Package
+      run: |
+        echo $CONDA_PREFIX
+        pip install -v -e .
+        
+    - name: Generate Source Distribution
+      run: |
+        python setup.py sdist
+    
+    - name: pypi-publish
+      uses: pypa/gh-action-pypi-publish@v1.4.2
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
+        skip_existing: true
+        verbose: true
