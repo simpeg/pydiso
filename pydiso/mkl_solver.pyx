@@ -247,6 +247,7 @@ cdef class MKLPardisoSolver:
         >>> np.allclose(x, x_solved)
         True
         '''
+        self._initialized = False
         n_row, n_col = A.shape
         if n_row != n_col:
             raise ValueError("Matrix is not square")
@@ -277,14 +278,11 @@ cdef class MKLPardisoSolver:
                     "matrix dtype and matrix_type not consistent, expected a complex matrix"
                 )
 
-
         if self.mat_type in [-2, 2, -4, 4, 6]:
             A = sp.triu(A, format='csr')
         A = _ensure_csr(A)
         A.sort_indices()
 
-
-        self._initialized = False
         #set integer length
         integer_len = A.indices.itemsize
         self._is_32 = integer_len == sizeof(int_t)
