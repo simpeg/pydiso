@@ -183,6 +183,7 @@ cdef class MKLPardisoSolver:
     cdef int_t mat_type
     cdef int_t _factored
     cdef size_t shape[2]
+    cdef int_t _initialized
 
     cdef void * a
 
@@ -283,6 +284,7 @@ cdef class MKLPardisoSolver:
         A.sort_indices()
 
 
+        self._initialized = False
         #set integer length
         integer_len = A.indices.itemsize
         self._is_32 = integer_len == sizeof(int_t)
@@ -294,6 +296,7 @@ cdef class MKLPardisoSolver:
             self._initialize(self._par64, A, matrix_type, verbose)
         else:
             raise PardisoError("Unrecognized integer length")
+        self._initialized = True
 
         if(verbose):
             #for reporting factorization progress via python's `print`
@@ -488,21 +491,22 @@ cdef class MKLPardisoSolver:
         cdef int_t phase=-1, nrhs=0, error=0
         cdef long_t phase64=-1, nrhs64=0, error64=0
 
-        if self._is_32:
-            pardiso(
-                self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,
-                &phase, &self._par.n, self.a, NULL, NULL, NULL, &nrhs, self._par.iparm,
-                &self._par.msglvl, NULL, NULL, &error
-            )
-        else:
-            pardiso_64(
-                self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,
-                &phase64, &self._par64.n, self.a, NULL, NULL, NULL, &nrhs64,
-                self._par64.iparm, &self._par64.msglvl, NULL, NULL, &error64
-            )
-        err = error or error64
-        if err!=0:
-            raise PardisoError("Memmory release error "+_err_messages[err])
+        if self._initialized:
+            if self._is_32:
+                pardiso(
+                    self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,
+                    &phase, &self._par.n, self.a, NULL, NULL, NULL, &nrhs, self._par.iparm,
+                    &self._par.msglvl, NULL, NULL, &error
+                )
+            else:
+                pardiso_64(
+                    self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,
+                    &phase64, &self._par64.n, self.a, NULL, NULL, NULL, &nrhs64,
+                    self._par64.iparm, &self._par64.msglvl, NULL, NULL, &error64
+                )
+            err = error or error64
+            if err!=0:
+                raise PardisoError("Memmory release error "+_err_messages[err])
 
     cdef _analyze(self):
         #phase = 11
