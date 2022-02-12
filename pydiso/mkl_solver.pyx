@@ -182,7 +182,6 @@ ctypedef fused _par_params:
 
 cdef class MKLPardisoSolver:
     cdef _MKL_DSS_HANDLE_t handle[64]
-    cdef _MKL_DSS_HANDLE_t _MKL_pt
     cdef _PardisoParams _par
     cdef _PardisoParams64 _par64
     cdef int_t _is_32
@@ -311,6 +310,8 @@ cdef class MKLPardisoSolver:
         self._set_A(A.data)
         self._analyze()
         self._factored = False
+        self._store = False
+        self._flag_dir = ""
         if factor:
             self._factor()
 
@@ -428,19 +429,10 @@ cdef class MKLPardisoSolver:
         else:
             self._par.iparm[i] = val
 
-    def pardiso_store(dirname):
-    """
-    turns on storing of the factorization files
-    """
+    def store_factorization(self, directory="./"):
 
-        pardiso_handle_store(self._MKL_DSS_HANDLE_t)
-
-    def pardiso_restore(dirname):
-        """
-        reads in the stored factorization file
-        """
-
-        pass
+        self._store = True
+        self._flag_dir = directory
 
     @property
     def nnz(self):
@@ -535,11 +527,47 @@ cdef class MKLPardisoSolver:
     cdef _factor(self):
         #phase = 22
         self._factored = False
+        
+        if self._store:
+            try:
 
-        err = self._run_pardiso(22)
-        if err!=0:
-            raise PardisoError("Factor step error, "+_err_messages[err])
-        self._factored = True
+                flag_file = self._flag_dir + 'flagfile.txt'
+
+                cdef char* call_flag_dir = self._flag_dir
+
+                with open(flag_file, 'x') as f:
+                    f.write('inversion in progress')
+
+                err = self._run_pardiso(22)
+
+                self._pardiso_store(call_flag_dir)
+                
+                done_file = self._flag_dir + 'factorization_done.txt'
+                
+                with open(done_file, 'w') as f2:
+                    f2.write('done')
+
+                self._factored = True
+                return
+
+            except FileExistsError:
+                
+                # flag file exists, wait for "done" file and read in factorization
+                cdef char* done_file = self._flag_dir + 'factorization_done.txt'
+                
+                while not os.path.isfile(done_file):
+                    time.sleep(1)
+                
+                # now read in the factorization from the file
+                cdef char* call_flag_dir = self._flag_dir
+                self._pardiso_restore(call_flag_dir)
+
+        else:
+
+            err = self._run_pardiso(22)
+            if err!=0:
+                raise PardisoError("Factor step error, "+_err_messages[err])
+            self._factored = True
 
     cdef _solve(self, void* b, void* x, int_t nrhs_in):
         #phase = 33
@@ -564,3 +592,16 @@ cdef class MKLPardisoSolver:
                     &phase64, &self._par64.n, self.a, &self._par64.ia[0], &self._par64.ja[0],
                     &self._par64.perm[0], &nrhs64, self._par64.iparm, &self._par64.msglvl, b, x, &error64)
             return error64
+
+    cdef _pardiso_store(char *dir_name):
+
+        cdef int_t error=0
+
+        pardiso_handle_store(self.handle, dir_name, &error)
+
+    cdef _pardiso_restore(char *dirname):
+
+        cdef int_t error=0
+
+        pardiso_handle_restore(self.handle, dir_name, &error)
+
