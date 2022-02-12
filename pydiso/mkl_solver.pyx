@@ -30,6 +30,7 @@ cdef extern from 'mkl.h':
     void mkl_get_version(MKLVersion* pv)
 
     void mkl_set_num_threads(int nth)
+    
     int mkl_domain_set_num_threads(int nt, int domain)
     int mkl_get_max_threads()
     int mkl_domain_get_max_threads(int domain)
@@ -38,6 +39,10 @@ cdef extern from 'mkl.h':
     ProgressEntry mkl_set_progress(ProgressEntry progress);
 
     ctypedef void * _MKL_DSS_HANDLE_t
+
+    void pardiso_handle_store(_MKL_DSS_HANDLE_t pt, char *dirname, int *err)
+    
+    void pardiso_handle_restore(_MKL_DSS_HANDLE_t pt, char *dirname, int *err)
 
     void pardiso(_MKL_DSS_HANDLE_t, const int*, const int*, const int*,
                  const int *, const int *, const void *, const int *,
@@ -177,6 +182,7 @@ ctypedef fused _par_params:
 
 cdef class MKLPardisoSolver:
     cdef _MKL_DSS_HANDLE_t handle[64]
+    cdef _MKL_DSS_HANDLE_t _MKL_pt
     cdef _PardisoParams _par
     cdef _PardisoParams64 _par64
     cdef int_t _is_32
@@ -421,6 +427,20 @@ cdef class MKLPardisoSolver:
             self._par.iparm[i] = val
         else:
             self._par.iparm[i] = val
+
+    def pardiso_store(dirname):
+    """
+    turns on storing of the factorization files
+    """
+
+        pardiso_handle_store(self._MKL_DSS_HANDLE_t)
+
+    def pardiso_restore(dirname):
+        """
+        reads in the stored factorization file
+        """
+
+        pass
 
     @property
     def nnz(self):
