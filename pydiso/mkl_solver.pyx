@@ -4,6 +4,7 @@ cimport numpy as np
 from cython cimport numeric
 
 import warnings
+import time.time as time
 import numpy as np
 import scipy.sparse as sp
 import os
@@ -189,6 +190,7 @@ cdef class MKLPardisoSolver:
     cdef int_t _factored
     cdef size_t shape[2]
     cdef int_t _initialized
+    cdef char* call_flag_dir
 
     cdef void * a
 
@@ -533,14 +535,14 @@ cdef class MKLPardisoSolver:
 
                 flag_file = self._flag_dir + 'flagfile.txt'
 
-                cdef char* call_flag_dir = self._flag_dir
+                self.call_flag_dir = self._flag_dir
 
                 with open(flag_file, 'x') as f:
                     f.write('inversion in progress')
 
                 err = self._run_pardiso(22)
 
-                self._pardiso_store(call_flag_dir)
+                self._pardiso_store(self.call_flag_dir)
                 
                 done_file = self._flag_dir + 'factorization_done.txt'
                 
@@ -553,14 +555,14 @@ cdef class MKLPardisoSolver:
             except FileExistsError:
                 
                 # flag file exists, wait for "done" file and read in factorization
-                cdef char* done_file = self._flag_dir + 'factorization_done.txt'
+                done_file = self._flag_dir + 'factorization_done.txt'
                 
                 while not os.path.isfile(done_file):
                     time.sleep(1)
                 
                 # now read in the factorization from the file
-                cdef char* call_flag_dir = self._flag_dir
-                self._pardiso_restore(call_flag_dir)
+                self.call_flag_dir = self._flag_dir
+                self._pardiso_restore(self.call_flag_dir)
 
         else:
 
@@ -593,13 +595,13 @@ cdef class MKLPardisoSolver:
                     &self._par64.perm[0], &nrhs64, self._par64.iparm, &self._par64.msglvl, b, x, &error64)
             return error64
 
-    cdef _pardiso_store(char *dir_name):
+    cdef _pardiso_store(self, char *dir_name):
 
         cdef int_t error=0
 
         pardiso_handle_store(self.handle, dir_name, &error)
 
-    cdef _pardiso_restore(char *dirname):
+    cdef _pardiso_restore(self, char *dir_name):
 
         cdef int_t error=0
 
