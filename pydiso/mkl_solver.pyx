@@ -4,7 +4,7 @@ cimport numpy as np
 from cython cimport numeric
 
 import warnings
-import time.time as time
+from time import time
 import numpy as np
 import scipy.sparse as sp
 import os
