@@ -191,6 +191,8 @@ cdef class MKLPardisoSolver:
     cdef size_t shape[2]
     cdef int_t _initialized
     cdef char* call_flag_dir
+    cdef char* _flag_dir
+    cdef int_t _store
 
     cdef void * a
 
