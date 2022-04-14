@@ -199,7 +199,7 @@ cdef class MKLPardisoSolver:
     cdef object _data_type
     cdef object _Adata #a reference to make sure the pointer "a" doesn't get destroyed
 
-    def __init__(self, A, matrix_type=None, factor=True, verbose=False):
+    def __init__(self, A, matrix_type=None, factor=True, verbose=False, store_factorization_dir=None):
         '''ParidsoSolver(A, matrix_type=None, factor=True, verbose=False)
         An interface to the intel MKL pardiso sparse matrix solver.
 
@@ -314,8 +314,27 @@ cdef class MKLPardisoSolver:
         self._set_A(A.data)
         self._analyze()
         self._factored = False
-        self._store = False
-        self._flag_dir = ""
+
+        # check if we want to store the factorization
+        if store_factorization_dir is not None:
+
+            # check if the flag files exist. If so delete them so factorization file get overwritten
+            check_file = store_factorization_dir + 'factorization_done.txt'
+            
+            if os.path.exists(check_file):
+
+                second_file_to_remove = store_factorization_dir + "flagfile.txt"
+                os.remove(check_file)
+                os.remove(second_file_to_remove)
+
+            self._store = True
+            flag_dir_ = bytes(store_factorization_dir, 'utf-8')
+            self._flag_dir = flag_dir_
+        
+        else:
+
+            self._store = False
+        
         if factor:
             self._factor()
 
@@ -433,7 +452,7 @@ cdef class MKLPardisoSolver:
         else:
             self._par.iparm[i] = val
 
-    def store_factorization(self, directory="./"):
+    def store_factorization(self, directory=b'./'):
 
         self._store = True
         self._flag_dir = directory
@@ -535,7 +554,7 @@ cdef class MKLPardisoSolver:
         if self._store:
             try:
 
-                flag_file = self._flag_dir + 'flagfile.txt'
+                flag_file = self._flag_dir.decode("utf-8") + 'flagfile.txt'
 
                 self.call_flag_dir = self._flag_dir
 
@@ -546,7 +565,7 @@ cdef class MKLPardisoSolver:
 
                 self._pardiso_store(self.call_flag_dir)
                 
-                done_file = self._flag_dir + 'factorization_done.txt'
+                done_file = self._flag_dir.decode("utf-8") + 'factorization_done.txt'
                 
                 with open(done_file, 'w') as f2:
                     f2.write('done')
@@ -557,7 +576,7 @@ cdef class MKLPardisoSolver:
             except FileExistsError:
                 
                 # flag file exists, wait for "done" file and read in factorization
-                done_file = self._flag_dir + 'factorization_done.txt'
+                done_file = self._flag_dir.decode("utf-8") + 'factorization_done.txt'
                 
                 while not os.path.isfile(done_file):
                     time.sleep(1)
