@@ -110,6 +110,44 @@ def test_multiple_RHS():
     assert rel_err < 1E3*eps
     return rel_err
 
+def test_multiple_RHS_store_factorization():
+    A = A_real_dict["real_symmetric_positive_definite"]
+    x = np.c_[xr, xr]
+    b = A @ x
+
+    solver = Solver(A, "real_symmetric_positive_definite", store_factorization_dir='./')
+    x2 = solver.solve(b)
+
+    eps = np.finfo(np.float64).eps
+    rel_err = np.linalg.norm(x-x2)/np.linalg.norm(x)
+    assert rel_err < 1E3*eps
+    return rel_err
+
+def test_multiple_RHS_store_factorization_clean_flag_files():
+    A = A_real_dict["real_symmetric_positive_definite"]
+    x = np.c_[xr, xr]
+    b = A @ x
+
+    solver = Solver(A, "real_symmetric_positive_definite", store_factorization_dir='./')
+    x2 = solver.solve(b)
+
+    eps = np.finfo(np.float64).eps
+    rel_err = np.linalg.norm(x-x2)/np.linalg.norm(x)
+
+    assert rel_err < 1E3*eps
+
+    # run again to make sure the created flag files are checked and removed and running again works
+    x3 = solver.solve(b)
+
+    eps3 = np.finfo(np.float64).eps
+    rel_err3 = np.linalg.norm(x-x2)/np.linalg.norm(x)
+
+    assert rel_err3 < 1E3*eps3
+
+    assert rel_err == rel_err3
+
+    return rel_err
+
 
 def test_matrix_type_errors():
     A = A_real_dict["real_symmetric_positive_definite"]
