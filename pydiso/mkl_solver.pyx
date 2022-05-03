@@ -8,6 +8,7 @@ from time import time
 import numpy as np
 import scipy.sparse as sp
 import os
+from pathlib import Path
 
 ctypedef long long MKL_INT64
 ctypedef unsigned long long MKL_UINT64
@@ -319,11 +320,11 @@ cdef class MKLPardisoSolver:
         if store_factorization_dir is not None:
 
             # check if the flag files exist. If so delete them so factorization file get overwritten
-            check_file = store_factorization_dir + 'factorization_done.txt'
+            check_file = Path(store_factorization_dir) / 'factorization_done.txt'
             
             if os.path.exists(check_file):
 
-                second_file_to_remove = store_factorization_dir + "flagfile.txt"
+                second_file_to_remove = Path(store_factorization_dir) / "flagfile.txt"
                 os.remove(check_file)
                 os.remove(second_file_to_remove)
 
