@@ -95,7 +95,6 @@ def test_solver(A, matrix_type):
     eps = np.finfo(dtype).eps
     rel_err = np.linalg.norm(x-x2)/np.linalg.norm(x)
     assert rel_err < 1E3*eps
-    return rel_err
 
 def test_multiple_RHS():
     A = A_real_dict["real_symmetric_positive_definite"]
@@ -108,7 +107,6 @@ def test_multiple_RHS():
     eps = np.finfo(np.float64).eps
     rel_err = np.linalg.norm(x-x2)/np.linalg.norm(x)
     assert rel_err < 1E3*eps
-    return rel_err
 
 
 def test_matrix_type_errors():
@@ -133,11 +131,3 @@ def test_rhs_size_error():
         solver.solve(b_bad)
     with pytest.raises(ValueError):
         solver.solve(b, x_bad)
-
-
-if __name__ == '__main__':
-    for A, type in inputs:
-        try:
-            print(test_solver(A, type))
-        except:
-            pass
