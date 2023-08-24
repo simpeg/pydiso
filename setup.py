@@ -21,10 +21,10 @@ def configuration(parent_package="", top_path=None):
 metadata = dict(
     name='pydiso',
     version='0.0.3',
-    python_requires=">=3.6",
+    python_requires=">=3.8",
     setup_requires=[
         "numpy>=1.8",
-        "cython>=0.2",
+        "cython>=3.0",
     ],
     install_requires=[
         'numpy>=1.8',
