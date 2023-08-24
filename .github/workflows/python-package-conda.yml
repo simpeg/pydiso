@@ -59,7 +59,7 @@ jobs:
 
     - name: Run Tests
       run: |
-        pytest  --cov-config=.coveragerc --cov-report=xml --cov=pydiso -s -v tests/test.py
+        pytest --cov-config=.coveragerc --cov-report=xml --cov=pydiso -s -v
 
     - name: Upload coverage
       if: ${{ matrix.os == 'ubuntu-latest' }} and {{ matrix.python-version == '3.8' }}
