@@ -93,8 +93,22 @@ def test_solver(A, matrix_type):
     x2 = solver.solve(b)
 
     eps = np.finfo(dtype).eps
-    rel_err = np.linalg.norm(x-x2)/np.linalg.norm(x)
-    assert rel_err < 1E3*eps
+    np.testing.assert_allclose(x, x2, rtol=2E4*eps)
+
+@pytest.mark.parametrize("A, matrix_type", inputs)
+def test_transpose_solver(A, matrix_type):
+    dtype = A.dtype
+    if np.issubdtype(dtype, np.complexfloating):
+        x = xc.astype(dtype)
+    else:
+        x = xr.astype(dtype)
+    b = A.T @ x
+
+    solver = Solver(A, matrix_type=matrix_type)
+    x2 = solver.solve(b, transpose=True)
+
+    eps = np.finfo(dtype).eps
+    np.testing.assert_allclose(x, x2, rtol=2E4*eps)
 
 def test_multiple_RHS():
     A = A_real_dict["real_symmetric_positive_definite"]
@@ -117,6 +131,7 @@ def test_matrix_type_errors():
     A = A_complex_dict["complex_structurally_symmetric"]
     with pytest.raises(TypeError):
         solver = Solver(A, matrix_type="real_symmetric_positive_definite")
+
 
 
 def test_rhs_size_error():
