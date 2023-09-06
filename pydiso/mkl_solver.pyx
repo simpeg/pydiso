@@ -34,7 +34,7 @@ cdef extern from 'mkl.h':
     int mkl_get_max_threads()
     int mkl_domain_get_max_threads(int domain)
 
-    ctypedef int (*ProgressEntry)(int* thread, int* step, char* stage, int stage_len);
+    ctypedef int (*ProgressEntry)(int_t* thread, int_t* step, char* stage, int_t stage_len) except? -1;
     ProgressEntry mkl_set_progress(ProgressEntry progress);
 
     ctypedef void * _MKL_DSS_HANDLE_t

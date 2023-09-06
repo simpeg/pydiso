@@ -23,7 +23,7 @@ jobs:
       fail-fast: True
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
 
     steps:
     - uses: actions/checkout@v2
@@ -59,7 +59,7 @@ jobs:
 
     - name: Run Tests
       run: |
-        pytest  --cov-config=.coveragerc --cov-report=xml --cov=pydiso -s -v tests/test.py
+        pytest --cov-config=.coveragerc --cov-report=xml --cov=pydiso -s -v
 
     - name: Upload coverage
       if: ${{ matrix.os == 'ubuntu-latest' }} and {{ matrix.python-version == '3.8' }}

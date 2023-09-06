@@ -3,3 +3,5 @@ build
 pydiso.egg-info
 __pycache__
 mkl_solver.c
+.coverage
+coverage.xml
