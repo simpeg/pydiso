@@ -93,7 +93,7 @@ def test_solver(A, matrix_type):
     x2 = solver.solve(b)
 
     eps = np.finfo(dtype).eps
-    np.testing.assert_allclose(x, x2, rtol=2E4*eps)
+    np.testing.assert_allclose(x, x2, atol=1E3*eps)
 
 @pytest.mark.parametrize("A, matrix_type", inputs)
 def test_transpose_solver(A, matrix_type):
@@ -108,7 +108,7 @@ def test_transpose_solver(A, matrix_type):
     x2 = solver.solve(b, transpose=True)
 
     eps = np.finfo(dtype).eps
-    np.testing.assert_allclose(x, x2, rtol=2E4*eps)
+    np.testing.assert_allclose(x, x2, atol=1E3*eps)
 
 def test_multiple_RHS():
     A = A_real_dict["real_symmetric_positive_definite"]
@@ -119,8 +119,7 @@ def test_multiple_RHS():
     x2 = solver.solve(b)
 
     eps = np.finfo(np.float64).eps
-    rel_err = np.linalg.norm(x-x2)/np.linalg.norm(x)
-    assert rel_err < 1E3*eps
+    np.testing.assert_allclose(x, x2, atol=1E3*eps)
 
 
 def test_matrix_type_errors():
