@@ -336,7 +336,7 @@ cdef class MKLPardisoSolver:
     def __call__(self, b):
         return self.solve(b)
 
-    def solve(self, b, x=None):
+    def solve(self, b, x=None, transpose=False):
         """solve(self, b, x=None, transpose=False)
         Solves the equation AX=B using the factored A matrix
 
@@ -354,6 +354,8 @@ cdef class MKLPardisoSolver:
         x : numpy.ndarray, optional
             A pre-allocated output array (of the same data type as A).
             If None, a new array is constructed.
+        transpose : bool, optional
+            If True, it will solve A^TX=B using the factored A matrix.
 
         Returns
         -------
@@ -388,6 +390,10 @@ cdef class MKLPardisoSolver:
 
         cdef int_t nrhs = b.shape[1] if b.ndim == 2 else 1
 
+        if transpose:
+            self.set_iparm(11, 2)
+        else:
+            self.set_iparm(11, 0)
         self._solve(bp, xp, nrhs)
         return x
 
@@ -420,7 +426,7 @@ cdef class MKLPardisoSolver:
         if self._is_32:
             self._par.iparm[i] = val
         else:
-            self._par.iparm[i] = val
+            self._par64.iparm[i] = val
 
     @property
     def nnz(self):
