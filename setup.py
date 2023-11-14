@@ -24,7 +24,7 @@ metadata = dict(
     python_requires=">=3.8",
     setup_requires=[
         "numpy>=1.8",
-        "cython>=3.0",
+        "cython>=0.29.31",
     ],
     install_requires=[
         'numpy>=1.8',
