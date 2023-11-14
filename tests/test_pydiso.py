@@ -9,6 +9,7 @@ from pydiso.mkl_solver import (
     set_mkl_pardiso_threads,
 )
 import pytest
+import sys
 
 np.random.seed(12345)
 n = 40
@@ -39,6 +40,7 @@ A_complex_dict = {'complex_structurally_symmetric': Lc@Uc,
                   }
 
 
+@pytest.mark.xfail(sys.platform == "darwin", reason="Unexpected Thread bug in third party library")
 def test_thread_setting():
     n1 = get_mkl_max_threads()
     n2 = get_mkl_pardiso_max_threads()
