@@ -2,6 +2,13 @@
 #cython: linetrace=True
 cimport numpy as np
 from cython cimport numeric
+from cpython.pythread cimport (
+    PyThread_type_lock,
+    PyThread_allocate_lock,
+    PyThread_acquire_lock,
+    PyThread_release_lock,
+    PyThread_free_lock
+)
 
 import warnings
 import numpy as np
@@ -184,7 +191,7 @@ cdef class MKLPardisoSolver:
     cdef int_t _factored
     cdef size_t shape[2]
     cdef int_t _initialized
-
+    cdef PyThread_type_lock lock
     cdef void * a
 
     cdef object _data_type
@@ -252,6 +259,9 @@ cdef class MKLPardisoSolver:
         if n_row != n_col:
             raise ValueError("Matrix is not square")
         self.shape = n_row, n_col
+
+        # allocate the lock
+        self.lock = PyThread_allocate_lock()
 
         self._data_type = A.dtype
         if matrix_type is None:
@@ -496,6 +506,7 @@ cdef class MKLPardisoSolver:
         cdef long_t phase64=-1, nrhs64=0, error64=0
 
         if self._initialized:
+            PyThread_acquire_lock(self.lock, 1)
             if self._is_32:
                 pardiso(
                     self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,
@@ -508,9 +519,12 @@ cdef class MKLPardisoSolver:
                     &phase64, &self._par64.n, self.a, NULL, NULL, NULL, &nrhs64,
                     self._par64.iparm, &self._par64.msglvl, NULL, NULL, &error64
                 )
+            PyThread_release_lock(self.lock)
             err = error or error64
             if err!=0:
                 raise PardisoError("Memmory release error "+_err_messages[err])
+            #dealloc lock
+            PyThread_free_lock(self.lock)
 
     cdef _analyze(self):
         #phase = 11
@@ -540,13 +554,16 @@ cdef class MKLPardisoSolver:
         cdef int_t error=0
         cdef long_t error64=0, phase64=phase, nrhs64=nrhs
 
+        PyThread_acquire_lock(self.lock, 1)
         if self._is_32:
             pardiso(self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,
                     &phase, &self._par.n, self.a, &self._par.ia[0], &self._par.ja[0],
                     &self._par.perm[0], &nrhs, self._par.iparm, &self._par.msglvl, b, x, &error)
+            PyThread_release_lock(self.lock)
             return error
         else:
             pardiso_64(self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,
                     &phase64, &self._par64.n, self.a, &self._par64.ia[0], &self._par64.ja[0],
                     &self._par64.perm[0], &nrhs64, self._par64.iparm, &self._par64.msglvl, b, x, &error64)
+            PyThread_release_lock(self.lock)
             return error64
