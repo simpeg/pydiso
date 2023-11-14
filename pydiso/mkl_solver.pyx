@@ -530,7 +530,7 @@ cdef class MKLPardisoSolver:
         if err!=0:
             raise PardisoError("Solve step error, "+_err_messages[err])
 
-    cdef int _run_pardiso(self, int_t phase, void* b=NULL, void* x=NULL, int_t nrhs=0):
+    cdef int _run_pardiso(self, int_t phase, void* b=NULL, void* x=NULL, int_t nrhs=0) nogil:
         cdef int_t error=0
         cdef long_t error64=0, phase64=phase, nrhs64=nrhs
 
