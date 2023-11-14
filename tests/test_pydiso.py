@@ -8,6 +8,7 @@ from pydiso.mkl_solver import (
     set_mkl_threads,
     set_mkl_pardiso_threads,
 )
+from concurrent.futures import ThreadPoolExecutor
 import pytest
 import sys
 
@@ -147,3 +148,25 @@ def test_rhs_size_error():
         solver.solve(b_bad)
     with pytest.raises(ValueError):
         solver.solve(b, x_bad)
+
+def test_threading():
+    """
+    Here we test that calling the solver is safe from multiple threads.
+    There isn't actually any speedup because it acquires a lock on each call
+    to pardiso internally (because those calls are not thread safe).
+    """
+    n = 200
+    n_rhs = 75
+    A = sp.diags([-1, 2, -1], (-1, 0, 1), shape=(n, n), format='csr')
+    Ainv = Solver(A)
+
+    x_true = np.random.rand(n, n_rhs)
+    rhs = A @ x_true
+
+    with ThreadPoolExecutor() as pool:
+        x_sol = np.stack(
+            list(pool.map(lambda i: Ainv.solve(rhs[:, i]), range(n_rhs))),
+            axis=1
+        )
+
+    np.testing.assert_allclose(x_true, x_sol)
