@@ -42,12 +42,12 @@ cdef extern from 'mkl.h':
     void pardiso(_MKL_DSS_HANDLE_t, const int*, const int*, const int*,
                  const int *, const int *, const void *, const int *,
                  const int *, int *, const int *, int *,
-                 const int *, void *, void *, int *)
+                 const int *, void *, void *, int *) nogil
 
     void pardiso_64(_MKL_DSS_HANDLE_t, const long_t *, const long_t *, const long_t *,
                     const long_t *, const long_t *, const void *, const long_t *,
                     const long_t *, long_t *, const long_t *, long_t *,
-                    const long_t *, void *, void *, long_t *)
+                    const long_t *, void *, void *, long_t *) nogil
 
 
 #call pardiso (pt, maxfct, mnum, mtype, phase, n, a, ia, ja, perm, nrhs, iparm, msglvl, b, x, error)
