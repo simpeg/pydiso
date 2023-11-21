@@ -10,7 +10,7 @@ requires = [
     # versions and runtime requirements.
     "oldest-supported-numpy",
     # oldest mkl-devel available (for building against).
-    "mkl-devel==2021.1.1"
+    "mkl-devel==2023.0.0"
 
     # The following is taken from scipy's pyproject.toml file to handle
     # building against the proper numpy API
