@@ -34,9 +34,39 @@ endif
 inc_np = include_directories(incdir_numpy)
 np_dep = declare_dependency(include_directories: inc_np)
 
+#MKL stuffs
+
+use_ilp64 = get_option('use-ilp64')
+if use_ilp64
+  blas_interface = ['interface: ilp64']
+else
+  blas_interface = ['interface: lp64']
+endif
+
+# MKL-specific options
+_threading_opt = get_option('mkl-threading')
+if _threading_opt == 'auto'
+  # Switch default to iomp once conda-forge missing openmp.pc issue is fixed
+  mkl_opts = ['threading: seq']
+else
+  mkl_opts = ['threading: ' + _threading_opt]
+endif
+blas_opts = {'mkl': mkl_opts}
+mkl_version_req = '>=2023.0'  # see gh-24824
+mkl_may_use_sdl = not use_ilp64 and _threading_opt in ['auto', 'iomp']
 # find mkl
 
-mkl_dep = dependency('mkl-sdl', required: true)
+mkl_dep = dependency('mkl',
+    modules: ['cblas'] + blas_interface + mkl_opts,
+    required: false,  # may be required, but we need to emit a custom error message
+    version: mkl_version_req,
+)
+# Insert a second try with MKL, because we may be rejecting older versions
+# or missing it because no pkg-config installed. If so, we need to retry
+# with MKL SDL, and drop the version constraint (this always worked).
+if not mkl_dep.found() and mkl_may_use_sdl
+    mkl_dep = dependency('mkl', modules: ['cblas', 'sdl: true'], required: true)
+endif
 
 # Deal with M_PI & friends; add `use_math_defines` to c_args or cpp_args
 # Cython doesn't always get this right itself (see, e.g., gh-16800), so
