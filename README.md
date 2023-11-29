@@ -30,7 +30,7 @@ identify the location of the installed MKL. However if you run into issues autom
 finding the library headers, you will need to set the `MKLROOT` environment variable to
 point to the correct location.
 
-##### On Linux and MacOS 
+##### On Linux
 The `mkl-rt` library and `mkl.h` may be in the same folder. In that case `MKLROOT` should point to 
 that directory. If you installed mkl with `apt-get`, it is likely your directory structure will 
 look something like this:
@@ -53,6 +53,9 @@ e.g. `export MKLROOT="/usr"`.
 The `mkl-rt.h` and `mkl-rt.lib` are not in the same folder but seperated a level into
 `Library` and `Include` directories, and in this case `MKLROOT` would point to the folder
 containing them.
+
+##### On MacOS
+The Intel MKL libraries are no longer supported on macOS. 
 
 ### Finishing installation
 After the necessary MKL files are accessible, you should be able to do the standard install
