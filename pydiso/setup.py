@@ -24,23 +24,23 @@ def configuration(parent_package="", top_path=None):
         pass
 
     # get information about mkl location
-    mkl_root = os.environ.get("MKLROOT", None)
+    mkl_root = os.environ.get('MKLROOT', None)
     if mkl_root is None:
-        mkl_info = sysinfo.get_info("mkl")
+        mkl_info = sysinfo.get_info('mkl')
     else:
         mkl_info = {
-            "include_dirs": [join(mkl_root, "include"), join(mkl_root, "include", "mkl")],
-            "library_dirs": [
-                join(mkl_root, "lib"),
-                join(mkl_root, "lib", "intel64"),
-                join(mkl_root, "lib", "x86_64-linux-gnu"),
+            'include_dirs': [join(mkl_root, 'include'), join(mkl_root, 'include', 'mkl')],
+            'library_dirs': [
+                join(mkl_root, 'lib'),
+                join(mkl_root, 'lib', 'intel64'),
+                join(mkl_root, 'lib', 'x86_64-linux-gnu'),
             ],
-            "libraries": ["mkl_rt"],
+            'libraries': ['mkl_rt'],
         }
 
-    mkl_include_dirs = mkl_info.get("include_dirs", [])
-    mkl_library_dirs = mkl_info.get("library_dirs", [])
-    mkl_libraries = mkl_info.get("libraries", ["mkl_rt"])
+    mkl_include_dirs = mkl_info.get('include_dirs', [])
+    mkl_library_dirs = mkl_info.get('library_dirs', [])
+    mkl_libraries = mkl_info.get('libraries', ['mkl_rt'])
 
     config.add_extension(
         "mkl_solver",
@@ -48,7 +48,7 @@ def configuration(parent_package="", top_path=None):
         libraries=mkl_libraries,
         include_dirs=get_numpy_include_dirs() + mkl_include_dirs,
         library_dirs=mkl_library_dirs,
-        extra_compile_args=["-w"],
+        extra_compile_args=['-w'],
         **ext_kwargs
     )
 
