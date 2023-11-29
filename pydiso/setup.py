@@ -13,28 +13,34 @@ if os.environ.get("TEST_COV", None) is not None:
 def configuration(parent_package="", top_path=None):
     from numpy.distutils.misc_util import Configuration, get_numpy_include_dirs
     import numpy.distutils.system_info as sysinfo
+
     config = Configuration("pydiso", parent_package, top_path)
 
     try:
         from Cython.Build import cythonize
+
         cythonize(join(base_path, "mkl_solver.pyx"))
     except ImportError:
         pass
 
     # get information about mkl location
-    mkl_root = os.environ.get('MKLROOT', None)
+    mkl_root = os.environ.get("MKLROOT", None)
     if mkl_root is None:
-        mkl_info = sysinfo.get_info('mkl')
+        mkl_info = sysinfo.get_info("mkl")
     else:
         mkl_info = {
-            'include_dirs': [join(mkl_root, 'include')],
-            'library_dirs': [join(mkl_root, 'lib'), join(mkl_root, 'lib', 'intel64')],
-            'libraries': ['mkl_rt']
+            "include_dirs": [join(mkl_root, "include"), join(mkl_root, "include", "mkl")],
+            "library_dirs": [
+                join(mkl_root, "lib"),
+                join(mkl_root, "lib", "intel64"),
+                join(mkl_root, "lib", "x86_64-linux-gnu"),
+            ],
+            "libraries": ["mkl_rt"],
         }
 
-    mkl_include_dirs = mkl_info.get('include_dirs', [])
-    mkl_library_dirs = mkl_info.get('library_dirs', [])
-    mkl_libraries = mkl_info.get('libraries', ['mkl_rt'])
+    mkl_include_dirs = mkl_info.get("include_dirs", [])
+    mkl_library_dirs = mkl_info.get("library_dirs", [])
+    mkl_libraries = mkl_info.get("libraries", ["mkl_rt"])
 
     config.add_extension(
         "mkl_solver",
@@ -42,7 +48,7 @@ def configuration(parent_package="", top_path=None):
         libraries=mkl_libraries,
         include_dirs=get_numpy_include_dirs() + mkl_include_dirs,
         library_dirs=mkl_library_dirs,
-        extra_compile_args=['-w'],
+        extra_compile_args=["-w"],
         **ext_kwargs
     )
 
