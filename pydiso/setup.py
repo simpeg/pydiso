@@ -13,12 +13,10 @@ if os.environ.get("TEST_COV", None) is not None:
 def configuration(parent_package="", top_path=None):
     from numpy.distutils.misc_util import Configuration, get_numpy_include_dirs
     import numpy.distutils.system_info as sysinfo
-
     config = Configuration("pydiso", parent_package, top_path)
 
     try:
         from Cython.Build import cythonize
-
         cythonize(join(base_path, "mkl_solver.pyx"))
     except ImportError:
         pass
