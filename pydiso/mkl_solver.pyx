@@ -296,7 +296,6 @@ cdef class MKLPardisoSolver:
         #set integer length
         integer_len = A.indices.itemsize
         self._is_32 = integer_len == sizeof(int_t)
-        print("here1")
         if self._is_32:
             self._par = _PardisoParams()
             self._initialize(self._par, A, matrix_type, verbose)
@@ -306,23 +305,18 @@ cdef class MKLPardisoSolver:
         else:
             raise PardisoError("Unrecognized integer length")
         self._initialized = True
-        print("here2")
 
         if(verbose):
             #for reporting factorization progress via python's `print`
             mkl_set_progress(mkl_progress)
         else:
             mkl_set_progress(mkl_no_progress)
-        print("here3")
 
         self._set_A(A.data)
-        print("here4")
         self._analyze()
-        print("here5")
         self._factored = False
         if factor:
             self._factor()
-        print("here6")
 
     def refactor(self, A):
         """solver.refactor(A)
@@ -512,7 +506,7 @@ cdef class MKLPardisoSolver:
         cdef long_t phase64=-1, nrhs64=0, error64=0
 
         if self._initialized:
-            #PyThread_acquire_lock(self.lock, 1)
+            PyThread_acquire_lock(self.lock, 1)
             if self._is_32:
                 pardiso(
                     self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,
@@ -525,12 +519,12 @@ cdef class MKLPardisoSolver:
                     &phase64, &self._par64.n, self.a, NULL, NULL, NULL, &nrhs64,
                     self._par64.iparm, &self._par64.msglvl, NULL, NULL, &error64
                 )
-            #PyThread_release_lock(self.lock)
+            PyThread_release_lock(self.lock)
             err = error or error64
             if err!=0:
                 raise PardisoError("Memmory release error "+_err_messages[err])
         #dealloc lock
-        #PyThread_free_lock(self.lock)
+        PyThread_free_lock(self.lock)
 
     cdef _analyze(self):
         #phase = 11
@@ -543,8 +537,10 @@ cdef class MKLPardisoSolver:
         self._factored = False
 
         err = self._run_pardiso(22)
+
         if err!=0:
             raise PardisoError("Factor step error, "+_err_messages[err])
+
         self._factored = True
 
     cdef _solve(self, void* b, void* x, int_t nrhs_in):
@@ -556,7 +552,7 @@ cdef class MKLPardisoSolver:
         if err!=0:
             raise PardisoError("Solve step error, "+_err_messages[err])
 
-    cdef int _run_pardiso(self, int_t phase, void* b=NULL, void* x=NULL, int_t nrhs=0) nogil:
+    cdef int _run_pardiso(self, int_t phase, void* b=NULL, void* x=NULL, int_t nrhs=0):
         cdef int_t error=0
         cdef long_t error64=0, phase64=phase, nrhs64=nrhs
 
@@ -565,12 +561,10 @@ cdef class MKLPardisoSolver:
             pardiso(self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,
                     &phase, &self._par.n, self.a, &self._par.ia[0], &self._par.ja[0],
                     &self._par.perm[0], &nrhs, self._par.iparm, &self._par.msglvl, b, x, &error)
-            #PyThread_release_lock(self.lock)
         else:
             pardiso_64(self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,
                     &phase64, &self._par64.n, self.a, &self._par64.ia[0], &self._par64.ja[0],
                     &self._par64.perm[0], &nrhs64, self._par64.iparm, &self._par64.msglvl, b, x, &error64)
-            #PyThread_release_lock(self.lock)
         PyThread_release_lock(self.lock)
         error = error or error64
         return error
