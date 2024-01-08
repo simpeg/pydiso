@@ -1,5 +1,8 @@
 option('cy_line_trace', type : 'boolean', value : false)
 
+option('use-sdl', type: 'boolean', value: true,
+       description: 'Use the single dynamic library.')
+
 option('use-ilp64', type: 'boolean', value: false,
        description: 'Use ILP64 (64-bit integer) BLAS and LAPACK interfaces')
 

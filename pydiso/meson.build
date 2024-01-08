@@ -54,18 +54,27 @@ else
 endif
 
 mkl_version_req = '>=2023.0'
-mkl_may_use_sdl = not use_ilp64 and _threading_opt in ['auto', 'iomp']
 
-# find mkl
-mkl_dep = dependency(mkl_dep_name,
-    required: false,  # may be required, but we need to emit a custom error message
-    version: mkl_version_req,
-)
-# Insert a second try with MKL, because we may be rejecting older versions
-# or missing it because no pkg-config installed. If so, we need to retry
-# with MKL SDL, and drop the version constraint.
-if not mkl_dep.found() and mkl_may_use_sdl
+use_sdl = get_option('use-sdl')
+
+if use_sdl
     mkl_dep = dependency('mkl-sdl', required: true)
+else
+    # find mkl
+    mkl_dep = dependency(mkl_dep_name,
+        required: false,  # may be required, but we need to emit a custom error message
+        version: mkl_version_req,
+    )
+
+    mkl_may_use_sdl = not use_ilp64 and _threading_opt in ['auto', 'iomp']
+
+    # Insert a second try with MKL, because we may be rejecting older versions
+    # or missing it because no pkg-config installed. If so, we need to retry
+    # with MKL SDL, and drop the version constraint.
+    if not mkl_dep.found() and mkl_may_use_sdl
+        mkl_dep = dependency('mkl-sdl', required: true)
+    endif
+
 endif
 
 # Deal with M_PI & friends; add `use_math_defines` to c_args or cpp_args
