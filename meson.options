@@ -1,1 +1,7 @@
 option('cy_line_trace', type : 'boolean', value : false)
+
+option('use-ilp64', type: 'boolean', value: false,
+       description: 'Use ILP64 (64-bit integer) BLAS and LAPACK interfaces')
+
+option('mkl-threading', type: 'string', value: 'auto',
+        description: 'MKL threading method, one of: `seq`, `iomp`, `gomp`, `tbb`')
