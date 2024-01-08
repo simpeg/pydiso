@@ -39,7 +39,7 @@ jobs:
         conda info
         conda list
         conda config --show
-        conda install --quiet --yes pip numpy scipy cython mkl pytest pytest-cov mkl-devel pkg-config meson-python meson ninja
+        conda install --quiet --yes pip numpy scipy cython mkl pytest pytest-cov mkl-devel pkg-config meson-python meson ninja setuptools_scm
 
     - name: Install Our Package
       run: |
