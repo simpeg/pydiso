@@ -560,16 +560,17 @@ cdef class MKLPardisoSolver:
         cdef int_t error=0
         cdef long_t error64=0, phase64=phase, nrhs64=nrhs
 
-        #PyThread_acquire_lock(self.lock, 1)
+        PyThread_acquire_lock(self.lock, 1)
         if self._is_32:
             pardiso(self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,
                     &phase, &self._par.n, self.a, &self._par.ia[0], &self._par.ja[0],
                     &self._par.perm[0], &nrhs, self._par.iparm, &self._par.msglvl, b, x, &error)
             #PyThread_release_lock(self.lock)
-            return error
         else:
             pardiso_64(self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,
                     &phase64, &self._par64.n, self.a, &self._par64.ia[0], &self._par64.ja[0],
                     &self._par64.perm[0], &nrhs64, self._par64.iparm, &self._par64.msglvl, b, x, &error64)
             #PyThread_release_lock(self.lock)
-            return error64
+        PyThread_release_lock(self.lock)
+        error = error or error64
+        return error
