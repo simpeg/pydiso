@@ -1,6 +1,7 @@
 #cython: language_level=3
 #cython: linetrace=True
 cimport numpy as np
+import cython
 from cython cimport numeric
 from cpython.pythread cimport (
     PyThread_type_lock,
@@ -260,9 +261,6 @@ cdef class MKLPardisoSolver:
             raise ValueError("Matrix is not square")
         self.shape = n_row, n_col
 
-        # allocate the lock
-        #self.lock = PyThread_allocate_lock()
-
         self._data_type = A.dtype
         if matrix_type is None:
             if np.issubdtype(self._data_type, np.complexfloating):
@@ -305,6 +303,9 @@ cdef class MKLPardisoSolver:
         else:
             raise PardisoError("Unrecognized integer length")
         self._initialized = True
+
+        # allocate the lock
+        self.lock = PyThread_allocate_lock()
 
         if(verbose):
             #for reporting factorization progress via python's `print`
@@ -523,8 +524,8 @@ cdef class MKLPardisoSolver:
             err = error or error64
             if err!=0:
                 raise PardisoError("Memmory release error "+_err_messages[err])
-        #dealloc lock
-        PyThread_free_lock(self.lock)
+            #dealloc lock
+            PyThread_free_lock(self.lock)
 
     cdef _analyze(self):
         #phase = 11
@@ -552,7 +553,8 @@ cdef class MKLPardisoSolver:
         if err!=0:
             raise PardisoError("Solve step error, "+_err_messages[err])
 
-    cdef int _run_pardiso(self, int_t phase, void* b=NULL, void* x=NULL, int_t nrhs=0):
+    @cython.boundscheck(False)
+    cdef int _run_pardiso(self, int_t phase, void* b=NULL, void* x=NULL, int_t nrhs=0) nogil:
         cdef int_t error=0
         cdef long_t error64=0, phase64=phase, nrhs64=nrhs
 
