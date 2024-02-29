@@ -26,20 +26,22 @@ jobs:
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup Conda
-      uses: conda-incubator/setup-miniconda@v2
+      uses: conda-incubator/setup-miniconda@v3
       with:
-        auto-update-conda: true
-        activate-environment: dev
         python-version: ${{ matrix.python-version }}
+        mamba-version: '*'
+        channels: conda-forge, defaults
+        channel-priority: true
+        activate-environment: dev
 
     - name: Install Env
       run: |
         conda info
         conda list
         conda config --show
-        conda install --quiet --yes pip numpy scipy cython mkl pytest pytest-cov mkl-devel pkg-config meson-python meson ninja setuptools_scm
+        mamba install --quiet --yes pip numpy scipy cython mkl pytest pytest-cov mkl-devel pkg-config meson-python meson ninja setuptools_scm
 
     - name: Install Our Package
       run: |
