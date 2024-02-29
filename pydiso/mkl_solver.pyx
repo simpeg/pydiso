@@ -520,7 +520,9 @@ cdef class MKLPardisoSolver:
             if err!=0:
                 raise PardisoError("Memmory release error "+_err_messages[err])
             #dealloc lock
+        if self.lock is not NULL:
             PyThread_free_lock(self.lock)
+        self.lock = NULL
 
     cdef _analyze(self):
         #phase = 11
