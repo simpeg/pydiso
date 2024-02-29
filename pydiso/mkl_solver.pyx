@@ -194,6 +194,10 @@ cdef class MKLPardisoSolver:
     cdef object _data_type
     cdef object _Adata #a reference to make sure the pointer "a" doesn't get destroyed
 
+    def __cinit__(self, *args, **kwargs):
+        # allocate the lock
+        self.lock = PyThread_allocate_lock()
+
     def __init__(self, A, matrix_type=None, factor=True, verbose=False):
         '''ParidsoSolver(A, matrix_type=None, factor=True, verbose=False)
         An interface to the intel MKL pardiso sparse matrix solver.
@@ -301,9 +305,6 @@ cdef class MKLPardisoSolver:
         else:
             raise PardisoError("Unrecognized integer length")
         self._initialized = True
-
-        # allocate the lock
-        self.lock = PyThread_allocate_lock()
 
         if verbose:
             #for reporting factorization progress via python's `print`
@@ -496,7 +497,7 @@ cdef class MKLPardisoSolver:
         self._Adata = np.ascontiguousarray(data)
         self.a = np.PyArray_DATA(data)
 
-    def __dealloc__(self):
+    def __del__(self):
         # Need to call pardiso with phase=-1 to release memory
         cdef MKL_INT phase=-1, nrhs=0, error=0
         cdef MKL_INT64 phase64=-1, nrhs64=0, error64=0
@@ -519,10 +520,12 @@ cdef class MKLPardisoSolver:
             err = error or error64
             if err!=0:
                 raise PardisoError("Memmory release error "+_err_messages[err])
-            #dealloc lock
-        if self.lock is not NULL:
-            PyThread_free_lock(self.lock)
-        self.lock = NULL
+            self._initialized = False
+
+
+    def __dealloc__(self):
+        #dealloc lock
+        PyThread_free_lock(self.lock)
 
     cdef _analyze(self):
         #phase = 11
