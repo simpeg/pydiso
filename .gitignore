@@ -5,3 +5,5 @@ __pycache__
 mkl_solver.c
 .coverage
 coverage.xml
+
+.idea/
