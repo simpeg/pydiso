@@ -343,7 +343,6 @@ cdef class MKLPardisoSolver:
     def __call__(self, b):
         return self.solve(b)
 
-    @property
     cpdef int _initialized(self):
         # this says if the handle was ever initialized
         cdef int i
@@ -508,7 +507,8 @@ cdef class MKLPardisoSolver:
         cdef MKL_INT phase=-1, nrhs=0, error=0
         cdef MKL_INT64 phase64=-1, nrhs64=0, error64=0
 
-        if self._initialized:
+        # Only need to deallocate if the handle itself was ever allocated.
+        if self._initialized():
             PyThread_acquire_lock(self.lock, 1)
             if self._call32:
                 pardiso(
@@ -526,7 +526,6 @@ cdef class MKLPardisoSolver:
             err = error or error64
             if err!=0:
                 raise PardisoError("Memmory release error "+_err_messages[err])
-            self._initialized = False
 
 
     def __dealloc__(self):
@@ -576,3 +575,4 @@ cdef class MKLPardisoSolver:
         PyThread_release_lock(self.lock)
         error = error or <MKL_INT> error64
         return error
+
