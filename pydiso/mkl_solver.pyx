@@ -187,7 +187,6 @@ cdef class MKLPardisoSolver:
     cdef int mat_type
     cdef int _factored
     cdef size_t shape[2]
-    cdef int _initialized
     cdef PyThread_type_lock lock
     cdef void * a
 
@@ -255,7 +254,6 @@ cdef class MKLPardisoSolver:
         >>> np.allclose(x, x_solved)
         True
         '''
-        self._initialized = False
         n_row, n_col = A.shape
         if n_row != n_col:
             raise ValueError("Matrix is not square")
@@ -304,7 +302,6 @@ cdef class MKLPardisoSolver:
             self._initialize(self._par64, A, matrix_type, verbose)
         else:
             raise PardisoError("Unrecognized integer length")
-        self._initialized = True
 
         if verbose:
             #for reporting factorization progress via python's `print`
@@ -345,6 +342,15 @@ cdef class MKLPardisoSolver:
 
     def __call__(self, b):
         return self.solve(b)
+
+    @property
+    cpdef int _initialized(self):
+        # this says if the handle was ever initialized
+        cdef int i
+        for i in range(64):
+            if self.handle[i] != 0:
+                return 1
+        return 0
 
     def solve(self, b, x=None, transpose=False):
         """solve(self, b, x=None, transpose=False)
