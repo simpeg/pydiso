@@ -347,7 +347,7 @@ cdef class MKLPardisoSolver:
         # this says if the handle was ever initialized
         cdef int i
         for i in range(64):
-            if self.handle[i] != 0:
+            if self.handle[i]:
                 return 1
         return 0
 
