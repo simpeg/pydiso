@@ -79,7 +79,7 @@ jobs:
         conda info
         conda list
         conda config --show
-        conda install --quiet --yes pip numpy scipy cython mkl mkl-devel
+        conda install --quiet --yes pip numpy scipy cython mkl pytest pytest-cov mkl-devel pkg-config meson-python meson ninja setuptools_scm
 
     - name: Install Our Package
       run: |
@@ -88,7 +88,7 @@ jobs:
 
     - name: Generate Source Distribution
       run: |
-        python setup.py sdist
+        python -m build --no-isolation --skip-dependency-check --sdist .
 
     - name: pypi-publish
       uses: pypa/gh-action-pypi-publish@v1.4.2
