@@ -462,10 +462,6 @@ cdef class MKLPardisoSolver:
             np_int_dtype = _np_mkl_int
         else:
             np_int_dtype = _np_mkl_int64
-        if sizeof(MKL_INT) == 4:
-            np_int_dtype = np.int32
-        else:
-            np_int_dtype = np.int64
         par.n = A.shape[0]
         par.perm = np.empty(par.n, dtype=np_int_dtype)
 
@@ -490,7 +486,7 @@ cdef class MKLPardisoSolver:
         par.iparm[18] = 0  # do not report flop count
         par.iparm[20] = 1 if matrix_type in [-2, -4, 6] else 0
         par.iparm[23] = 0  # classic (not parallel) factorization
-        par.iparm[24] = 0  # default behavoir of parallel solving
+        par.iparm[24] = 0  # default behavior of parallel solving
         par.iparm[26] = 0  # Do not check the input matrix
         #set precision
         if self._data_type==np.float64 or self._data_type==np.complex128:
