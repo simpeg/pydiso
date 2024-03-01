@@ -42,7 +42,7 @@ cdef extern from 'mkl.h':
     int mkl_get_max_threads()
     int mkl_domain_get_max_threads(int domain)
 
-    ctypedef int (*ProgressEntry)(int* thread, int* step, char* stage, int stage_len) except? -1;
+    ctypedef int (*ProgressEntry)(int_t* thread, int_t* step, char* stage, int_t stage_len) except? -1;
     ProgressEntry mkl_set_progress(ProgressEntry progress);
 
     ctypedef void * _MKL_DSS_HANDLE_t
@@ -64,11 +64,11 @@ else:
 _np_mkl_int64 = np.int64
 
 #call pardiso (pt, maxfct, mnum, mtype, phase, n, a, ia, ja, perm, nrhs, iparm, msglvl, b, x, error)
-cdef int mkl_progress(int *thread, int* step, char* stage, int stage_len):
+cdef int mkl_progress(int_t *thread, int_t* step, char* stage, int_t stage_len):
     print(thread[0], step[0], stage, stage_len)
     return 0
 
-cdef int mkl_no_progress(int *thread, int* step, char* stage, int stage_len) nogil:
+cdef int mkl_no_progress(int_t *thread, int_t* step, char* stage, int_t stage_len) nogil:
     return 0
 
 MATRIX_TYPES ={
@@ -308,9 +308,11 @@ cdef class MKLPardisoSolver:
         # sizeof(MKL_INT) == 4 and A.indices.itemsize == 8
         self._call32 = not (sizeof(int_t) == 4 and integer_len == 8)
         if self._call32:
+            print("calling 32")
             self._par = _PardisoParams()
             self._initialize(self._par, A, matrix_type, verbose)
         elif integer_len == 8:
+            print("calling 64")
             self._par64 = _PardisoParams64()
             self._initialize(self._par64, A, matrix_type, verbose)
         else:
@@ -588,6 +590,6 @@ cdef class MKLPardisoSolver:
                     &phase64, &self._par64.n, self.a, &self._par64.ia[0], &self._par64.ja[0],
                     &self._par64.perm[0], &nrhs64, self._par64.iparm, &self._par64.msglvl, b, x, &error64)
         PyThread_release_lock(self.lock)
-        error = error or <int_t> error64
+        error = error or error64
         return error
 
