@@ -54,6 +54,12 @@ cdef extern from 'mkl.h':
                     const long long int *, long long int *, const long long int *, long long int *,
                     const long long int *, void *, void *, long long int *) nogil
 
+if sizeof(MKL_INT) == 4:
+    _np_mkl_int = np.int32
+else:
+    _np_mkl_int = np.int64
+_np_mkl_int64 = np.int64
+
 #call pardiso (pt, maxfct, mnum, mtype, phase, n, a, ia, ja, perm, nrhs, iparm, msglvl, b, x, error)
 cdef int mkl_progress(int *thread, int* step, char* stage, int stage_len):
     print(thread[0], step[0], stage, stage_len)
@@ -196,6 +202,10 @@ cdef class MKLPardisoSolver:
     def __cinit__(self, *args, **kwargs):
         # allocate the lock
         self.lock = PyThread_allocate_lock()
+
+        # handle should be intialized just fine, but just in case..
+        for i in range(64):
+            self.handle[64] = NULL
 
     def __init__(self, A, matrix_type=None, factor=True, verbose=False):
         '''ParidsoSolver(A, matrix_type=None, factor=True, verbose=False)
@@ -448,6 +458,10 @@ cdef class MKLPardisoSolver:
         return self.iparm[17]
 
     cdef _initialize(self, _par_params par, A, matrix_type, verbose):
+        if _par_params is _PardisoParams:
+            np_int_dtype = _np_mkl_int
+        else:
+            np_int_dtype = _np_mkl_int64
         if sizeof(MKL_INT) == 4:
             np_int_dtype = np.int32
         else:
@@ -495,11 +509,11 @@ cdef class MKLPardisoSolver:
         par.iparm[55] = 0  # Internal function used to work with pivot and calculation of diagonal arrays turned off.
         par.iparm[59] = 0  # operate in-core mode
 
-        par.ia = np.require(A.indices, dtype=np_int_dtype)
-        par.ja = np.require(A.indptr, dtype=np_int_dtype)
+        par.ia = np.require(A.indptr, dtype=np_int_dtype)
+        par.ja = np.require(A.indices, dtype=np_int_dtype)
 
     cdef _set_A(self, data):
-        self._Adata = np.ascontiguousarray(data)
+        self._Adata = data
         self.a = np.PyArray_DATA(data)
 
     def __del__(self):
@@ -529,8 +543,10 @@ cdef class MKLPardisoSolver:
 
 
     def __dealloc__(self):
-        #dealloc lock
-        PyThread_free_lock(self.lock)
+        if self.lock:
+            #dealloc lock
+            PyThread_free_lock(self.lock)
+            self.lock = NULL
 
     cdef _analyze(self):
         #phase = 11
