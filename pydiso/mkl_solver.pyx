@@ -306,17 +306,21 @@ cdef class MKLPardisoSolver:
         integer_len = A.indices.itemsize
         # we only need to call the 64 bit version if
         # sizeof(MKL_INT) == 4 and A.indices.itemsize == 8
-        self._call32 = not (sizeof(int_t) == 4 and integer_len == 8)
+        if sizeof(int_t) == 4 and integer_len==8:
+            self._call32 = False
+        elif sizeof(int_t) == integer_len:
+            self._call32 = True
+        else:
+            raise PardisoError("Unrecognized integer length")
+
         if self._call32:
             print("calling 32")
             self._par = _PardisoParams()
             self._initialize(self._par, A, matrix_type, verbose)
-        elif integer_len == 8:
+        else:
             print("calling 64")
             self._par64 = _PardisoParams64()
             self._initialize(self._par64, A, matrix_type, verbose)
-        else:
-            raise PardisoError("Unrecognized integer length")
 
         if verbose:
             #for reporting factorization progress via python's `print`
