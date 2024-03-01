@@ -40,25 +40,26 @@ jobs:
             prefix: C:\Miniconda3\envs\my-env
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v2
     - name: Setup Conda
-      uses: conda-incubator/setup-miniconda@v3
+      uses: conda-incubator/setup-miniconda@v2
       with:
+        auto-update-conda: true
+        activate-environment: dev
         python-version: ${{ matrix.python-version }}
         #mamba-version: '*'
         #channels: conda-forge, defaults
         #channel-priority: true
-        activate-environment: dev
 
-    - name: Get Date
-      id: get-date
-      run: echo "today=$(/bin/date -u '+%Y%m%d')" >> $GITHUB_OUTPUT
-
-    - uses: actions/cache@v2
-      with:
-        path: ${{ matrix.prefix }}
-        key: ${{ matrix.label }}-${{ matrix.python-version }}-conda-${{ env.DATE }}-${{ env.CACHE_NUMBER }}
-      id: cache
+#    - name: Get Date
+#      id: get-date
+#      run: echo "today=$(/bin/date -u '+%Y%m%d')" >> $GITHUB_OUTPUT
+#
+#    - uses: actions/cache@v2
+#      with:
+#        path: ${{ matrix.prefix }}
+#        key: ${{ matrix.label }}-${{ matrix.python-version }}-conda-${{ env.DATE }}-${{ env.CACHE_NUMBER }}
+#      id: cache
 
     - name: Conda information
       run: |
@@ -69,7 +70,7 @@ jobs:
     - name: Create environment
       run: |
         conda install --quiet --yes pip numpy scipy cython mkl pytest pytest-cov mkl-devel pkg-config meson-python meson ninja setuptools_scm
-      if: steps.cache.outputs.cache-hit != 'true'
+      #if: steps.cache.outputs.cache-hit != 'true'
 
     - name: Install Our Package
       run: |
