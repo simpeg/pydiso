@@ -49,7 +49,7 @@ cdef extern from 'mkl.h':
 
     void pardiso(_MKL_DSS_HANDLE_t, const int*, const int*, const int*,
                  const int *, const int *, const void *, const int *,
-                 const int *, int *, const int_t *, int *,
+                 const int *, int *, const int *, int *,
                  const int *, void *, void *, int *) nogil
 
     void pardiso_64(_MKL_DSS_HANDLE_t, const long_t *, const long_t *, const long_t *,
@@ -192,9 +192,9 @@ cdef class MKLPardisoSolver:
     cdef _MKL_DSS_HANDLE_t handle[64]
     cdef _PardisoParams _par
     cdef _PardisoParams64 _par64
-    cdef int _call32
-    cdef int mat_type
-    cdef int _factored
+    cdef int_t _call32
+    cdef int_t mat_type
+    cdef int_t _factored
     cdef size_t shape[2]
     cdef PyThread_type_lock lock
     cdef void * a
@@ -443,7 +443,7 @@ cdef class MKLPardisoSolver:
         else:
             return np.array(self._par64.iparm)
 
-    def set_iparm(self, int i, int val):
+    def set_iparm(self, int_t i, int_t val):
         if i > 63 or i < 0:
             raise IndexError(f"index {i} is out of bounds for size 64 array")
         if i not in [
