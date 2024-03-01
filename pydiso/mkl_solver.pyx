@@ -201,6 +201,9 @@ cdef class MKLPardisoSolver:
     def __cinit__(self, *args, **kwargs):
         self.lock = PyThread_allocate_lock()
 
+        for i in range(64):
+            self.handle[i] = NULL
+
     def __init__(self, A, matrix_type=None, factor=True, verbose=False):
         '''ParidsoSolver(A, matrix_type=None, factor=True, verbose=False)
         An interface to the intel MKL pardiso sparse matrix solver.
@@ -463,6 +466,9 @@ cdef class MKLPardisoSolver:
         par.mtype = matrix_type
         par.msglvl = verbose
 
+        for i in range(64):
+            par.iparm[i] = 0  # ensure these all start at 0
+
         # set default parameters
         par.iparm[0] = 1  # tell pardiso to not reset these values on the first call
         par.iparm[1] = 2  # The nested dissection algorithm from the METIS
@@ -527,6 +533,8 @@ cdef class MKLPardisoSolver:
             err = error or error64
             if err!=0:
                 raise PardisoError("Memory release error "+_err_messages[err])
+            for i in range(64):
+                self.handle[i] = NULL
 
         if self.lock:
             #dealloc lock
