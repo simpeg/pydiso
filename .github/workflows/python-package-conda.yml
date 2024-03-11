@@ -62,10 +62,11 @@ jobs:
     - name: Run Tests
       run: |
         ${{ matrix.coverage && 'coverage run -m' || '' }} pytest -s -v
+        ${{ matrix.coverage && 'coverage xml' || '' }} 
 
     - name: Upload coverage
       if: ${{ matrix.coverage }}
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v4
       with:
         verbose: true # optional (default = false)
 
