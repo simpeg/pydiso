@@ -95,6 +95,8 @@ cython_c_args = [numpy_nodepr_api, use_math_defines]
 cy_line_trace = get_option('cy_line_trace')
 if cy_line_trace
   cython_c_args += ['-DCYTHON_TRACE_NOGIL=1']
+  cython_file = join_paths(meson.current_source_dir(), 'mkl_solver.pyx')
+  run_command('cython', cython_file)
 endif
 
 cython_cpp_args = cython_c_args
