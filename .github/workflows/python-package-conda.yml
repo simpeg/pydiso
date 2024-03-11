@@ -46,6 +46,11 @@ jobs:
       run: |
         mamba install --quiet --yes pip numpy scipy cython mkl=2023 pytest pytest-cov mkl-devel pkg-config meson-python meson ninja setuptools_scm
 
+    - name: Generate cython c # sources for coverage
+      run: |
+        cd pydiso
+        cython mkl_solver.pyx
+
     - name: Install Our Package
       run: |
         python -m pip install --no-build-isolation --verbose --editable . --config-setting=compile-args=-v
