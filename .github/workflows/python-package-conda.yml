@@ -24,6 +24,10 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        include:
+          - os: ubuntu-latest
+            version: "3.12"
+            coverage: true
 
     steps:
     - uses: actions/checkout@v4
@@ -44,19 +48,19 @@ jobs:
 
     - name: Create environment
       run: |
-        mamba install --quiet --yes pip numpy scipy cython mkl=2023 pytest pytest-cov mkl-devel pkg-config meson-python meson ninja setuptools_scm
+        mamba install --quiet --yes pip numpy scipy cython mkl=2023 pytest mkl-devel pkg-config meson-python meson ninja setuptools_scm ${{ matrix.coverage && 'coverage' || ''}}
 
     - name: Install Our Package
       run: |
-        python -m pip install --no-build-isolation --verbose --editable . --config-setting=compile-args=-v  --config-settings=setup-args="-Dcy_line_trace=true"
+        python -m pip install --no-build-isolation --verbose --editable . --config-setting=compile-args=-v  ${{ matrix.coverage && '--config-settings=setup-args="-Dcy_coverage=true"' || ''}}
         conda list
 
     - name: Run Tests
       run: |
-        pytest --cov-config=.coveragerc --cov-report=xml --cov=pydiso -s -v
+        ${{ matrix.coverage && 'coverage run -m' || '' }} pytest --cov-config=.coveragerc --cov-report=xml --cov=pydiso -s -v
 
     - name: Upload coverage
-      if: ${{ matrix.os == 'ubuntu-latest' }} and {{ matrix.python-version == '3.8' }}
+      if: ${{ matrix.coverage }}
       uses: codecov/codecov-action@v2
       with:
         verbose: true # optional (default = false)

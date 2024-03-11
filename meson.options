@@ -1,4 +1,4 @@
-option('cy_line_trace', type : 'boolean', value : false)
+option('cy_coverage', type : 'boolean', value : false)
 
 option('use-sdl', type: 'boolean', value: true,
        description: 'Use the single dynamic library.')

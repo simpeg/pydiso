@@ -92,11 +92,13 @@ c_undefined_ok = ['-Wno-maybe-uninitialized']
 
 cython_c_args = [numpy_nodepr_api, use_math_defines]
 
-cy_line_trace = get_option('cy_line_trace')
-if cy_line_trace
+cython_args = []
+
+if get_option('cy_coverage')
   cython_c_args += ['-DCYTHON_TRACE_NOGIL=1']
+  cython_args += ['--directive', 'linetrace=true']
   cython_file = join_paths(meson.current_source_dir(), 'mkl_solver.pyx')
-  run_command('cython', cython_file)
+  run_command('cython', '--directive linetrace=true', cython_file)
 endif
 
 cython_cpp_args = cython_c_args
@@ -107,6 +109,7 @@ py.extension_module(
     'mkl_solver',
     'mkl_solver.pyx',
     include_directories: incdir_numpy,
+    cython_args: cython_args,
     c_args: cython_c_args,
     install: true,
     subdir: module_path,

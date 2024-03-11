@@ -93,16 +93,32 @@ Repository = 'https://github.com/simpeg/pydiso.git'
 
 [tool.setuptools_scm]
 
-[tool.meson-python.args]
-# for windows this will prioritize the msvc compilers
-setup = ['--vsenv']
+[tool.coverage.run]
+branch = true
+plugins = ["Cython.Coverage"]
+source = ["pydiso", "tests"]
 
-[tool.cibuildwheel]
-# skip building wheels for python 3.6, 3.7, all pypy versions, and specialty linux
-# processors (still does arm builds though).
-# skip windows 32bit
-skip = "cp36-* cp37-* pp* *_ppc64le *_i686 *_s390x *-win32 cp38-musllinux_x86_64"
-build-verbosity = "3"
+[tool.coverage.report]
+ignore_errors = false
+show_missing = true
+# Regexes for lines to exclude from consideration
+exclude_also = [
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self\\.debug",
 
-# test importing discretize to make sure externals are loadable.
-test-command = 'python -c "import pydiso; print(pydiso.__version__)"'
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "AbstractMethodError",
+
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+
+    # Don't complain about abstract methods, they aren't run:
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.coverage.html]
+directory = "coverage_html_report"
