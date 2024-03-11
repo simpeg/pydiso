@@ -27,7 +27,7 @@ jobs:
         include:
           - os: ubuntu-latest
             version: "3.12"
-            coverage: true
+            coverage: ${{ true }}
 
     steps:
     - uses: actions/checkout@v4
@@ -52,12 +52,12 @@ jobs:
 
     - name: Install Our Package
       run: |
-        python -m pip install --no-build-isolation --verbose --editable . --config-setting=compile-args=-v  ${{ matrix.coverage && '--config-settings=setup-args="-Dcy_coverage=true"' || ''}}
+        python -m pip install --no-build-isolation --verbose --editable . --config-setting=compile-args=-v  ${{ matrix.coverage && '--config-settings=setup-args="-Dcy_coverage=true"' || ' '}}
         conda list
 
     - name: Run Tests
       run: |
-        ${{ matrix.coverage && 'coverage run -m' || '' }} pytest --cov-config=.coveragerc --cov-report=xml --cov=pydiso -s -v
+        ${{ matrix.coverage && 'coverage run -m' || ' ' }}pytest -s -v
 
     - name: Upload coverage
       if: ${{ matrix.coverage }}
