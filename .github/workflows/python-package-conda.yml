@@ -53,7 +53,7 @@ jobs:
 
     - name: Install Our Package
       run: |
-        python -m pip install --no-build-isolation --verbose --editable . --config-setting=compile-args=-v
+        python -m pip install --no-build-isolation --verbose --editable . --config-setting=compile-args=-v  --config-settings=setup-args="-Dcy_line_trace=true"
         conda list
 
     - name: Run Tests
