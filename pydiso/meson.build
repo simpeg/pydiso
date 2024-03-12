@@ -98,7 +98,7 @@ if get_option('cy_coverage')
   cython_c_args += ['-DCYTHON_TRACE_NOGIL=1']
   cython_args += ['--directive', 'linetrace=true']
   cython_file = join_paths(meson.current_source_dir(), 'mkl_solver.pyx')
-  run_command('cython', '--directive linetrace=true', cython_file)
+  run_command('cython', '--directive', 'linetrace=true', cython_file)
 endif
 
 cython_cpp_args = cython_c_args
