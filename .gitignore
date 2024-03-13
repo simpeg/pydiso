@@ -1,8 +1,11 @@
 build
+dist
+coverage_html_report
 *.so
 pydiso.egg-info
 __pycache__
 mkl_solver.c
+mkl_solver.c.dep
 .coverage
 coverage.xml
 
