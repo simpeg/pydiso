@@ -112,7 +112,7 @@ def _ensure_csr(A, sym=False):
         if sym and sp.isspmatrix_csc(A):
             A = A.T
         else:
-            warnings.warn("Converting %s matrix to CSR format, will slow down."
+            warnings.warn("Converting %s matrix to CSR format."
                          %A.__class__.__name__, PardisoTypeConversionWarning)
             A = A.tocsr()
     return A

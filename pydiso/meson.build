@@ -90,26 +90,28 @@ endif
 numpy_nodepr_api = '-DNPY_NO_DEPRECATED_API=NPY_1_9_API_VERSION'
 c_undefined_ok = ['-Wno-maybe-uninitialized']
 
-cython_c_args = [numpy_nodepr_api, use_math_defines]
+cython_c_args = [numpy_nodepr_api, use_math_defines]\
 
-cython_args = []
+cython_file = 'mkl_solver.pyx'
+cython_file_full_path = meson.current_source_dir() / cython_file
 
 if get_option('cy_coverage')
-  cython_c_args += ['-DCYTHON_TRACE_NOGIL=1']
-  cython_args += ['--directive', 'linetrace=true']
-  cython_file = join_paths(meson.current_source_dir(), 'mkl_solver.pyx')
-  run_command('cython', '--directive', 'linetrace=true', cython_file)
-endif
+  # tell cython to enable linetracing
+  add_project_arguments(['--directive', 'linetrace=true'], language : 'cython')
+  # tell the c_compiler to definie the CYTHON_TRACE_NOGIL
+  add_project_arguments(['-DCYTHON_TRACE_NOGIL=1'], language : 'c')
 
-cython_cpp_args = cython_c_args
+  # compile the .c file from the .pyx file in it's directory.
+  # These should include the default options passed to the cython compiler
+  run_command(cython, '-M', '--fast-fail', '-3', '--directive', 'linetrace=true', cython_file_full_path)
+endif
 
 module_path = 'pydiso'
 
 py.extension_module(
     'mkl_solver',
-    'mkl_solver.pyx',
+    cython_file,
     include_directories: incdir_numpy,
-    cython_args: cython_args,
     c_args: cython_c_args,
     install: true,
     subdir: module_path,
