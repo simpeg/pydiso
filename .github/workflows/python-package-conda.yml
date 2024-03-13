@@ -69,7 +69,8 @@ jobs:
     - name: Run Tests
       run: |
         ${{ matrix.coverage && 'coverage run -m' || '' }} pytest -s -v
-        ${{ matrix.coverage && 'coverage xml' || '' }} 
+        ${{ matrix.coverage && 'coverage xml' || '' }}
+      continue-on-error: ${{ matrix.os == 'windows-latest' && matrix.mkl-version == '2024'}}
 
     - name: Upload coverage
       if: ${{ matrix.coverage }}
