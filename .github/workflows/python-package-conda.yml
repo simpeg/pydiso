@@ -52,7 +52,7 @@ jobs:
 
     - name: Create environment
       run: |
-        mamba install --quiet --yes pip numpy scipy cython mkl=${{ matrix.mkl_version }} pytest \
+        mamba install --quiet --yes pip numpy scipy cython mkl=${{ matrix.mkl-version }} pytest \
           mkl-devel pkg-config meson-python meson ninja setuptools_scm \
           ${{ matrix.coverage && 'coverage' || ''}}
 
