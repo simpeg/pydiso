@@ -1,5 +1,0 @@
-[run]
-source = pydiso
-plugins = Cython.Coverage
-omit =
-    */setup.py

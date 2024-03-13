@@ -1,0 +1,124 @@
+
+[build-system]
+build-backend = 'mesonpy'
+requires = [
+    "meson-python>=0.14.0",
+    "Cython>=0.29.35",  # when updating version, also update check in meson.build
+    "setuptools_scm[toml]>=6.2",
+
+    # This package automatically provides all of the numpy pinning for different python
+    # versions and runtime requirements.
+    "oldest-supported-numpy",
+
+    # The following is taken from scipy's pyproject.toml file to handle
+    # building against the proper numpy API
+
+    # When numpy 2.0.0rc1 comes out, we should update this to build against 2.0,
+    # and then runtime depend on the range 1.22.X to <2.3. No need to switch to
+    # 1.25.2 in the meantime (1.25.x is the first version which exports older C
+    # API versions by default).
+
+    # default numpy requirements
+    # "numpy==1.22.4; python_version<='3.10' and platform_python_implementation != 'PyPy'",
+    # "numpy==1.23.2; python_version=='3.11' and platform_python_implementation != 'PyPy'",
+
+    # For Python versions which aren't yet officially supported, we specify an
+    # unpinned NumPy which allows source distributions to be used and allows
+    # wheels to be used as soon as they become available.
+    # "numpy>=1.26.0b1; python_version>='3.12'",
+    # "numpy; python_version>='3.8' and platform_python_implementation=='PyPy'",
+]
+
+[project]
+name = 'pydiso'
+dynamic = ["version"]
+description = "Wrapper for intel's pardiso implementation in the MKL"
+readme = 'README.md'
+requires-python = '>=3.8'
+authors = [
+  {name = 'SimPEG developers', email = 'josephrcapriotti@gmail.com'},
+]
+keywords = [
+    'sparse', 'solver', 'wrapper',
+]
+
+# Note: Python and NumPy upper version bounds should be set correctly in
+# release branches, see:
+#     https://scipy.github.io/devdocs/dev/core-dev/index.html#version-ranges-for-numpy-and-other-dependencies
+dependencies = [
+    # TODO: update to "pin-compatible" once possible, see
+    # https://github.com/mesonbuild/meson-python/issues/29
+    "numpy>=1.22.4",
+    "scipy>=1.8",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Cython",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Operating System :: MacOS",
+    "Natural Language :: English",
+]
+
+[project.license]
+file = 'LICENSE'
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+]
+
+build = [
+    "meson-python>=0.14.0",
+    "meson",
+    "ninja",
+    "numpy>=1.22.4",
+    "cython>=0.29.35",
+    "setuptools_scm",
+]
+
+[project.urls]
+Homepage = 'https://simpeg.xyz'
+#Documentation = 'https://discretize.simpeg.xyz'
+Repository = 'https://github.com/simpeg/pydiso.git'
+
+[tool.setuptools_scm]
+
+[tool.coverage.run]
+branch = true
+plugins = ["Cython.Coverage"]
+source = ["pydiso", "tests"]
+
+[tool.coverage.report]
+ignore_errors = false
+show_missing = true
+# Regexes for lines to exclude from consideration
+exclude_also = [
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self\\.debug",
+
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "AbstractMethodError",
+
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+
+    # Don't complain about abstract methods, they aren't run:
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.coverage.html]
+directory = "coverage_html_report"

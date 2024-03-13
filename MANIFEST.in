@@ -1,3 +1,0 @@
-include *.rst LICENSE
-global-include *.pyx
-global-include *.pxd
