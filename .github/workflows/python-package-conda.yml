@@ -24,10 +24,14 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        mkl-version: ['2023']  # currently 2024 fails building for some reason...
         include:
           - os: ubuntu-latest
             python-version: "3.12"
             coverage: ${{ true }}
+          - os: ubuntu-latest
+            python-version: "3.12"
+            mkl-version: '2024'
 
     steps:
     - uses: actions/checkout@v4
@@ -48,7 +52,7 @@ jobs:
 
     - name: Create environment
       run: |
-        mamba install --quiet --yes pip numpy scipy cython mkl=2023 pytest \
+        mamba install --quiet --yes pip numpy scipy cython mkl=${{ matrix.mkl_version }} pytest \
           mkl-devel pkg-config meson-python meson ninja setuptools_scm \
           ${{ matrix.coverage && 'coverage' || ''}}
 
