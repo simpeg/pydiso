@@ -14,7 +14,7 @@ on:
 
 jobs:
   build-and-test:
-    name: Testing (${{ matrix.python-version }}, ${{ matrix.os }})
+    name: Testing (Python ${{ matrix.python-version }}, on ${{ matrix.os }}, with MKL ${{ matrix.mkl-version }})
     runs-on: ${{ matrix.os }}
     defaults:
       run:
