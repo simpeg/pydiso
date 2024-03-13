@@ -32,6 +32,12 @@ jobs:
           - os: ubuntu-latest
             python-version: "3.12"
             mkl-version: '2024'
+          - os: windows-latest
+            python-version: "3.12"
+            mkl-version: '2024'
+          - os: macos-latest
+            python-version: "3.12"
+            mkl-version: '2024'
 
     steps:
     - uses: actions/checkout@v4
