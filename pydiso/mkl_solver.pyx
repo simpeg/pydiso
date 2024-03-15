@@ -59,8 +59,11 @@ cdef extern from 'mkl.h':
 
 
 #call pardiso (pt, maxfct, mnum, mtype, phase, n, a, ia, ja, perm, nrhs, iparm, msglvl, b, x, error)
-cdef int mkl_progress(int *thread, int* step, char* stage, int stage_len):
-    print(thread[0], step[0], stage, stage_len)
+cdef int mkl_progress(int *thread, int* step, char* stage, int stage_len) nogil:
+    # must be a nogil process to pass to mkl pardiso progress reporting
+    with gil:
+        # must reacquire the gil to print out back to python.
+        print(thread[0], step[0], stage, stage_len)
     return 0
 
 cdef int mkl_no_progress(int *thread, int* step, char* stage, int stage_len) nogil:
@@ -515,20 +518,21 @@ cdef class MKLPardisoSolver:
         cdef long_t phase64=-1, nrhs64=0, error64=0
 
         if self._initialized():
-            PyThread_acquire_lock(self.lock, 1)
-            if self._is_32:
-                pardiso(
-                    self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,
-                    &phase, &self._par.n, NULL, NULL, NULL, NULL, &nrhs, self._par.iparm,
-                    &self._par.msglvl, NULL, NULL, &error
-                )
-            else:
-                pardiso_64(
-                    self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,
-                    &phase64, &self._par64.n, NULL, NULL, NULL, NULL, &nrhs64,
-                    self._par64.iparm, &self._par64.msglvl, NULL, NULL, &error64
-                )
-            PyThread_release_lock(self.lock)
+            with nogil:
+                PyThread_acquire_lock(self.lock, 1)
+                if self._is_32:
+                    pardiso(
+                        self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,
+                        &phase, &self._par.n, NULL, NULL, NULL, NULL, &nrhs, self._par.iparm,
+                        &self._par.msglvl, NULL, NULL, &error
+                    )
+                else:
+                    pardiso_64(
+                        self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,
+                        &phase64, &self._par64.n, NULL, NULL, NULL, NULL, &nrhs64,
+                        self._par64.iparm, &self._par64.msglvl, NULL, NULL, &error64
+                    )
+                PyThread_release_lock(self.lock)
             err = error or error64
             if err!=0:
                 raise PardisoError("Memory release error "+_err_messages[err])
@@ -541,7 +545,8 @@ cdef class MKLPardisoSolver:
 
     cdef _analyze(self):
         #phase = 11
-        err = self._run_pardiso(11)
+        with nogil:
+            err = self._run_pardiso(11)
         if err!=0:
             raise PardisoError("Analysis step error, "+_err_messages[err])
 
@@ -549,7 +554,8 @@ cdef class MKLPardisoSolver:
         #phase = 22
         self._factored = False
 
-        err = self._run_pardiso(22)
+        with nogil:
+            err = self._run_pardiso(22)
 
         if err!=0:
             raise PardisoError("Factor step error, "+_err_messages[err])
@@ -561,12 +567,14 @@ cdef class MKLPardisoSolver:
         if(not self._factored):
             raise PardisoError("Cannot solve without a previous factorization.")
 
-        err = self._run_pardiso(33, b, x, nrhs_in)
+        with nogil:
+            err = self._run_pardiso(33, b, x, nrhs_in)
+
         if err!=0:
             raise PardisoError("Solve step error, "+_err_messages[err])
 
     @cython.boundscheck(False)
-    cdef int _run_pardiso(self, int_t phase, void* b=NULL, void* x=NULL, int_t nrhs=0) nogil:
+    cdef int _run_pardiso(self, int_t phase, void* b=NULL, void* x=NULL, int_t nrhs=0) noexcept nogil:
         cdef int_t error=0
         cdef long_t error64=0, phase64=phase, nrhs64=nrhs
 
