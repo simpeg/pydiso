@@ -77,6 +77,7 @@ jobs:
       uses: codecov/codecov-action@v4
       with:
         verbose: true # optional (default = false)
+        token: ${{ secrets.CODECOV_TOKEN }} # required
 
   distribute:
     name: Distributing from 3.11
