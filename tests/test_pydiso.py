@@ -34,8 +34,8 @@ A_real_dict = {'real_structurally_symmetric': L@U,
                'real_nonsymmetric': L@U2
                }
 A_complex_dict = {'complex_structurally_symmetric': Lc@Uc,
-                  'complex_hermitian_positive_definite': Lc@Lc.H,
-                  'complex_hermitian_indefinite': Lc@D@Lc.H,
+                  'complex_hermitian_positive_definite': Lc@Lc.T.conjugate(),
+                  'complex_hermitian_indefinite': Lc@D@Lc.T.conjugate(),
                   'complex_symmetric': Lc@Lc.T,
                   'complex_nonsymmetric': Lc@U2c
                   }
