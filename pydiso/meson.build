@@ -1,5 +1,6 @@
 # NumPy include directory
 np_dep = dependency('numpy')
+numpy_nodepr_api = ['-DNPY_NO_DEPRECATED_API=NPY_1_9_API_VERSION']
 
 # MKL-specific options
 mkl_dep_name = 'mkl-dynamic'
