@@ -95,7 +95,7 @@ cython_c_args = [numpy_nodepr_api, use_math_defines]\
 cython_file = 'mkl_solver.pyx'
 cython_file_full_path = meson.current_source_dir() / cython_file
 
-if get_option('cy_coverage')
+if get_option('b_coverage')
   # tell cython to enable linetracing
   add_project_arguments(['--directive', 'linetrace=true'], language : 'cython')
   # tell the c_compiler to definie the CYTHON_TRACE_NOGIL
