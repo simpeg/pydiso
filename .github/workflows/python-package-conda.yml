@@ -55,7 +55,7 @@ jobs:
 
     - name: Create environment
       run: |
-        mamba install --quiet --yes pip numpy scipy cython mkl=${{ matrix.mkl-version }} pytest \
+        conda install --quiet --yes pip numpy scipy cython mkl=${{ matrix.mkl-version }} pytest \
           mkl-devel pkg-config meson-python meson ninja setuptools_scm \
           ${{ matrix.coverage && 'coverage' || ''}}
 
@@ -63,7 +63,7 @@ jobs:
       run: |
         python -m pip install --no-build-isolation --verbose --editable . \
           --config-setting=compile-args=-v \
-          ${{ matrix.coverage && '--config-settings=setup-args="-Dcy_coverage=true"' || ''}}
+          ${{ matrix.coverage && '--config-settings=setup-args="-Db_coverage=true"' || ''}}
         conda list
 
     - name: Run Tests
@@ -107,7 +107,7 @@ jobs:
 
     - name: Create environment
       run: |
-        mamba install --quiet --yes pip numpy scipy cython mkl=2023 \
+        conda install --quiet --yes pip numpy scipy cython mkl=2023 \
           mkl-devel pkg-config meson-python meson ninja setuptools_scm \
           python-build
 
