@@ -1,7 +1,6 @@
 #cython: language_level=3
-cimport numpy as np
+cimport numpy as cnp
 import cython
-from cython cimport numeric
 from cpython.pythread cimport (
     PyThread_type_lock,
     PyThread_allocate_lock,
@@ -403,8 +402,8 @@ cdef class MKLPardisoSolver:
             raise ValueError(f"incorrect length of x, expected {self.shape[0]}, got {x.shape[0]}")
         x = np.require(x, requirements='F')
 
-        cdef void * bp = np.PyArray_DATA(b)
-        cdef void * xp = np.PyArray_DATA(x)
+        cdef void * bp = cnp.PyArray_DATA(b)
+        cdef void * xp = cnp.PyArray_DATA(x)
 
         if bp == xp:
             raise PardisoError("b and x must be different arrays")
@@ -510,7 +509,7 @@ cdef class MKLPardisoSolver:
 
     cdef _set_A(self, data):
         self._Adata = data
-        self.a = np.PyArray_DATA(data)
+        self.a = cnp.PyArray_DATA(data)
 
     def __dealloc__(self):
         # Need to call pardiso with phase=-1 to release memory
@@ -542,6 +541,7 @@ cdef class MKLPardisoSolver:
         if self.lock:
             #dealloc lock
             PyThread_free_lock(self.lock)
+            self.lock = NULL
 
     cdef _analyze(self):
         #phase = 11
