@@ -16,7 +16,6 @@ import os
 
 cdef extern from 'mkl.h':
     ctypedef long long MKL_INT64
-    ctypedef unsigned long long MKL_UINT64
     ctypedef int MKL_INT
 
 ctypedef MKL_INT int_t
