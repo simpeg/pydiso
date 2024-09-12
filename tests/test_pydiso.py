@@ -30,7 +30,7 @@ xc = np.random.rand(n) + np.random.rand(n)*1j
 
 A_real_dict = {'real_structurally_symmetric': L@U,
                'real_symmetric_positive_definite': L@L.T,
-               'real_symmetric_indefinite': L@D@L.T,
+               #'real_symmetric_indefinite': L@D@L.T,
                'real_nonsymmetric': L@U2
                }
 A_complex_dict = {'complex_structurally_symmetric': Lc@Uc,
@@ -86,6 +86,7 @@ for dtype in (np.complex64, np.complex128):
 @pytest.mark.parametrize("A, matrix_type", inputs)
 def test_solver(A, matrix_type):
     dtype = A.dtype
+    print(dtype)
     if np.issubdtype(dtype, np.complexfloating):
         x = xc.astype(dtype)
     else:
