@@ -358,6 +358,7 @@ cdef class MKLPardisoSolver:
         self._factor()
 
     cdef _initialized(self):
+        # If any of the handle pointers are not null, return 1
         cdef int i
         for i in range(64):
             if self.handle[i]:
@@ -528,7 +529,10 @@ cdef class MKLPardisoSolver:
         cdef int_t phase=-1, nrhs=0, error=0
         cdef long_t phase64=-1, nrhs64=0, error64=0
 
+        print("Deallocating myself")
+
         if self._initialized():
+            print("I was initialized, so call pardiso to release the memory.")
             with nogil:
                 PyThread_acquire_lock(self.lock, 1)
                 if self._is_32:
@@ -551,9 +555,13 @@ cdef class MKLPardisoSolver:
                 self.handle[i] = NULL
 
         if self.lock:
+            print("I had a lock")
             #dealloc lock
             PyThread_free_lock(self.lock)
             self.lock = NULL
+            print("lock is no more lock")
+
+        print("Deallocated myself")
 
     cdef _analyze(self):
         #phase = 11
