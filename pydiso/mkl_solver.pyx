@@ -301,6 +301,18 @@ cdef class MKLPardisoSolver:
         #self._is_32 = integer_len == sizeof(int_t)
         self._is_32 = sizeof(int_t) == 8 or integer_len == sizeof(int_t)
 
+        print("Am I calling _PardisoParams?")
+        print(self._is_32)
+
+        print("What is the matrix's indices itemsize?")
+        print(integer_len)
+
+        print("What is the matrix's indptr itemsize?")
+        print(A.indptr.itemsize)
+
+        print("What is the size of MKL_INT")
+        print(sizeof(int_t))
+
         if self._is_32:
             self._par = _PardisoParams()
             self._initialize(self._par, A, matrix_type, verbose)
@@ -458,6 +470,7 @@ cdef class MKLPardisoSolver:
         else:
             int_dtype = 'i8'
         par.n = A.shape[0]
+        print("Initializing permutation array with ", int_dtype, "dtype")
         par.perm = np.empty(par.n, dtype=int_dtype)
 
         par.maxfct = 1
