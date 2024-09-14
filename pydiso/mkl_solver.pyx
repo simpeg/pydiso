@@ -1,5 +1,5 @@
 #cython: language_level=3
-cimport numpy as cnp
+cimport numpy as np
 import cython
 from cpython.pythread cimport (
     PyThread_type_lock,
@@ -14,6 +14,8 @@ import numpy as np
 import scipy.sparse as sp
 import os
 
+# We use np.PyArray_DATA to grab the pointer
+# to a numpy array.
 np.import_array()
 
 cdef extern from 'mkl.h':
