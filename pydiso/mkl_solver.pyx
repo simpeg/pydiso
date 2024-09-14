@@ -433,6 +433,8 @@ cdef class MKLPardisoSolver:
         print("assigned x and b pointers")
 
         if bp == xp:
+            Py_DECREF(b)
+            Py_DECREF(x)
             raise PardisoError("b and x must be different arrays")
 
         cdef int_t nrhs = b.shape[1] if b.ndim == 2 else 1
@@ -635,6 +637,7 @@ cdef class MKLPardisoSolver:
 
             with gil:
                 print("Called pardiso, error was ", error)
+                sys.stdout.flush()
         else:
             pardiso_64(self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,
                     &phase64, &self._par64.n, self.a, &self._par64.ia[0], &self._par64.ja[0],
