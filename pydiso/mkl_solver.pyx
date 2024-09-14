@@ -13,6 +13,7 @@ import warnings
 import numpy as np
 import scipy.sparse as sp
 import os
+import sys
 
 # We use np.PyArray_DATA to grab the pointer
 # to a numpy array.
@@ -418,8 +419,12 @@ cdef class MKLPardisoSolver:
             raise ValueError(f"incorrect length of x, expected {self.shape[0]}, got {x.shape[0]}")
         x = np.require(x, requirements='F')
 
+        print("Validated input arrays")
+
         cdef void * bp = np.PyArray_DATA(b)
         cdef void * xp = np.PyArray_DATA(x)
+
+        print("assigned x and b pointers")
 
         if bp == xp:
             raise PardisoError("b and x must be different arrays")
@@ -430,6 +435,8 @@ cdef class MKLPardisoSolver:
             self.set_iparm(11, 2)
         else:
             self.set_iparm(11, 0)
+
+        print("updated iparm 11")
         self._solve(bp, xp, nrhs)
         return x
 
@@ -591,6 +598,8 @@ cdef class MKLPardisoSolver:
         if(not self._factored):
             raise PardisoError("Cannot solve without a previous factorization.")
 
+        print("trying to solve")
+
         with nogil:
             err = self._run_pardiso(33, b, x, nrhs_in)
 
@@ -604,9 +613,16 @@ cdef class MKLPardisoSolver:
 
         PyThread_acquire_lock(self.lock, 1)
         if self._is_32:
+            with gil:
+                print("Calling pardiso")
+                sys.stdout.flush()
+
             pardiso(self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,
                     &phase, &self._par.n, self.a, &self._par.ia[0], &self._par.ja[0],
                     &self._par.perm[0], &nrhs, self._par.iparm, &self._par.msglvl, b, x, &error)
+
+            with gil:
+                print("Called pardiso, error was ", error)
         else:
             pardiso_64(self.handle, &self._par64.maxfct, &self._par64.mnum, &self._par64.mtype,
                     &phase64, &self._par64.n, self.a, &self._par64.ia[0], &self._par64.ja[0],
