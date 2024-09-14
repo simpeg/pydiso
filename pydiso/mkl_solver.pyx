@@ -542,11 +542,11 @@ cdef class MKLPardisoSolver:
         par.iparm[55] = 0  # Internal function used to work with pivot and calculation of diagonal arrays turned off.
         par.iparm[59] = 0  # operate in-core mode
 
-        par.ia = np.require(A.indptr, dtype=int_dtype)
-        par.ja = np.require(A.indices, dtype=int_dtype)
+        par.ia = np.require(A.indptr, dtype=int_dtype, requirements='C')
+        par.ja = np.require(A.indices, dtype=int_dtype, requirements='C')
 
     cdef _set_A(self, data):
-        self._Adata = data
+        self._Adata = np.require(data, requirements='C')
         self.a = np.PyArray_DATA(data)
 
     def __dealloc__(self):
@@ -629,6 +629,17 @@ cdef class MKLPardisoSolver:
         if self._is_32:
             with gil:
                 print("Calling pardiso")
+
+                print("maxfct", self._par.maxfct)
+                print("mnum", self._par.mnum)
+                print("mtype", self._par.mtype)
+                print("phase", phase)
+                print("n", self._par.n)
+                print("nrhs" nrhs)
+                print("msglvl", self._par.msglvl)
+                print("ia")
+                for i in range(self._par.n):
+                    print()
                 sys.stdout.flush()
 
             pardiso(self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,
