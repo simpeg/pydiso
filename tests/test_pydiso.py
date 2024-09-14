@@ -94,6 +94,7 @@ def test_solver(A, matrix_type):
     b = A@x
 
     solver = Solver(A, matrix_type=matrix_type)
+    sys.stdout.flush()
     x2 = solver.solve(b)
 
     eps = np.finfo(dtype).eps
