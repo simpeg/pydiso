@@ -14,6 +14,8 @@ import numpy as np
 import scipy.sparse as sp
 import os
 
+np.import_array()
+
 cdef extern from 'mkl.h':
     ctypedef long long MKL_INT64
     ctypedef int MKL_INT
