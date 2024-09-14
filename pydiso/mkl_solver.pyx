@@ -1,6 +1,10 @@
 #cython: language_level=3
 cimport numpy as np
 import cython
+from cpython.ref cimport(
+    Py_INCREF,
+    Py_DECREF,
+)
 from cpython.pythread cimport (
     PyThread_type_lock,
     PyThread_allocate_lock,
@@ -421,7 +425,9 @@ cdef class MKLPardisoSolver:
 
         print("Validated input arrays")
 
+        Py_INCREF(b)
         cdef void * bp = np.PyArray_DATA(b)
+        Py_INCREF(x)
         cdef void * xp = np.PyArray_DATA(x)
 
         print("assigned x and b pointers")
@@ -437,7 +443,13 @@ cdef class MKLPardisoSolver:
             self.set_iparm(11, 0)
 
         print("updated iparm 11")
-        self._solve(bp, xp, nrhs)
+        try:
+            self._solve(bp, xp, nrhs)
+        except Exception as err:
+            raise err
+        finally:
+            Py_DECREF(b)
+            Py_DECREF(x)
         return x
 
     @property
