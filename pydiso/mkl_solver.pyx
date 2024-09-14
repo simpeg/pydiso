@@ -635,11 +635,29 @@ cdef class MKLPardisoSolver:
                 print("mtype", self._par.mtype)
                 print("phase", phase)
                 print("n", self._par.n)
-                print("nrhs" nrhs)
+                print("nrhs", nrhs)
                 print("msglvl", self._par.msglvl)
                 print("ia")
-                for i in range(self._par.n):
-                    print()
+                n = self._par.n
+                for i in range(n+1):
+                    print(self._par.ia[i])
+                nnz = self._par.ia[n]
+                print("ja")
+                for i in range(nnz):
+                    print(self._par.ja[i])
+
+                print("a")
+                for i in range(nnz):
+                    print(self._Adata[i])
+                if x:
+                    print("x")
+                    for i in range(n):
+                        x[i]
+                if b:
+                    print("b")
+                    for i in range(n):
+                        b[i]
+
                 sys.stdout.flush()
 
             pardiso(self.handle, &self._par.maxfct, &self._par.mnum, &self._par.mtype,
