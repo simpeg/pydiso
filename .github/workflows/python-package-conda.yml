@@ -54,14 +54,16 @@ jobs:
         conda install --quiet --yes -c conda-forge \
           pip numpy scipy cython mkl=${{ matrix.mkl-version }} pytest \
           mkl-devel pkg-config meson-python meson ninja setuptools_scm \
-          ${{ matrix.coverage && 'coverage' || ''}}
+          ${{ matrix.coverage && 'coverage' || ''}} \
+          ${{ matrix.os == 'windows-latest' && '"libblas=*=*mkl"' || ''}}
 
     - name: Install Our Package
       run: |
         python -m pip install --no-build-isolation --verbose --editable . \
           --config-setting=compile-args=-v \
           ${{ matrix.coverage && '--config-settings=setup-args="-Db_coverage=true"' || ''}} \
-          ${{ matrix.os == 'windows-latest' && '--config-settings=setup-args="--vsenv"' || ''}}
+          ${{ matrix.os == 'windows-latest' && '--config-settings=setup-args="-Dvsenv=true"' || ''}}
+
         conda list
 
     - name: Run Tests
