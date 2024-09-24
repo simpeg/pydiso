@@ -105,7 +105,8 @@ jobs:
 
     - name: Create environment
       run: |
-        conda install --quiet --yes pip numpy scipy cython mkl=2023 \
+        conda install --quiet --yes -c conda-forge \
+          pip numpy scipy cython mkl=2023 \
           mkl-devel pkg-config meson-python meson ninja setuptools_scm \
           python-build
 
