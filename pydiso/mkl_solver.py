@@ -36,23 +36,10 @@ class PardisoTypeConversionWarning(
         PardisoWarning, sp.SparseEfficiencyWarning):
     pass
 
-
-def _ensure_csr(A, sym=False):
-    if not (sp.isspmatrix_csr(A)):
-        if sym and sp.isspmatrix_csc(A):
-            A = A.T
-        else:
-            warnings.warn("Converting %s matrix to CSR format."
-                         %A.__class__.__name__, PardisoTypeConversionWarning)
-            A = A.tocsr()
-    return A
-
-
 class MKLPardisoSolver:
 
     def __init__(self, A, matrix_type=None, factor=True, verbose=False):
-        '''ParidsoSolver(A, matrix_type=None, factor=True, verbose=False)
-        An interface to the intel MKL pardiso sparse matrix solver.
+        '''An interface to the Intel MKL pardiso sparse matrix solver.
 
         This is a solver class for a scipy sparse matrix using the Pardiso sparse
         solver in the Intel Math Kernel Library.
@@ -68,7 +55,7 @@ class MKLPardisoSolver:
         A : scipy.sparse.spmatrix
             A sparse matrix preferably in a CSR format.
         matrix_type : str, int, or None, optional
-            A string describing the matrix type, or it's corresponding int code.
+            A string describing the matrix type, or its corresponding integer code.
             If None, then assumed to be nonsymmetric matrix.
         factor : bool, optional
             Whether to perform the factorization stage upon instantiation of the class.
@@ -157,7 +144,7 @@ class MKLPardisoSolver:
         self.matrix_type = matrix_type
 
         indptr = np.asarray(A.indptr)  # double check it's a numpy array
-        mkl_int_size= get_mkl_int_size()
+        mkl_int_size = get_mkl_int_size()
         mkl_int64_size = get_mkl_int64_size()
 
         target_int_size = mkl_int_size if indptr.itemsize <= mkl_int_size else mkl_int64_size
@@ -180,14 +167,11 @@ class MKLPardisoSolver:
             self._factor()
 
     def refactor(self, A):
-        """solver.refactor(A)
-        re-use a symbolic factorization with a new `A` matrix.
+        """Reuse a symbolic factorization with a new matrix.
 
         Note
         ----
         Must have the same non-zero pattern as the initial `A` matrix.
-        If `full_refactor=False`, the initial factorization is used as a
-        preconditioner to a Krylov subspace solver in the solve step.
 
         Parameters
         ----------
@@ -212,14 +196,7 @@ class MKLPardisoSolver:
         return self.solve(b)
 
     def solve(self, b, x=None, transpose=False):
-        """solve(self, b, x=None, transpose=False)
-        Solves the equation AX=B using the factored A matrix
-
-        Note
-        ----
-        The data will be copied if not contiguous in all cases. If multiple rhs
-        are given, the input arrays will be copied if not in a contiguous
-        Fortran order.
+        """Solves the equation AX=B using the factored A matrix
 
         Parameters
         ----------
@@ -234,12 +211,15 @@ class MKLPardisoSolver:
 
         Returns
         -------
-        numpy array
+        numpy.ndarray
             array containing the solution (in Fortran ordering)
-        """
-        if(not self._factored):
-            raise PardisoError("Cannot solve without a previous factorization.")
 
+        Notes
+        -----
+        The data will be copied if not contiguous in all cases. If multiple rhs
+        are given, the input arrays will be copied if not in a contiguous
+        Fortran order.
+        """
         if b.dtype != self._data_dtype:
             warnings.warn("rhs does not have the same data type as A",
                             PardisoTypeConversionWarning)
@@ -279,6 +259,9 @@ class MKLPardisoSolver:
         if x is b or (x.base is not None and (x.base is b.base)):
             raise ValueError("x and b cannot point to the same memory")
 
+        if not self._factored:
+            self._factor()
+
         self._handle.set_iparm(11, 2 if transpose else 0)
 
         phase = 33
@@ -308,7 +291,11 @@ class MKLPardisoSolver:
             if sp.isspmatrix_csc(mat):
                 mat = mat.T  # Transpose to get a CSR matrix since it's symmetric
             mat = sp.triu(mat, format='csr')
-        mat = _ensure_csr(mat)
+
+        if not (sp.isspmatrix_csr(mat)):
+            warnings.warn("Converting %s matrix to CSR format."
+                          % mat.__class__.__name__, PardisoTypeConversionWarning)
+            mat = mat.tocsr()
         mat.sort_indices()
         mat.sum_duplicates()
 
@@ -335,7 +322,7 @@ class MKLPardisoSolver:
 
     def _analyze(self):
         phase = 11
-        xb_dummy = np.empty([1,1], dtype=self._data_dtype)
+        xb_dummy = np.empty([1, 1], dtype=self._data_dtype)
         error = self._handle.call_pardiso(phase, self._data, self._indptr, self._indices, xb_dummy, xb_dummy)
         if error:
             raise PardisoError("Analysis step error, "+_err_messages[error])
@@ -343,7 +330,7 @@ class MKLPardisoSolver:
     def _factor(self):
         phase = 22
         self._factored = False
-        xb_dummy = np.empty([1,1], dtype=self._data_dtype)
+        xb_dummy = np.empty([1, 1], dtype=self._data_dtype)
         error = self._handle.call_pardiso(phase, self._data, self._indptr, self._indices, xb_dummy, xb_dummy)
 
         if error:
