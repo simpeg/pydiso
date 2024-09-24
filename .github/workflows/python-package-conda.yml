@@ -70,7 +70,6 @@ jobs:
       run: |
         ${{ matrix.coverage && 'coverage run -m' || '' }} pytest -s -v
         ${{ matrix.coverage && 'coverage xml' || '' }}
-#      continue-on-error: ${{ matrix.os == 'windows-latest' && matrix.mkl-version == '2024'}}
 
     - name: Upload coverage
       if: ${{ matrix.coverage }}
@@ -93,9 +92,8 @@ jobs:
     - name: Setup Conda
       uses: conda-incubator/setup-miniconda@v3
       with:
-        python-version: 3.11
-        mamba-version: '*'
-        channels: conda-forge, defaults
+        python-version: "3.11"
+        channels: defaults
         channel-priority: true
         activate-environment: dev
 
