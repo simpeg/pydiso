@@ -143,14 +143,16 @@ class MKLPardisoSolver:
 
         self.matrix_type = matrix_type
 
-        indptr = np.asarray(A.indptr)  # double check it's a numpy array
+        A = self._validate_csr_matrix(A)
+
+        max_a_ind_itemsize = max(A.indptr.itemsize, A.indices.itemsize)
         mkl_int_size = get_mkl_int_size()
         mkl_int64_size = get_mkl_int64_size()
 
-        target_int_size = mkl_int_size if indptr.itemsize <= mkl_int_size else mkl_int64_size
+        target_int_size = mkl_int_size if max_a_ind_itemsize <= mkl_int_size else mkl_int64_size
         self._ind_dtype = np.dtype(f"i{target_int_size}")
 
-        data, indptr, indices = self._validate_matrix(A)
+        data, indptr, indices = self._validate_matrix_dtypes(A)
         self._data = data
         self._indptr = indptr
         self._indices = indices
@@ -185,7 +187,9 @@ class MKLPardisoSolver:
             raise TypeError("A is not a sparse matrix.")
         if A.shape != self.shape:
             raise ValueError("A is not the same size as the previous matrix.")
-        data, indptr, indices = self._validate_matrix(A)
+
+        A = self._validate_csr_matrix(A)
+        data, indptr, indices = self._validate_matrix_dtypes(A)
         if len(data) != len(self._data):
             raise ValueError("new A matrix does not have the same number of non zeros.")
 
@@ -284,21 +288,24 @@ class MKLPardisoSolver:
         """
         return np.array(self._handle.iparm)
 
-    def _validate_matrix(self, mat):
-
+    def _validate_csr_matrix(self, mat):
         if self.matrix_type in [-2, 2, -4, 4, 6]:
-            #  Symmetric matrices must have only the upper triangle
-            if sp.isspmatrix_csc(mat):
-                mat = mat.T  # Transpose to get a CSR matrix since it's symmetric
+            # only grab the upper triangle.
             mat = sp.triu(mat, format='csr')
 
-        if not (sp.isspmatrix_csr(mat)):
-            warnings.warn("Converting %s matrix to CSR format."
-                          % mat.__class__.__name__, PardisoTypeConversionWarning)
+        if mat.format != 'csr':
+            warnings.warn(
+                "Converting %s matrix to CSR format."% A.__class__.__name__,
+                PardisoTypeConversionWarning,
+                stacklevel=3
+            )
             mat = mat.tocsr()
+
         mat.sort_indices()
         mat.sum_duplicates()
+        return mat
 
+    def _validate_matrix_dtypes(self, mat):
         data = np.require(mat.data, self._data_dtype, requirements="C")
         indptr = np.require(mat.indptr, self._ind_dtype, requirements="C")
         indices = np.require(mat.indices, self._ind_dtype, requirements="C")
