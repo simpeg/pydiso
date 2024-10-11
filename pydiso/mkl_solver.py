@@ -295,7 +295,7 @@ class MKLPardisoSolver:
 
         if mat.format != 'csr':
             warnings.warn(
-                "Converting %s matrix to CSR format."% A.__class__.__name__,
+                "Converting %s matrix to CSR format."% mat.__class__.__name__,
                 PardisoTypeConversionWarning,
                 stacklevel=3
             )
