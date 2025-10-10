@@ -85,4 +85,4 @@ if __name__ == "__main__":
     with open(out_name, "w") as f:
         yaml.safe_dump(env_data, f, sort_keys=False)
 
-    print("✅ Generated environment_ci.yml with", len(deps), "dependencies")
+    print("Generated environment_ci.yml with", len(deps), "dependencies")
