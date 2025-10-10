@@ -10,3 +10,7 @@ mkl_solver.c.dep
 coverage.xml
 
 .idea/
+
+.vscode/
+
+environment_ci.yml
