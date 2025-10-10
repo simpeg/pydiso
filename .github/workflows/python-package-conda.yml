@@ -22,7 +22,7 @@ jobs:
         include:
           - os: ubuntu-latest
             python-version: "3.12"
-            coverage: ${{ true }}
+            coverage: true
           - os: macos-15-intel
             python-version: "3.11"
             mkl-version: "2023"
@@ -36,27 +36,35 @@ jobs:
             free-threaded: true
           - python-version: "3.12"
             free-threaded: true
+          - python-version: "3.14"
+            free-threaded: true
+            mkl-version: "2025"
 
     steps:
     - uses: actions/checkout@v5
       with:
         fetch-depth: 0
 
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.13"
+    
+    - name: Create Conda environment file
+      run: |
+        python -m pip install pyyaml
+        python .github/make_ci_environ.py
+      env:
+        PYTHON_VERSION: ${{ matrix.python-version}}
+        MKL_VERSION: ${{ matrix.mkl-version }}
+        FREE_THREADED: ${{ matrix.free-threaded && 'true' || 'false' }}
+        DO_COVERAGE: ${{ matrix.coverage && 'true' || 'false' }}
+        ENV_NAME: pydiso-ci
+
     - name: Setup Conda
       uses: conda-incubator/setup-miniconda@v3
       with:
-        channels: conda-forge, defaults
-        channel-priority: true
-        activate-environment: dev
-
-    - name: Create environment
-      run: |
-        conda install --quiet --yes -c conda-forge \
-          ${{ matrix.free-threaded && 'python-freethreading' || 'python' }}=${{ matrix.python-version }} \
-          pip numpy scipy cython mkl=${{ matrix.mkl-version }} pytest \
-          mkl-devel pkg-config meson-python meson ninja setuptools_scm \
-          ${{ matrix.coverage && 'coverage' || ''}} \
-          ${{ matrix.os == 'windows-latest' && '"libblas=*=*mkl"' || ''}}
+        activate-environment: pydiso-ci
 
     - name: Conda information
       run: |
@@ -70,8 +78,6 @@ jobs:
           --config-setting=compile-args=-v \
           ${{ matrix.coverage && '--config-settings=setup-args="-Db_coverage=true"' || ''}} \
           ${{ matrix.os == 'windows-latest' && '--config-settings=setup-args="-Dvsenv=true"' || ''}}
-
-        conda list
 
     - name: Run Tests
       run: |

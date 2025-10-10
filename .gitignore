@@ -12,3 +12,5 @@ coverage.xml
 .idea/
 
 .vscode/
+
+environment_ci.yml
