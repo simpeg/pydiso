@@ -3,7 +3,7 @@
 build-backend = 'mesonpy'
 requires = [
     "meson-python>=0.15.0",
-    "Cython>=3.0.8",
+    "Cython>=3.1.0",
     "setuptools_scm[toml]>=6.2",
     "numpy>=2.0.0rc1",
 ]
@@ -13,7 +13,7 @@ name = 'pydiso'
 dynamic = ["version"]
 description = "Wrapper for intel's pardiso implementation in the MKL"
 readme = 'README.md'
-requires-python = '>=3.10'
+requires-python = '>=3.11'
 authors = [
   {name = 'SimPEG developers', email = 'josephrcapriotti@gmail.com'},
 ]
@@ -28,7 +28,7 @@ dependencies = [
     # TODO: update to "pin-compatible" once possible, see
     # https://github.com/mesonbuild/meson-python/issues/29
     "numpy>=1.22.4",
-    "scipy>=1.8",
+    "scipy>=1.12",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -57,11 +57,11 @@ test = [
 ]
 
 build = [
-    "meson-python>=0.14.0",
+    "meson-python>=0.15.0",
     "meson",
     "ninja",
-    "numpy>=1.22.4",
-    "cython>=0.29.35",
+    "numpy>=2.0.0rc1",
+    "cython>=3.1.0",
     "setuptools_scm",
 ]
 
@@ -74,7 +74,6 @@ Repository = 'https://github.com/simpeg/pydiso.git'
 
 [tool.coverage.run]
 branch = true
-plugins = ["Cython.Coverage"]
 source = ["pydiso", "tests"]
 
 [tool.coverage.report]

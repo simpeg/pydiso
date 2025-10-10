@@ -10,3 +10,5 @@ mkl_solver.c.dep
 coverage.xml
 
 .idea/
+
+.vscode/

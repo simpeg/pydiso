@@ -22,40 +22,50 @@ jobs:
     strategy:
       fail-fast: False
       matrix:
-        os: [ubuntu-latest, macos-12, windows-latest]
-        python-version: ["3.10", "3.11", "3.12", "3.13"]
-        mkl-version: ['2023', '2024']
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+        mkl-version: ['2024', '2025']
+        free-threaded: [true, false]
         include:
           - os: ubuntu-latest
             python-version: "3.12"
             coverage: ${{ true }}
+          - os: macos-15-intel
+            python-version: "3.12"
+            mkl-version: "2023"
+            free-threaded: false
         exclude:
-          - os: macos-12
-            mkl-version: "2024"
+          - python-version: "3.11"
+            free-threaded: true
+          - python-version: "3.12"
+            free-threaded: true
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+
     - name: Setup Conda
       uses: conda-incubator/setup-miniconda@v3
       with:
-        python-version: ${{ matrix.python-version }}
         channels: conda-forge, defaults
         channel-priority: true
         activate-environment: dev
+
+    - name: Create environment
+      run: |
+        conda install --quiet --yes -c conda-forge \
+          ${{ matrix.free-threaded && "python-freethreaded" || "python" }}=${{ matrix.python-version }} \
+          pip numpy scipy cython mkl=${{ matrix.mkl-version }} pytest \
+          mkl-devel pkg-config meson-python meson ninja setuptools_scm \
+          ${{ matrix.coverage && 'coverage' || ''}} \
+          ${{ matrix.os == 'windows-latest' && '"libblas=*=*mkl"' || ''}}
 
     - name: Conda information
       run: |
         conda info
         conda list
         conda config --show
-
-    - name: Create environment
-      run: |
-        conda install --quiet --yes -c conda-forge \
-          pip numpy scipy cython mkl=${{ matrix.mkl-version }} pytest \
-          mkl-devel pkg-config meson-python meson ninja setuptools_scm \
-          ${{ matrix.coverage && 'coverage' || ''}} \
-          ${{ matrix.os == 'windows-latest' && '"libblas=*=*mkl"' || ''}}
 
     - name: Install Our Package
       run: |

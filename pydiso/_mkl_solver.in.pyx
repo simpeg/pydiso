@@ -1,13 +1,8 @@
-#cython: language_level=3
+# cython: language_level=3
+# cython: embedsignature=True, language_level=3
+# cython: freethreading_compatible=True
 cimport numpy as np
 import cython
-from cpython.pythread cimport (
-    PyThread_type_lock,
-    PyThread_allocate_lock,
-    PyThread_acquire_lock,
-    PyThread_release_lock,
-    PyThread_free_lock
-)
 
 import numpy as np
 import os
@@ -78,7 +73,6 @@ class PardisoError(Exception):
 
 class PardisoWarning(UserWarning):
     pass
-
 
 #call pardiso (pt, maxfct, mnum, mtype, phase, n, a, ia, ja, perm, nrhs, iparm, msglvl, b, x, error)
 cdef int mkl_progress(int *thread, int* step, char* stage, int stage_len) nogil:
@@ -175,7 +169,7 @@ ctypedef fused real_or_complex:
 {{for int_type in ["int_t", "long_t"]}}
 cdef class _PardisoHandle_{{int_type}}:
     cdef _MKL_DSS_HANDLE_t handle[64]
-    cdef PyThread_type_lock lock
+    cdef cython.pymutex lock
 
     cdef {{int_type}} n, maxfct, mnum, msglvl
     cdef public {{int_type}} matrix_type
@@ -184,7 +178,6 @@ cdef class _PardisoHandle_{{int_type}}:
 
     @cython.boundscheck(False)
     def __cinit__(self, A_dat_dtype, n, matrix_type, maxfct, mnum, msglvl):
-        self.lock = PyThread_allocate_lock()
 
         np_int_dtype = np.dtype(f"i{sizeof({{int_type}})}")
 
@@ -197,11 +190,13 @@ cdef class _PardisoHandle_{{int_type}}:
         self.mnum = mnum
         self.msglvl = msglvl
 
-        if self.msglvl:
-            #for reporting factorization progress via python's `print`
-            mkl_set_progress(mkl_progress)
-        else:
-            mkl_set_progress(mkl_no_progress)
+
+        with self.lock:
+            if self.msglvl:
+                #for reporting factorization progress via python's `print`
+                mkl_set_progress(mkl_progress)
+            else:
+                mkl_set_progress(mkl_no_progress)
 
         is_single_precision = np.issubdtype(A_dat_dtype, np.single) or np.issubdtype(A_dat_dtype, np.csingle)
 
@@ -264,14 +259,13 @@ cdef class _PardisoHandle_{{int_type}}:
         cdef {{int_type}} error, nrhs
         with nogil:
             nrhs = rhs.shape[1]
-            PyThread_acquire_lock(self.lock, mode=1)
-            pardiso{{if int_type == "long_t"}}_64{{endif}}(
-                    self.handle, &self.maxfct, &self.mnum, &self.matrix_type, &phase, &self.n,
-                    &a_data[0], &a_indptr[0], &a_indices[0], &self.perm[0],
-                    &nrhs, self.iparm, &self.msglvl,
-                    &rhs[0, 0], &out[0, 0], &error
-                )
-            PyThread_release_lock(self.lock)
+            with self.lock:
+                pardiso{{if int_type == "long_t"}}_64{{endif}}(
+                        self.handle, &self.maxfct, &self.mnum, &self.matrix_type, &phase, &self.n,
+                        &a_data[0], &a_indptr[0], &a_indices[0], &self.perm[0],
+                        &nrhs, self.iparm, &self.msglvl,
+                        &rhs[0, 0], &out[0, 0], &error
+                    )
         return error
 
     @cython.boundscheck(False)
@@ -280,20 +274,15 @@ cdef class _PardisoHandle_{{int_type}}:
         cdef {{int_type}} phase = -1, nrhs = 0, error = 0
 
         with nogil:
-            PyThread_acquire_lock(self.lock, mode=1)
-            if self._initialized():
-                pardiso{{if int_type == "long_t"}}_64{{endif}}(
-                            self.handle, &self.maxfct, &self.mnum, &self.matrix_type,
-                            &phase, &self.n, NULL, NULL, NULL, NULL, &nrhs, self.iparm,
-                            &self.msglvl, NULL, NULL, &error)
-                if error == 0:
-                    for i in range(64):
-                        self.handle[i] = NULL
-            PyThread_release_lock(self.lock)
+            with self.lock:
+                if self._initialized():
+                    pardiso{{if int_type == "long_t"}}_64{{endif}}(
+                                self.handle, &self.maxfct, &self.mnum, &self.matrix_type,
+                                &phase, &self.n, NULL, NULL, NULL, NULL, &nrhs, self.iparm,
+                                &self.msglvl, NULL, NULL, &error)
+                    if error == 0:
+                        for i in range(64):
+                            self.handle[i] = NULL
         if error != 0:
             raise MemoryError("Pardiso Memory release error: " + _err_messages[error])
-        if self.lock:
-            #deallocate the lock
-            PyThread_free_lock(self.lock)
-            self.lock = NULL
 {{endfor}}

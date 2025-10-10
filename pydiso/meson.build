@@ -1,5 +1,5 @@
 cython_file = custom_target(
-    input: '_mkl_solver.pyx.in',
+    input: '_mkl_solver.in.pyx',
     output: '_mkl_solver.pyx',
     command: [py,
   '-c',
@@ -60,6 +60,11 @@ else
 
 endif
 
+cython_args = []
+if cy.version().version_compare('>=3.1.0')
+  cython_args += ['-Xfreethreading_compatible=True']
+endif
+
 c_undefined_ok = ['-Wno-maybe-uninitialized']
 cython_c_args = [numpy_nodepr_api, '-DCYTHON_CCOMPLEX=0']
 
@@ -68,6 +73,7 @@ module_path = 'pydiso'
 py.extension_module(
     '_mkl_solver',
     cython_file,
+    cython_args: cython_args,
     c_args: cython_c_args,
     install: true,
     subdir: module_path,
