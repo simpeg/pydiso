@@ -7,7 +7,7 @@ concurrency:
 
 jobs:
   build-and-test:
-    name: Testing (Python ${{ matrix.python-version }}, on ${{ matrix.os }}, with MKL ${{ matrix.mkl-version }})
+    name: Testing (Python ${{ matrix.python-version }}${{ matrix.free-threaded && 't' || '' }}, on ${{ matrix.os }}, with MKL ${{ matrix.mkl-version }})
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -23,6 +23,10 @@ jobs:
           - os: ubuntu-latest
             python-version: "3.12"
             coverage: ${{ true }}
+          - os: macos-15-intel
+            python-version: "3.11"
+            mkl-version: "2023"
+            free-threaded:
           - os: macos-15-intel
             python-version: "3.12"
             mkl-version: "2023"
@@ -48,7 +52,7 @@ jobs:
     - name: Create environment
       run: |
         conda install --quiet --yes -c conda-forge \
-          ${{ matrix.free-threaded && 'python-freethreaded' || 'python' }}=${{ matrix.python-version }} \
+          ${{ matrix.free-threaded && 'python-freethreading' || 'python' }}=${{ matrix.python-version }} \
           pip numpy scipy cython mkl=${{ matrix.mkl-version }} pytest \
           mkl-devel pkg-config meson-python meson ninja setuptools_scm \
           ${{ matrix.coverage && 'coverage' || ''}} \
