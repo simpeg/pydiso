@@ -1,16 +1,9 @@
 name: Testing
 
-on:
-  push:
-    branches:
-      - '*'
-    tags:
-      - 'v*'
-  pull_request:
-    branches:
-      - '*'
-  schedule:
-    - cron: "0 13 * * 1"
+on: [push, pull_request]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-and-test:
@@ -33,7 +26,7 @@ jobs:
           - os: macos-15-intel
             python-version: "3.12"
             mkl-version: "2023"
-            free-threaded: false
+            free-threaded:
         exclude:
           - python-version: "3.11"
             free-threaded: true
@@ -55,7 +48,7 @@ jobs:
     - name: Create environment
       run: |
         conda install --quiet --yes -c conda-forge \
-          ${{ matrix.free-threaded && "python-freethreaded" || "python" }}=${{ matrix.python-version }} \
+          ${{ matrix.free-threaded && 'python-freethreaded' || 'python' }}=${{ matrix.python-version }} \
           pip numpy scipy cython mkl=${{ matrix.mkl-version }} pytest \
           mkl-devel pkg-config meson-python meson ninja setuptools_scm \
           ${{ matrix.coverage && 'coverage' || ''}} \
