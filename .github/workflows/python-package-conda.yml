@@ -99,16 +99,34 @@ jobs:
   build_sdist:
     name: Build source distribution
     runs-on: ubuntu-latest
+    env:
+      ONEAPI_ROOT: /opt/intel/oneapi
     steps:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - name: install MKL-dev headers
-        run: sudo apt install libmkl-dev
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.13"
+
+      - name: Add Intel repository
+        run: |
+          wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+          sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+          rm GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+          sudo add-apt-repository "deb https://apt.repos.intel.com/oneapi all main"
+          sudo apt-get update
+
+      - name: Install Intel OneAPI
+        run: |
+          sudo apt-get install intel-oneapi-mkl-devel
 
       - name: Build sdist
-        run: pipx run build --sdist
+        run: |
+          source ${{ env.ONEAPI_ROOT }}/setvars.sh
+          python -m build --sdist
 
       - uses: actions/upload-artifact@v4
         with:
