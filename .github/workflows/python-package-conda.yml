@@ -106,27 +106,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.13"
-
-      - name: Add Intel repository
-        run: |
-          wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-          sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-          rm GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-          sudo add-apt-repository "deb https://apt.repos.intel.com/oneapi all main"
-          sudo apt-get update
-
-      - name: Install Intel OneAPI
-        run: |
-          sudo apt-get install intel-oneapi-mkl-devel
-
       - name: Build sdist
-        run: |
-          source ${{ env.ONEAPI_ROOT }}/setvars.sh
-          pipx run build --sdist
+        run: pipx run build --sdist -Csetup-args="-Ddist_ignore_mkl_dep=true"
 
       - uses: actions/upload-artifact@v4
         with:
