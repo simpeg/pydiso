@@ -99,8 +99,6 @@ jobs:
   build_sdist:
     name: Build source distribution
     runs-on: ubuntu-latest
-    env:
-      ONEAPI_ROOT: /opt/intel/oneapi
     steps:
       - uses: actions/checkout@v5
         with:
