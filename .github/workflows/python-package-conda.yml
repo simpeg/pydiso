@@ -104,6 +104,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: install MKL-dev headers
+        run: sudo apt install libmkl-dev
+
       - name: Build sdist
         run: pipx run build --sdist
 
