@@ -126,7 +126,7 @@ jobs:
       - name: Build sdist
         run: |
           source ${{ env.ONEAPI_ROOT }}/setvars.sh
-          python -m build --sdist
+          pipx run build --sdist
 
       - uses: actions/upload-artifact@v4
         with:
