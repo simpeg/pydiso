@@ -52,7 +52,7 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: "3.13"
-    
+
     - name: Create Conda environment file
       run: |
         python -m pip install pyyaml
@@ -96,45 +96,50 @@ jobs:
         verbose: true # optional (default = false)
         token: ${{ secrets.CODECOV_TOKEN }} # required
 
-  distribute:
-    name: Distributing from 3.11
-    needs: build-and-test
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+  build_sdist:
+    name: Build source distribution
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Build sdist
+        run: pipx run build --sdist -Csetup-args="-Ddist_ignore_mkl_dep=true"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cibw-sdist
+          path: dist/*.tar.gz
+
+  release:
+    needs: [
+      build_sdist
+    ]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     defaults:
       run:
         shell: bash -l {0}
-
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup Conda
-      uses: conda-incubator/setup-miniconda@v3
+    - uses: actions/download-artifact@v4
       with:
-        python-version: "3.11"
-        channels: defaults
-        channel-priority: true
-        activate-environment: dev
+        # unpacks all CIBW artifacts into dist/
+        pattern: cibw-*
+        path: dist
+        merge-multiple: true
 
-    - name: Install Env
-      run: |
-        conda info
-        conda list
-        conda config --show
+    - name: Release to github
+      uses: softprops/action-gh-release@v2
+      with:
+        files: dist/*
+        generate_release_notes: true
+        prerelease: false
 
-    - name: Create environment
-      run: |
-        conda install --quiet --yes -c conda-forge \
-          pip numpy scipy cython mkl=2023 \
-          mkl-devel pkg-config meson-python meson ninja setuptools_scm \
-          python-build
-
-    - name: Generate Source Distribution
-      run: |
-        python -m build --no-isolation --skip-dependency-check --sdist .
-
-    - name: pypi-publish
-      uses: pypa/gh-action-pypi-publish@v1.4.2
+    - name: Upload wheels to pypi
+      uses: pypa/gh-action-pypi-publish@release/v1
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
-        skip_existing: true
+        skip-existing: true
+        packages-dir: ./dist/

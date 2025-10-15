@@ -40,8 +40,10 @@ mkl_version_req = '>=2023.0'
 
 use_sdl = get_option('use-sdl')
 
+mkl_required = not get_option('dist_ignore_mkl_dep')
+
 if use_sdl
-    mkl_dep = dependency('mkl-sdl', required: true)
+    mkl_dep = dependency('mkl-sdl', required: mkl_required)
 else
     # find mkl
     mkl_dep = dependency(mkl_dep_name,
@@ -55,7 +57,7 @@ else
     # or missing it because no pkg-config installed. If so, we need to retry
     # with MKL SDL, and drop the version constraint.
     if not mkl_dep.found() and mkl_may_use_sdl
-        mkl_dep = dependency('mkl-sdl', required: true)
+        mkl_dep = dependency('mkl-sdl', required: mkl_required)
     endif
 
 endif

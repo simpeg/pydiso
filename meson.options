@@ -6,3 +6,7 @@ option('use-ilp64', type: 'boolean', value: false,
 
 option('mkl-threading', type: 'string', value: 'auto',
         description: 'MKL threading method, one of: `seq`, `iomp`, `gomp`, `tbb`')
+
+option('dist_ignore_mkl_dep', type: 'boolean', value: false,
+       description: 'Mark the mkl dep as optional, for use during source distribution archiving.'
+)
