@@ -38,7 +38,7 @@ class PardisoTypeConversionWarning(
 
 class MKLPardisoSolver:
 
-    def __init__(self, A, matrix_type=None, factor=True, verbose=False):
+    def __init__(self, A, matrix_type=None, factor=True, verbose=False, iparm_overrides=None):
         '''An interface to the Intel MKL pardiso sparse matrix solver.
 
         This is a solver class for a scipy sparse matrix using the Pardiso sparse
@@ -61,6 +61,10 @@ class MKLPardisoSolver:
             Whether to perform the factorization stage upon instantiation of the class.
         verbose : bool, optional
             Enable verbose output from the pardiso solver.
+        iparm_overrides : dict, optional
+            A dictionary of {index: value} pairs to override default iparm settings
+            before the analysis phase. This is useful for iparm parameters that affect
+            the analysis stage (e.g., iparm[10] and iparm[12]).
 
         Notes
         -----
@@ -162,6 +166,10 @@ class MKLPardisoSolver:
         else:
             HandleClass = _PardisoHandle_long_t
         self._handle = HandleClass(self._data_dtype, self.shape[0], matrix_type, maxfct=1, mnum=1, msglvl=verbose)
+
+        if iparm_overrides is not None:
+            for i, val in iparm_overrides.items():
+                self.set_iparm(i, val)
 
         self._analyze()
         self._factored = False

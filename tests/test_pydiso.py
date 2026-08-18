@@ -150,6 +150,73 @@ def test_rhs_size_error():
     with pytest.raises(ValueError):
         solver.solve(b, x_bad)
 
+def test_iparm_overrides():
+    """Test that iparm_overrides are applied before the analysis phase.
+
+    iparm[10] and iparm[12] affect the analysis stage, so they must be set
+    before _analyze() is called. This test verifies that passing them via
+    iparm_overrides works correctly. See GitHub issue #24.
+    """
+    A = A_real_dict["real_symmetric_positive_definite"]
+    x = xr.copy()
+    b = A @ x
+
+    # For SPD matrices the defaults are iparm[10]=8 and iparm[12]=0.
+    # Override them to use scaling and improved accuracy (nonsymmetric-style).
+    solver = Solver(
+        A,
+        matrix_type="real_symmetric_positive_definite",
+        iparm_overrides={10: 1, 12: 1},
+    )
+    # Verify the overrides were applied
+    assert solver.iparm[10] == 1
+    assert solver.iparm[12] == 1
+
+    # Verify the solver still produces correct results
+    x2 = solver.solve(b)
+    eps = np.finfo(np.float64).eps
+    np.testing.assert_allclose(x, x2, atol=2E3*eps)
+
+
+def test_iparm_overrides_nonsymmetric():
+    """Test iparm_overrides with a nonsymmetric matrix."""
+    A = A_real_dict["real_nonsymmetric"]
+    x = xr.copy()
+    b = A @ x
+
+    # For nonsymmetric matrices the defaults are iparm[10]=13 and iparm[12]=1.
+    # Override to disable scaling and improved accuracy.
+    solver = Solver(
+        A,
+        matrix_type="real_nonsymmetric",
+        iparm_overrides={10: 0, 12: 0},
+    )
+    assert solver.iparm[10] == 0
+    assert solver.iparm[12] == 0
+
+    x2 = solver.solve(b)
+    eps = np.finfo(np.float64).eps
+    np.testing.assert_allclose(x, x2, atol=2E3*eps)
+
+
+def test_iparm_overrides_invalid():
+    """Test that invalid iparm indices are rejected in overrides."""
+    A = A_real_dict["real_symmetric_positive_definite"]
+    with pytest.raises(IndexError):
+        Solver(A, matrix_type="real_symmetric_positive_definite", iparm_overrides={100: 1})
+    with pytest.raises(ValueError):
+        Solver(A, matrix_type="real_symmetric_positive_definite", iparm_overrides={0: 1})
+
+
+def test_iparm_overrides_default_none():
+    """Test that iparm_overrides=None (the default) preserves existing behavior."""
+    A = A_real_dict["real_nonsymmetric"]
+    solver = Solver(A, matrix_type="real_nonsymmetric")
+    # Default iparm values for nonsymmetric
+    assert solver.iparm[10] == 1
+    assert solver.iparm[12] == 1
+
+
 def test_threading():
     """
     Here we test that calling the solver is safe from multiple threads.
