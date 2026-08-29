@@ -376,11 +376,6 @@ class MKLPardisoSolver:
             factorization (``iparm[18]``). If None (default), leaves the value from
             ``__init__`` or a previous call to `refactor` unchanged (it is sticky, not reset to
             a default).
-
-        Notes
-        -----
-        Any passed keyword arguments altering the refactor behavoir persist, altering further
-        behavoir of the solver in the same way.
         """
         #Assumes that the matrix A has the same non-zero pattern and ordering
         #as the initial A matrix
@@ -458,9 +453,6 @@ class MKLPardisoSolver:
         The data will be copied if not contiguous in all cases. If multiple rhs
         are given, the input arrays will be copied if not in a contiguous
         Fortran order.
-
-        Any passed keyword arguments altering the refactor behavoir persist, altering further
-        behavoir of the solver in the same way.
         """
         if b.dtype != self._data_dtype:
             warnings.warn("rhs does not have the same data type as A",
