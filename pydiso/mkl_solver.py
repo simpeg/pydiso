@@ -154,7 +154,8 @@ class MKLPardisoSolver:
             Default is False (classic algorithm).
         out_of_core_mode : OutOfCoreMode or int, optional
             Whether Pardiso factors entirely in-core, or spills to disk (``iparm[59]``).
-            Default is ``OutOfCoreMode.IN_CORE``.
+            Default is ``OutOfCoreMode.IN_CORE``. See details about using out of core mode
+            here: `Out of core guide <https://www.intel.com/content/www/us/en/developer/articles/training/how-to-use-ooc-pardiso.html>`_
 
         Notes
         -----
