@@ -1,3 +1,4 @@
+import enum
 import numpy as np
 import scipy.sparse as sp
 from ._mkl_solver import (
@@ -17,19 +18,39 @@ from ._mkl_solver import (
 import warnings
 
 
-MATRIX_TYPES ={
-    'real_structurally_symmetric': 1,
-    'real_symmetric_positive_definite': 2,
-    'real_symmetric_indefinite': -2,
-    'complex_structurally_symmetric': 3,
-    'complex_hermitian_positive_definite': 4,
-    'complex_hermitian_indefinite': -4,
-    'complex_symmetric': 6,
-    'real_nonsymmetric': 11,
-    'complex_nonsymmetric': 13}
+class MatrixType(enum.IntEnum):
+    """Matrix type describing the structure/symmetry of the sparse matrix ``A``."""
+    REAL_STRUCTURALLY_SYMMETRIC = 1
+    REAL_SYMMETRIC_POSITIVE_DEFINITE = 2
+    REAL_SYMMETRIC_INDEFINITE = -2
+    COMPLEX_STRUCTURALLY_SYMMETRIC = 3
+    COMPLEX_HERMITIAN_POSITIVE_DEFINITE = 4
+    COMPLEX_HERMITIAN_INDEFINITE = -4
+    COMPLEX_SYMMETRIC = 6
+    REAL_NONSYMMETRIC = 11
+    COMPLEX_NONSYMMETRIC = 13
+
+
+MATRIX_TYPES = {member.name.lower(): member.value for member in MatrixType}
 """dict : matrix type string keys and corresponding integer value to describe
 the different supported matrix types.
+
+Kept for backward compatibility — prefer `MatrixType` for new code.
 """
+
+
+class FillReducingOrdering(enum.IntEnum):
+    """Fill-reducing ordering algorithm used during the analysis phase (``iparm[1]``)."""
+    MINIMUM_DEGREE = 0
+    NESTED_DISSECTION = 2
+    PARALLEL_NESTED_DISSECTION = 3
+
+
+class OutOfCoreMode(enum.IntEnum):
+    """Whether Pardiso factors in-core or spills to disk (``iparm[59]``)."""
+    IN_CORE = 0
+    OUT_OF_CORE_IF_NEEDED = 1
+    OUT_OF_CORE = 2
 
 
 class PardisoTypeConversionWarning(
@@ -38,7 +59,22 @@ class PardisoTypeConversionWarning(
 
 class MKLPardisoSolver:
 
-    def __init__(self, A, matrix_type=None, factor=True, verbose=False, iparm_overrides=None):
+    def __init__(
+        self, A, matrix_type=None, factor=True, verbose=False,
+        fill_reducing_ordering=FillReducingOrdering.NESTED_DISSECTION,
+        max_iterative_refinement_steps=0,
+        pivoting_perturbation=None,
+        scaling=None,
+        weighted_matching=None,
+        bunch_kaufman_pivoting=None,
+        cnr_threads=0,
+        low_rank_update=False,
+        report_nnz=True,
+        report_mflops=False,
+        parallel_factorization=False,
+        parallel_solve=False,
+        out_of_core_mode=OutOfCoreMode.IN_CORE,
+    ):
         '''An interface to the Intel MKL pardiso sparse matrix solver.
 
         This is a solver class for a scipy sparse matrix using the Pardiso sparse
@@ -54,17 +90,72 @@ class MKLPardisoSolver:
         ----------
         A : scipy.sparse.spmatrix
             A sparse matrix preferably in a CSR format.
-        matrix_type : str, int, or None, optional
-            A string describing the matrix type, or its corresponding integer code.
-            If None, then assumed to be nonsymmetric matrix.
+        matrix_type : MatrixType, str, int, or None, optional
+            A `MatrixType` member, its matching int, or (for backward compatibility) the
+            lowercase string form of its name (e.g. ``"real_nonsymmetric"``) describing the
+            matrix type. If None, then assumed to be nonsymmetric matrix.
         factor : bool, optional
             Whether to perform the factorization stage upon instantiation of the class.
         verbose : bool, optional
             Enable verbose output from the pardiso solver.
-        iparm_overrides : dict, optional
-            A dictionary of {index: value} pairs to override default iparm settings
-            before the analysis phase. This is useful for iparm parameters that affect
-            the analysis stage (e.g., iparm[10] and iparm[12]).
+        fill_reducing_ordering : FillReducingOrdering, int, or array_like, optional
+            Either the fill-reducing ordering algorithm to use during the analysis phase, or a
+            user-supplied permutation to use directly instead of computing one.
+
+            - A ``FillReducingOrdering`` member or matching int selects the algorithm
+              (``iparm[1]``). Default is ``FillReducingOrdering.NESTED_DISSECTION`` (METIS
+              nested dissection).
+            - A 1D array of length matching ``A``, containing a permutation of ``0..n-1``, is
+              used directly as Pardiso's ordering (``iparm[4] = 1``). Afterward, the `perm` 
+              property simply reflects what was supplied, rather than a library-computed
+              alternative.
+    
+        max_iterative_refinement_steps : int, optional
+            Maximum number of iterative refinement steps to perform (``iparm[7]``).
+            Default is 0 (the solver still performs up to two automatic steps if perturbed
+            pivots are encountered during numerical factorization).
+        pivoting_perturbation : int, or None, optional
+            Exponent (base 10) of the pivoting perturbation threshold (``iparm[9]``).
+            If None (default), uses the library default, which depends on ``matrix_type``
+            (13 for nonsymmetric matrices, 8 otherwise).
+        scaling : bool, or None, optional
+            Whether to enable maximum weighted matching-based scaling (``iparm[10]``).
+            If None (default), uses the library default, which depends on ``matrix_type``
+            (enabled for nonsymmetric matrices, disabled otherwise).
+        weighted_matching : bool, or None, optional
+            Whether to enable maximum weighted matching for improved accuracy (``iparm[12]``).
+            If None (default), uses the library default, which depends on ``matrix_type``
+            (enabled for nonsymmetric matrices, disabled otherwise).
+        bunch_kaufman_pivoting : bool, or None, optional
+            For symmetric indefinite matrices, whether to apply 1x1 and 2x2 Bunch-Kaufman
+            pivoting rather than 1x1 diagonal pivoting only (``iparm[20]``). If None (default),
+            uses the library default, which depends on ``matrix_type``.
+        cnr_threads : int, optional
+            Number of OpenMP threads to use for conditional numerical reproducibility (CNR)
+            mode (``iparm[33]``). Default is 0, meaning the number of threads is chosen
+            automatically (CNR mode itself is only active when explicitly configured
+            elsewhere).
+        low_rank_update : bool, optional
+            Whether to enable low-rank update, which can accelerate refactorization of a
+            sequence of matrices that share a sparsity pattern and differ only slightly
+            (``iparm[38]``). Default is False.
+        report_nnz : bool, optional
+            Whether Pardiso computes and reports the number of non-zero elements in the
+            factors (``iparm[17]``), which backs the `nnz` property. Default is True. If
+            False, `nnz` no longer reflects a real count.
+        report_mflops : bool, optional
+            Whether Pardiso computes and reports the number of Mflops needed for numerical
+            factorization (``iparm[18]``). Default is False (skips the extra computation).
+        parallel_factorization : bool, optional
+            Whether to use the two-level scheduling algorithm for factorization (``iparm[23]``).
+            Default is False (classic algorithm).
+        parallel_solve : bool, optional
+            Whether to use the parallel algorithm for the solve step (``iparm[24]``).
+            Default is False (classic algorithm).
+        out_of_core_mode : OutOfCoreMode or int, optional
+            Whether Pardiso factors entirely in-core, or spills to disk (``iparm[59]``).
+            Default is ``OutOfCoreMode.IN_CORE``. See details about using out of core mode
+            here: `Out of core guide <https://www.intel.com/content/www/us/en/developer/articles/training/how-to-use-ooc-pardiso.html>`_
 
         Notes
         -----
@@ -124,15 +215,17 @@ class MKLPardisoSolver:
         is_complex = np.issubdtype(data_dtype, np.complexfloating)
 
         if matrix_type is None:
-            if is_complex:
-                matrix_type = MATRIX_TYPES['complex_nonsymmetric']
-            else:
-                matrix_type = MATRIX_TYPES['real_nonsymmetric']
-
-        if not(matrix_type in MATRIX_TYPES or matrix_type in MATRIX_TYPES.values()):
-            raise TypeError(f'Unrecognized matrix_type: {matrix_type}')
-        if matrix_type in MATRIX_TYPES:
-            matrix_type = MATRIX_TYPES[matrix_type]
+            matrix_type = MatrixType.COMPLEX_NONSYMMETRIC if is_complex else MatrixType.REAL_NONSYMMETRIC
+        elif isinstance(matrix_type, str):
+            try:
+                matrix_type = MatrixType[matrix_type.upper()]
+            except KeyError:
+                raise TypeError(f'Unrecognized matrix_type: {matrix_type!r}')
+        else:
+            try:
+                matrix_type = MatrixType(matrix_type)
+            except ValueError:
+                raise TypeError(f'Unrecognized matrix_type: {matrix_type!r}')
 
         if matrix_type in [1, 2, -2, 11]:
             if is_complex:
@@ -167,16 +260,87 @@ class MKLPardisoSolver:
             HandleClass = _PardisoHandle_long_t
         self._handle = HandleClass(self._data_dtype, self.shape[0], matrix_type, maxfct=1, mnum=1, msglvl=verbose)
 
-        if iparm_overrides is not None:
-            for i, val in iparm_overrides.items():
-                self.set_iparm(i, val)
+        named_iparms = {}
+        if isinstance(fill_reducing_ordering, (int, np.integer)):
+            named_iparms[1] = int(FillReducingOrdering(fill_reducing_ordering))
+        else:
+            perm_arr = np.asarray(fill_reducing_ordering)
+            if perm_arr.ndim != 1 or perm_arr.shape[0] != self.shape[0]:
+                raise ValueError(
+                    "fill_reducing_ordering must be a FillReducingOrdering member/int, or a 1D "
+                    f"permutation array of length {self.shape[0]}; got shape {perm_arr.shape}"
+                )
+            if not np.array_equal(np.sort(perm_arr), np.arange(self.shape[0])):
+                raise ValueError("fill_reducing_ordering array must be a permutation of 0..n-1")
+            self._handle.perm[:] = np.require(perm_arr, dtype=self._ind_dtype, requirements="C")
+            named_iparms[4] = 1
+
+        if not isinstance(max_iterative_refinement_steps, (int, np.integer)):
+            raise TypeError(
+                "max_iterative_refinement_steps must be an int, got "
+                f"{type(max_iterative_refinement_steps).__name__}"
+            )
+        named_iparms[7] = int(max_iterative_refinement_steps)
+
+        if pivoting_perturbation is not None:
+            if not isinstance(pivoting_perturbation, (int, np.integer)) or pivoting_perturbation < 0:
+                raise ValueError(
+                    f"pivoting_perturbation must be a non-negative int, got {pivoting_perturbation!r}"
+                )
+            named_iparms[9] = int(pivoting_perturbation)
+
+        # scaling, weighted_matching, and bunch_kaufman_pivoting default to None (rather than
+        # a fixed literal) because the library's own default for them depends on matrix_type.
+        for name, value, index in (
+            ('scaling', scaling, 10),
+            ('weighted_matching', weighted_matching, 12),
+            ('bunch_kaufman_pivoting', bunch_kaufman_pivoting, 20),
+        ):
+            if value is not None:
+                if not isinstance(value, bool):
+                    raise TypeError(f"{name} must be a bool, got {type(value).__name__}")
+                named_iparms[index] = int(value)
+
+        for name, value, index in (
+            ('parallel_factorization', parallel_factorization, 23),
+            ('parallel_solve', parallel_solve, 24),
+            ('low_rank_update', low_rank_update, 38),
+        ):
+            if not isinstance(value, bool):
+                raise TypeError(f"{name} must be a bool, got {type(value).__name__}")
+            named_iparms[index] = int(value)
+
+        if not isinstance(cnr_threads, (int, np.integer)) or cnr_threads < 0:
+            raise ValueError(f"cnr_threads must be a non-negative int, got {cnr_threads!r}")
+        named_iparms[33] = int(cnr_threads)
+
+        # report_nnz and report_mflops use -1 (request the report) / 0 (don't bother), rather
+        # than the usual bool -> 1/0 mapping used elsewhere.
+        for name, value, index in (
+            ('report_nnz', report_nnz, 17),
+            ('report_mflops', report_mflops, 18),
+        ):
+            if not isinstance(value, bool):
+                raise TypeError(f"{name} must be a bool, got {type(value).__name__}")
+            named_iparms[index] = -1 if value else 0
+
+        named_iparms[59] = int(OutOfCoreMode(out_of_core_mode))
+
+        for i, val in named_iparms.items():
+            self.set_iparm(i, val)
 
         self._analyze()
         self._factored = False
         if factor:
             self._factor()
 
-    def refactor(self, A):
+    def refactor(
+        self, A,
+        pivoting_perturbation=None,
+        bunch_kaufman_pivoting=None,
+        preconditioned_cgs=None,
+        report_mflops=None,
+    ):
         """Reuse a symbolic factorization with a new matrix.
 
         Note
@@ -187,6 +351,31 @@ class MKLPardisoSolver:
         ----------
         A : scipy.sparse.spmatrix
             A sparse matrix preferably in a CSR format.
+        pivoting_perturbation : int, or None, optional
+            Exponent (base 10) of the pivoting perturbation threshold (``iparm[9]``).
+            If None (default), leaves the value from ``__init__`` or a previous call to
+            `refactor` unchanged (it is sticky, not reset to a default).
+        bunch_kaufman_pivoting : bool, or None, optional
+            For symmetric indefinite matrices, whether to apply 1x1 and 2x2 Bunch-Kaufman
+            pivoting rather than 1x1 diagonal pivoting only (``iparm[20]``). If None (default),
+            leaves the value from ``__init__`` or a previous call to `refactor` unchanged (it
+            is sticky, not reset to a default).
+        preconditioned_cgs : (int, int), or None, optional
+            A ``(L, K)`` pair encoding ``iparm[3]``, which lets Pardiso reuse the previous
+            factorization as a preconditioner for an accelerated CGS/CG refactorization instead
+            of a full LU/LDL^T refactorization (falling back to full factorization
+            automatically if it doesn't converge). ``L`` (1-9) is a stopping-tolerance exponent
+            (``10**-L``); ``K`` (1 or 2) selects the CGS/CG variant — per Intel's iparm(4)
+            documentation, ``K=1`` for nonsymmetric/structurally-symmetric matrices and ``K=2``
+            for symmetric/Hermitian matrices, though that choice is left to the caller rather
+            than inferred from ``matrix_type``. If None (default), leaves ``iparm[3]``
+            unchanged (it is sticky, not reset to a default). To force a full factorization
+            again after enabling this, call ``self.set_iparm(3, 0)`` directly.
+        report_mflops : bool, or None, optional
+            Whether Pardiso computes and reports the number of Mflops needed for numerical
+            factorization (``iparm[18]``). If None (default), leaves the value from
+            ``__init__`` or a previous call to `refactor` unchanged (it is sticky, not reset to
+            a default).
         """
         #Assumes that the matrix A has the same non-zero pattern and ordering
         #as the initial A matrix
@@ -202,12 +391,40 @@ class MKLPardisoSolver:
             raise ValueError("new A matrix does not have the same number of non zeros.")
 
         self._data = data
+
+        if pivoting_perturbation is not None:
+            if not isinstance(pivoting_perturbation, (int, np.integer)) or pivoting_perturbation < 0:
+                raise ValueError(
+                    f"pivoting_perturbation must be a non-negative int, got {pivoting_perturbation!r}"
+                )
+            self.set_iparm(9, int(pivoting_perturbation))
+
+        if bunch_kaufman_pivoting is not None:
+            if not isinstance(bunch_kaufman_pivoting, bool):
+                raise TypeError(
+                    f"bunch_kaufman_pivoting must be a bool, got {type(bunch_kaufman_pivoting).__name__}"
+                )
+            self.set_iparm(20, int(bunch_kaufman_pivoting))
+
+        if preconditioned_cgs is not None:
+            l, k = preconditioned_cgs
+            if not isinstance(l, (int, np.integer)) or not (1 <= l <= 9):
+                raise ValueError(f"preconditioned_cgs[0] (L) must be an int in 1..9, got {l!r}")
+            if not isinstance(k, (int, np.integer)) or k not in (1, 2):
+                raise ValueError(f"preconditioned_cgs[1] (K) must be 1 or 2, got {k!r}")
+            self.set_iparm(3, 10 * int(l) + int(k))
+
+        if report_mflops is not None:
+            if not isinstance(report_mflops, bool):
+                raise TypeError(f"report_mflops must be a bool, got {type(report_mflops).__name__}")
+            self.set_iparm(18, -1 if report_mflops else 0)
+
         self._factor()
 
     def __call__(self, b):
         return self.solve(b)
 
-    def solve(self, b, x=None, transpose=False):
+    def solve(self, b, x=None, transpose=False, max_iterative_refinement_steps=None):
         """Solves the equation AX=B using the factored A matrix
 
         Parameters
@@ -220,6 +437,11 @@ class MKLPardisoSolver:
             If None, a new array is constructed.
         transpose : bool, optional
             If True, it will solve A^TX=B using the factored A matrix.
+        max_iterative_refinement_steps : int, or None, optional
+            Maximum number of iterative refinement steps to perform (``iparm[7]``). Unlike
+            `transpose` (which is set fresh on every call), this is sticky: if None (default),
+            it leaves whatever value was last set by ``__init__`` or a previous call to `solve`
+            unchanged, rather than resetting to a default.
 
         Returns
         -------
@@ -276,6 +498,14 @@ class MKLPardisoSolver:
 
         self._handle.set_iparm(11, 2 if transpose else 0)
 
+        if max_iterative_refinement_steps is not None:
+            if not isinstance(max_iterative_refinement_steps, (int, np.integer)):
+                raise TypeError(
+                    "max_iterative_refinement_steps must be an int, got "
+                    f"{type(max_iterative_refinement_steps).__name__}"
+                )
+            self._handle.set_iparm(7, int(max_iterative_refinement_steps))
+
         phase = 33
         error = self._handle.call_pardiso(phase, self._data, self._indptr, self._indices, b, x)
         if error:
@@ -323,9 +553,20 @@ class MKLPardisoSolver:
     def set_iparm(self, i, val):
         if i > 63 or i < 0:
             raise IndexError(f"index {i} is out of bounds for size 64 array")
+        # Deliberately excluded, even though they affect execution:
+        # - 5 (write solution on x): setting this without solve() passing a null x pointer
+        #   silently corrupts results rather than erroring; needs a call_pardiso change.
+        # - 34 (one/zero-based indexing): the whole extension hardcodes zero-based indexing
+        #   internally, so changing this would silently break every array we hand to Pardiso.
+        # - 30, 35, 36, 42, 55: only meaningful paired with extra arrays/output buffers
+        #   (partial solve, Schur complement, diagonal of the inverse) that call_pardiso
+        #   doesn't provide yet.
+        # - 26 (matrix checker): redundant. `_validate_csr_matrix` always calls
+        #   `sort_indices`/`sum_duplicates` first, so A is already in the canonical form
+        #   Pardiso's own checker would be verifying.
         if i not in [
-            1, 3, 4, 5, 7, 9, 10, 11, 12, 17, 18, 20, 23,
-            24, 26, 30, 33, 34, 35, 36, 38, 42, 55, 59
+            1, 3, 4, 7, 9, 10, 11, 12, 17, 18, 20, 23,
+            24, 33, 38, 59
         ]:
             raise ValueError(f"cannot set parameter {i} of the iparm array")
 
@@ -333,6 +574,8 @@ class MKLPardisoSolver:
 
     @property
     def nnz(self):
+        """ Number of non-zero elements in the factors, if `report_nnz` is enabled.
+        """
         return self._handle.iparm[17]
 
     def _analyze(self):

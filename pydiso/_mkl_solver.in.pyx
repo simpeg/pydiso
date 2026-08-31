@@ -221,7 +221,7 @@ cdef class _PardisoHandle_{{int_type}}:
         self.iparm[20] = 1 if matrix_type in [-2, -4, 6] else 0
         self.iparm[23] = 0  # classic (not parallel) factorization
         self.iparm[24] = 0  # default behavoir of parallel solving
-        self.iparm[26] = 1  # Do not check the input matrix
+        self.iparm[26] = 0  # Do not check the input matrix
         self.iparm[27] = is_single_precision  # 1 if single, 0 if double
         self.iparm[30] = 0  # this would be used to enable sparse input/output for solves
         self.iparm[33] = 0  # optimal number of thread for CNR mode
