@@ -8,7 +8,12 @@ requires = [
     "numpy>=2.2.0",
     # Prebuilt pkg-config binary: Windows has no system one at all, and it
     # isn't guaranteed on Linux/macOS either. Fetched from PyPI like `ninja`.
-    "pkgconf",
+    # 2.5.1.post2 and 3.0.1.post0 are excluded: their plain pkg-config/
+    # pkgconf commands silently no-op whenever a search path is given
+    # (exactly what our PKG_CONFIG_PATH default below needs). Reported
+    # upstream: https://github.com/pypackaging-native/pkgconf-pypi/issues/116
+    # Drop this exclusion once a release fixes it.
+    "pkgconf!=2.5.1.post2,!=3.0.1.post0",
     # Headers and pkg-config/CMake files for Intel oneMKL. meson.build
     # points pkg-config at these automatically. No upper bound: Intel
     # hasn't published MKL for macOS past 2023.2, so pip needs to resolve

@@ -47,5 +47,8 @@ automatically, no `PKG_CONFIG_PATH` needed. conda-forge's `pydiso` package inste
 with `pip install --no-deps` and supplies its own conda packages, as it already does for
 numpy and scipy.
 
+If your environment has no system `pkg-config` (e.g. Windows), the `pkgconf` package from
+PyPI is pulled in to provide one.
+
 Note: Intel hasn't published MKL for macOS past version 2023.2 (PyPI or conda-forge), so
 that's what pip/conda will resolve there regardless of what's available elsewhere.
