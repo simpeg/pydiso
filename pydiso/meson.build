@@ -108,7 +108,7 @@ py.extension_module(
 )
 
 python_sources = [
-  '__init__.py', 'mkl_solver.py'
+  '__init__.py', 'mkl_solver.py', '_init_helper.py'
 ]
 
 py.install_sources(

@@ -2,20 +2,16 @@ __author__ = "SimPEG Team"
 __license__ = "MIT"
 __copyright__ = "2021, SimPEG Developers, http://simpeg.xyz"
 
-import os
-import sys
 from importlib.metadata import version, PackageNotFoundError
 
 # A pip-installed (as opposed to conda) MKL puts its runtime DLLs under
-# <env>/Library/bin, which conda's activation scripts add to PATH but a
-# plain venv/virtualenv does not. Without this, importing the compiled
-# `_mkl_solver` extension below would fail to locate `mkl_rt.*.dll` at
-# import time. This mirrors the same fix in mkl-service's `_init_helper`.
-if sys.platform == "win32":
-    _dll_dir = os.path.join(sys.exec_prefix, "Library", "bin")
-    if os.path.isdir(_dll_dir):
-        os.add_dll_directory(_dll_dir)
-    del _dll_dir
+# <env>/Library/bin, which a plain venv does not add to the DLL search
+# path. Without this, importing the compiled `_mkl_solver` extension below
+# would fail to locate `mkl_rt.*.dll` at import time. See _init_helper.py
+# for why this is skipped in conda environments.
+from . import _init_helper
+
+del _init_helper
 
 # Version
 try:

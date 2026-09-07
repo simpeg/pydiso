@@ -103,6 +103,15 @@ Repository = 'https://github.com/simpeg/pydiso.git'
 
 [tool.setuptools_scm]
 
+[tool.pytest.ini_options]
+# The compiled `_mkl_solver` extension only exists in an installed pydiso,
+# not in this source checkout. Pytest's default "prepend" import mode adds
+# the rootdir to sys.path, which would shadow an installed package with the
+# source tree's `pydiso/` directory and fail to import it. `importlib` mode
+# imports test modules without mutating sys.path, so the installed package
+# is what actually gets tested.
+addopts = "--import-mode=importlib"
+
 [tool.coverage.run]
 branch = true
 source = ["pydiso", "tests"]
