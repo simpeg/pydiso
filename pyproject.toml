@@ -6,10 +6,10 @@ requires = [
     "Cython>=3.1.0",
     "setuptools_scm[toml]>=6.2",
     "numpy>=2.2.0",
-    # Headers and CMake config files for Intel oneMKL (see pydiso/meson.build
-    # for how MKLConfig.cmake gets located automatically). No upper bound:
-    # Intel hasn't published MKL for macOS past 2023.2, so pip needs to
-    # resolve that older version there while getting the latest elsewhere.
+    # Headers and CMake config files for Intel oneMKL; see pydiso/meson.build
+    # for how MKLConfig.cmake gets located. No upper bound: Intel hasn't
+    # published MKL for macOS past 2023.2, so pip resolves that older
+    # version there while getting the latest elsewhere.
     "mkl-devel>=2023.0",
     "mkl-include>=2023.0",
     # Needed to locate MKLConfig.cmake; see pydiso/meson.build.

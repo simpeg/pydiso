@@ -18,6 +18,42 @@ print(get_version())'''
   default_options: [
     'buildtype=debugoptimized',
     'b_ndebug=if-release',
+    # Before invoking CMake for real, meson guesses whether a config
+    # package might exist by checking PATH entries stripped of a trailing
+    # "bin"/"sbin" - missing Windows' pip/venv "Scripts" layout, so it
+    # gives up before ever trying real CMake (which would succeed). Ask
+    # mkl-devel's own metadata where MKLConfig.cmake actually is instead
+    # of guessing; a user-supplied `-Dcmake_prefix_path=` still wins, and
+    # this is a no-op when mkl-devel isn't pip-installed, e.g. conda-forge.
+    'cmake_prefix_path=' + run_command('python',
+      [
+        '-c',
+        '''
+import os
+import importlib.metadata as md
+
+prefix = ""
+try:
+    dist = md.distribution("mkl-devel")
+except md.PackageNotFoundError:
+    dist = None
+
+if dist is not None:
+    for f in dist.files or ():
+        if os.path.basename(str(f)) == "MKLConfig.cmake":
+            # .../<prefix>/lib/cmake/mkl/MKLConfig.cmake
+            candidate = os.path.normpath(str(dist.locate_file(f)))
+            for _ in range(4):
+                candidate = os.path.dirname(candidate)
+            if os.path.isdir(candidate):
+                prefix = candidate
+            break
+
+print(prefix)
+'''
+      ],
+      check: true
+    ).stdout().strip(),
   ],
 )
 

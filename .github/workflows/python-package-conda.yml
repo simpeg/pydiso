@@ -99,9 +99,9 @@ jobs:
     strategy:
       fail-fast: False
       matrix:
-        # MKL from PyPI is x86_64-only, so macOS uses the Intel runner
-        # rather than macos-latest (which is arm64).
-        os: [ubuntu-latest, windows-latest, macos-15-intel]
+        # macOS excluded: Intel's PyPI mkl-devel wheel (frozen at 2023.2)
+        # is missing a symlink CMake needs, so MKL fails to import. See README.
+        os: [ubuntu-latest, windows-latest]
         python-version: ["3.12", "3.13", "3.14"]
 
     steps:

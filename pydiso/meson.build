@@ -20,15 +20,8 @@ numpy_nodepr_api = ['-DNPY_NO_DEPRECATED_API=NPY_1_9_API_VERSION']
 
 # MKL-specific options.
 #
-# Located via MKLConfig.cmake (from mkl-devel) rather than pkg-config.
-# CMake's find_package() always considers the prefix relative to the
-# running `cmake` executable itself as a search root, and mkl-devel and
-# cmake land in that same prefix regardless of source (a conda env, or the
-# venv/overlay pip creates for build isolation) - so this is found with no
-# extra help needed, unlike pkg-config's PKG_CONFIG_PATH, which depends on
-# nothing else in the environment having already claimed it for an
-# unrelated purpose (this happens in practice: actions/setup-python sets
-# it for its own interpreter's pkgconfig files).
+# Located via MKLConfig.cmake (from mkl-devel) rather than pkg-config; see
+# the top-level meson.build for how CMake is pointed at it.
 use_ilp64 = get_option('use-ilp64')
 mkl_interface = use_ilp64 ? 'ilp64' : 'lp64'
 

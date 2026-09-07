@@ -43,11 +43,12 @@ two listed as build requirements alongside `cmake` itself. So a plain
 `pip install .`
 
 in a normal (non-conda) virtual environment pulls all of them in and builds against them
-automatically, no `CMAKE_PREFIX_PATH` needed: CMake always considers the prefix relative to
-the `cmake` executable it's running as a search root, and pip installs `cmake` and
-`mkl-devel` into that same prefix together. conda-forge's `pydiso` package instead installs
-with `pip install --no-deps` and supplies its own conda packages, as it already does for
-numpy and scipy.
+automatically, no `CMAKE_PREFIX_PATH` needed - `meson.build` locates `mkl-devel`'s installed
+`MKLConfig.cmake` itself. conda-forge's `pydiso` package instead installs with
+`pip install --no-deps` and supplies its own conda packages, as it already does for numpy
+and scipy.
 
-Note: Intel hasn't published MKL for macOS past version 2023.2 (PyPI or conda-forge), so
-that's what pip/conda will resolve there regardless of what's available elsewhere.
+**Linux and Windows only.** Intel hasn't published MKL for macOS past 2023.2 to begin with,
+and that release's PyPI wheel is also missing a symlink CMake needs, so the build succeeds
+but the extension fails to import. conda-forge's macOS packaging doesn't have that gap - use
+conda there instead.
