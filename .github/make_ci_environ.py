@@ -29,10 +29,6 @@ def parse_pyproject(path: str, optional_sections_to_skip=None):
             continue
         deps.update(group_deps)
 
-    deps.discard("geoana[all]")
-    deps.discard("geoana[doc,all]")
-    deps.discard("geoana[plot,extras,jittable]")
-
     if "matplotlib" in deps:
         deps.remove("matplotlib")
         deps.add("matplotlib-base")
@@ -80,7 +76,7 @@ if __name__ == "__main__":
     
     deps = parse_pyproject(pyproject_path, optional_sections_to_skip=optional_to_skip)
     deps.add("mkl-devel")
-    deps.add("pkg-config")
+    deps.add("cmake")
     deps.add(f"mkl={mkl_vers}")
     env_data = create_env_yaml(deps, name=env_name, python_version=py_vers, free_threaded=is_free_threaded)
 
