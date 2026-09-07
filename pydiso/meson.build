@@ -72,11 +72,36 @@ cython_c_args = [numpy_nodepr_api, '-DCYTHON_CCOMPLEX=0']
 
 module_path = 'pydiso'
 
+# PyPI's `mkl` runtime wheel installs its shared libraries relative to the
+# interpreter's prefix (e.g. `<prefix>/lib` on Linux/macOS), which is not
+# on the loader's default search path once this extension is installed a
+# few directories down in site-packages. Add rpaths covering the layouts
+# produced by a venv (…/lib/pythonX.Y/site-packages) and a plain prefix
+# install (…/lib/site-packages), so the pip-installed runtime is found
+# without requiring LD_LIBRARY_PATH/DYLD_LIBRARY_PATH. This mirrors the
+# approach mkl-service takes for the same reason, and is a no-op on
+# platforms/layouts where those relative directories don't exist (e.g.
+# conda-forge builds, which locate MKL via RPATH/activation of their own).
+rpath_link_args = []
+if host_machine.system() != 'windows'
+    if host_machine.system() == 'darwin'
+        origin = '@loader_path'
+    else
+        origin = '$ORIGIN'
+    endif
+
+    rpath_link_args = [
+        '-Wl,-rpath,' + origin / '../..',
+        '-Wl,-rpath,' + origin / '../../..',
+    ]
+endif
+
 py.extension_module(
     '_mkl_solver',
     cython_file,
     cython_args: cython_args,
     c_args: cython_c_args,
+    link_args: rpath_link_args,
     install: true,
     subdir: module_path,
     dependencies : [py_dep, np_dep, mkl_dep],

@@ -15,6 +15,9 @@ def parse_pyproject(path: str, optional_sections_to_skip=None):
             # numpy is also listed in build requirements with a higher version number
             # so we skip it here to avoid conflicts.
             continue
+        if "mkl" in dep:
+            # mkl is pinned to the exact version under test below instead.
+            continue
         deps.add(dep)
 
     # optional dependencies (PEP 621)

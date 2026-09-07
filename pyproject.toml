@@ -5,7 +5,26 @@ requires = [
     "meson-python>=0.15.0",
     "Cython>=3.1.0",
     "setuptools_scm[toml]>=6.2",
-    "numpy>=2.0.0rc1",
+    "numpy>=2.2.0",
+    # The pkg-config executable itself: Windows has no system pkg-config at
+    # all, and it isn't guaranteed present on Linux/macOS either. This ships
+    # prebuilt pkgconf binaries so meson's dependency() lookups below always
+    # have something to call, the same way `ninja` is fetched from PyPI
+    # rather than assumed to be preinstalled. conda-forge builds normally
+    # use `--no-build-isolation` with conda's own pkg-config already on
+    # PATH, so this is never fetched from PyPI in that case.
+    "pkgconf",
+    # Headers and pkg-config/CMake files for Intel oneMKL, sourced from
+    # PyPI. meson.build locates these automatically (see the top-level
+    # meson.build for how pkg-config is pointed at them). conda-forge
+    # builds normally use `--no-build-isolation` with conda's own
+    # mkl-devel already on PKG_CONFIG_PATH, so these are never fetched
+    # from PyPI in that case.
+    # No upper bound: Intel has not published MKL for macOS past 2023.2,
+    # so pip must be free to resolve that older version there while
+    # getting the latest on Windows/Linux.
+    "mkl-devel>=2023.0",
+    "mkl-include>=2023.0",
 ]
 
 [project]
@@ -13,7 +32,7 @@ name = 'pydiso'
 dynamic = ["version"]
 description = "Wrapper for intel's pardiso implementation in the MKL"
 readme = 'README.md'
-requires-python = '>=3.11'
+requires-python = '>=3.12'
 authors = [
   {name = 'SimPEG developers', email = 'josephrcapriotti@gmail.com'},
 ]
@@ -27,8 +46,17 @@ keywords = [
 dependencies = [
     # TODO: update to "pin-compatible" once possible, see
     # https://github.com/mesonbuild/meson-python/issues/29
-    "numpy>=1.22.4",
-    "scipy>=1.12",
+    # Minimums follow SPEC 0: https://scientific-python.org/specs/spec-0000/
+    "numpy>=2.2.0",
+    "scipy>=1.15.0",
+    # Runtime Intel oneMKL shared libraries, from PyPI. No upper bound:
+    # Intel has not published MKL for macOS past 2023.2, so pip must be
+    # free to resolve that older version there while getting the latest on
+    # Windows/Linux. conda-forge's recipe installs with `pip install
+    # --no-deps` (as it does for numpy/scipy too) and supplies the `mkl`
+    # conda package as a `run:` dependency instead, so this is never
+    # fetched from PyPI for a conda-forge build.
+    "mkl>=2023.0",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -63,7 +91,7 @@ build = [
     "meson-python>=0.15.0",
     "meson",
     "ninja",
-    "numpy>=2.0.0rc1",
+    "numpy>=2.2.0",
     "cython>=3.1.0",
     "setuptools_scm",
 ]

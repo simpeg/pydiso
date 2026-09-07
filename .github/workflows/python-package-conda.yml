@@ -16,32 +16,27 @@ jobs:
       fail-fast: False
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.11", "3.12", "3.13", "3.14"]
-        mkl-version: ['2024', '2025']
+        python-version: ["3.12", "3.13", "3.14"]
+        mkl-version: ['2025', '2026']
         free-threaded: [true, false]
         include:
           - os: ubuntu-latest
             python-version: "3.12"
-            mkl-version: "2024"
+            mkl-version: "2025"
             coverage: true
           - os: macos-15-intel
-            python-version: "3.11"
+            python-version: "3.12"
+            # Intel has not published MKL for macOS past 2023.2.
             mkl-version: "2023"
             free-threaded:
           - os: macos-15-intel
-            python-version: "3.12"
+            python-version: "3.13"
             mkl-version: "2023"
             free-threaded:
         exclude:
-          - python-version: "3.11"
-            free-threaded: true
+          # Free-threaded builds don't exist prior to Python 3.13.
           - python-version: "3.12"
             free-threaded: true
-          - python-version: "3.13"
-            free-threaded: true
-            mkl-version: "2025"
-          - python-version: "3.14"
-            mkl-version: "2025"
 
     steps:
     - uses: actions/checkout@v5
@@ -79,7 +74,11 @@ jobs:
 
     - name: Install Our Package
       run: |
-        python -m pip install --no-build-isolation --verbose --editable . \
+        # --no-deps: dependencies (including mkl) come from the conda
+        # environment above, mirroring how the conda-forge recipe installs
+        # this package and supplies its own `run:` requirements instead of
+        # letting pip resolve anything from PyPI.
+        python -m pip install --no-build-isolation --no-deps --verbose --editable . \
           --config-setting=compile-args=-v \
           ${{ matrix.coverage && '--config-settings=setup-args="-Db_coverage=true"' || ''}} \
           ${{ matrix.os == 'windows-latest' && '--config-settings=setup-args="-Dvsenv=true"' || ''}}
@@ -95,6 +94,35 @@ jobs:
       with:
         verbose: true # optional (default = false)
         token: ${{ secrets.CODECOV_TOKEN }} # required
+
+  build-and-test-pypi-mkl:
+    name: Testing (Python ${{ matrix.python-version }}, on ${{ matrix.os }}, with PyPI MKL)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: False
+      matrix:
+        # MKL from PyPI is x86_64-only, so macOS uses the Intel runner
+        # rather than macos-latest (which is arm64).
+        os: [ubuntu-latest, windows-latest, macos-15-intel]
+        python-version: ["3.12", "3.13", "3.14"]
+
+    steps:
+    - uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install our package against PyPI MKL
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install --verbose ".[test]"
+
+    - name: Run Tests
+      run: pytest -s -v
 
   build_sdist:
     name: Build source distribution
