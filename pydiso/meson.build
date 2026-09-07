@@ -43,6 +43,13 @@ mkl_required = not get_option('dist_ignore_mkl_dep')
 
 mkl_cmake_args = ['-DMKL_ARCH=intel64', '-DMKL_INTERFACE=' + mkl_interface]
 
+# Runtime DLL names for whichever variant gets linked; _init_helper.py
+# uses these to find MKL's DLL directory on Windows (see _mkl_libs.py.in).
+# The interface layer (mkl_intel_lp64/ilp64) and mkl_gnu_thread aren't
+# shipped as Windows DLLs, only import libs, so they're left out.
+mkl_sdl_library_names = ['mkl_rt']
+mkl_dynamic_library_names = ['mkl_core', 'mkl_' + mkl_threading]
+
 if use_sdl
     mkl_dep = dependency('MKL',
         method: 'cmake',
@@ -51,6 +58,7 @@ if use_sdl
         version: mkl_version_req,
         required: mkl_required,
     )
+    mkl_library_names = mkl_sdl_library_names
 else
     # find mkl
     mkl_dep = dependency('MKL',
@@ -63,6 +71,7 @@ else
         required: false,  # may be required, but we need to emit a custom error message
         version: mkl_version_req,
     )
+    mkl_library_names = mkl_dynamic_library_names
 
     mkl_may_use_sdl = not use_ilp64 and _threading_opt in ['auto', 'iomp']
 
@@ -76,9 +85,24 @@ else
             cmake_args: mkl_cmake_args + ['-DMKL_LINK=sdl'],
             required: mkl_required,
         )
+        mkl_library_names = mkl_sdl_library_names
     endif
 
 endif
+
+_mkl_library_names_quoted = []
+foreach _name : mkl_library_names
+  _mkl_library_names_quoted += ['"' + _name + '"']
+endforeach
+
+_mkl_libs_config = configuration_data()
+_mkl_libs_config.set('MKL_LIBRARY_NAMES_REPR', '(' + ', '.join(_mkl_library_names_quoted) + ',)')
+
+mkl_libs_py = configure_file(
+    input: '_mkl_libs.py.in',
+    output: '_mkl_libs.py',
+    configuration: _mkl_libs_config,
+)
 
 cython_args = []
 if cy.version().version_compare('>=3.1.0')
@@ -125,6 +149,6 @@ python_sources = [
 ]
 
 py.install_sources(
-  python_sources,
+  python_sources + [mkl_libs_py],
   subdir: module_path
 )
