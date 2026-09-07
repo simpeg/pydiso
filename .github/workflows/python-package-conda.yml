@@ -74,10 +74,8 @@ jobs:
 
     - name: Install Our Package
       run: |
-        # --no-deps: dependencies (including mkl) come from the conda
-        # environment above, mirroring how the conda-forge recipe installs
-        # this package and supplies its own `run:` requirements instead of
-        # letting pip resolve anything from PyPI.
+        # --no-deps: deps (incl. mkl) come from the conda env above, as a
+        # conda-forge recipe would.
         python -m pip install --no-build-isolation --no-deps --verbose --editable . \
           --config-setting=compile-args=-v \
           ${{ matrix.coverage && '--config-settings=setup-args="-Db_coverage=true"' || ''}} \

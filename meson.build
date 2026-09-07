@@ -18,15 +18,11 @@ print(get_version())'''
   default_options: [
     'buildtype=debugoptimized',
     'b_ndebug=if-release',
-    # PyPI's mkl-devel/mkl-include wheels drop their pkg-config files into
-    # this interpreter's sysconfig "data" prefix rather than a location
-    # pkg-config searches by default (this is what mkl-devel is installed
-    # alongside as a build dependency, so this is also where any pip-installed
-    # copy would land, in or out of build isolation). Point pkg-config at it
-    # as a default so it is picked up automatically; conda-forge's mkl-devel
-    # already puts its .pc files on PKG_CONFIG_PATH via activation, and an
-    # empty/non-existent extra entry here is a no-op, so this is harmless
-    # there. A user-supplied `-Dpkg_config_path=` still takes precedence.
+    # PyPI's mkl-devel/mkl-include drop their .pc files into this
+    # interpreter's sysconfig "data" prefix, which pkg-config doesn't search
+    # by default. Point it there as a default (a user-supplied
+    # `-Dpkg_config_path=` still wins); harmless no-op when that dir doesn't
+    # exist, e.g. conda-forge, which puts mkl-devel on PKG_CONFIG_PATH itself.
     'pkg_config_path=' + run_command('python',
       [
         '-c',

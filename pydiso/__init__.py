@@ -4,11 +4,8 @@ __copyright__ = "2021, SimPEG Developers, http://simpeg.xyz"
 
 from importlib.metadata import version, PackageNotFoundError
 
-# A pip-installed (as opposed to conda) MKL puts its runtime DLLs under
-# <env>/Library/bin, which a plain venv does not add to the DLL search
-# path. Without this, importing the compiled `_mkl_solver` extension below
-# would fail to locate `mkl_rt.*.dll` at import time. See _init_helper.py
-# for why this is skipped in conda environments.
+# Makes a pip-installed (as opposed to conda) MKL's DLLs findable on
+# Windows; see _init_helper.py for details.
 from . import _init_helper
 
 del _init_helper
