@@ -18,25 +18,39 @@ print(get_version())'''
   default_options: [
     'buildtype=debugoptimized',
     'b_ndebug=if-release',
-    # PyPI's mkl-devel/mkl-include drop their .pc files into this
-    # interpreter's sysconfig "data" prefix, which pkg-config doesn't search
-    # by default. Point it there as a default (a user-supplied
-    # `-Dpkg_config_path=` still wins); harmless no-op when that dir doesn't
-    # exist, e.g. conda-forge, which puts mkl-devel on PKG_CONFIG_PATH itself.
+    # PyPI's mkl-devel drops its .pc files somewhere pkg-config doesn't
+    # search by default. Ask mkl-devel's own installed package metadata
+    # where they actually landed, rather than assuming a location relative
+    # to sysconfig's "data" path: under pip build isolation, mkl-devel is
+    # typically installed into a separate "overlay" layered onto the build
+    # interpreter via PYTHONPATH, so sysconfig (which reflects that
+    # interpreter's own prefix) points at the wrong, unrelated directory.
+    # Point pkg-config at the real one as a default (a user-supplied
+    # `-Dpkg_config_path=` still wins); harmless no-op when mkl-devel isn't
+    # pip-installed at all, e.g. conda-forge, which puts its own mkl-devel
+    # on PKG_CONFIG_PATH itself.
     'pkg_config_path=' + run_command('python',
       [
         '-c',
         '''
 import os
-import sysconfig
+import importlib.metadata as md
 
-data_dir = sysconfig.get_path("data")
-candidate = (
-    os.path.join(data_dir, "Library", "lib", "pkgconfig")
-    if os.name == "nt"
-    else os.path.join(data_dir, "lib", "pkgconfig")
-)
-print(candidate if os.path.isdir(candidate) else "")
+pkgconfig_dir = ""
+try:
+    dist = md.distribution("mkl-devel")
+except md.PackageNotFoundError:
+    dist = None
+
+if dist is not None:
+    for f in dist.files or ():
+        if os.path.basename(str(f)) == "mkl-sdl.pc":
+            candidate = os.path.dirname(os.path.normpath(str(dist.locate_file(f))))
+            if os.path.isdir(candidate):
+                pkgconfig_dir = candidate
+            break
+
+print(pkgconfig_dir)
 '''
       ],
       check: true
