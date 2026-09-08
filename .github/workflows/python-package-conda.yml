@@ -17,7 +17,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         python-version: ["3.12", "3.13", "3.14"]
-        mkl-version: ['2025', '2026']
+        mkl-version: ["2025", "2026"]
         free-threaded: [true, false]
         include:
           - os: ubuntu-latest
@@ -37,61 +37,64 @@ jobs:
           # Free-threaded builds don't exist prior to Python 3.13.
           - python-version: "3.12"
             free-threaded: true
+          # Don't build free-threaded versions for experimental Python 3.13.
+          - python-version: "3.13"
+            free-threaded: true
 
     steps:
-    - uses: actions/checkout@v5
-      with:
-        fetch-depth: 0
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: "3.13"
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.13"
 
-    - name: Create Conda environment file
-      run: |
-        python -m pip install pyyaml
-        python .github/make_ci_environ.py
-      env:
-        PYTHON_VERSION: ${{ matrix.python-version}}
-        MKL_VERSION: ${{ matrix.mkl-version }}
-        FREE_THREADED: ${{ matrix.free-threaded && 'true' || 'false' }}
-        DO_COVERAGE: ${{ matrix.coverage && 'true' || 'false' }}
-        ENV_NAME: pydiso-ci
+      - name: Create Conda environment file
+        run: |
+          python -m pip install pyyaml
+          python .github/make_ci_environ.py
+        env:
+          PYTHON_VERSION: ${{ matrix.python-version}}
+          MKL_VERSION: ${{ matrix.mkl-version }}
+          FREE_THREADED: ${{ matrix.free-threaded && 'true' || 'false' }}
+          DO_COVERAGE: ${{ matrix.coverage && 'true' || 'false' }}
+          ENV_NAME: pydiso-ci
 
-    - name: Setup Conda
-      uses: conda-incubator/setup-miniconda@v3
-      with:
-        auto-update-conda: true
-        environment-file: environment_ci.yml
-        activate-environment: pydiso-ci
+      - name: Setup Conda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          environment-file: environment_ci.yml
+          activate-environment: pydiso-ci
 
-    - name: Conda information
-      run: |
-        conda info
-        conda list
-        conda config --show
+      - name: Conda information
+        run: |
+          conda info
+          conda list
+          conda config --show
 
-    - name: Install Our Package
-      run: |
-        # --no-deps: deps (incl. mkl) come from the conda env above, as a
-        # conda-forge recipe would.
-        python -m pip install --no-build-isolation --no-deps --verbose --editable . \
-          --config-setting=compile-args=-v \
-          ${{ matrix.coverage && '--config-settings=setup-args="-Db_coverage=true"' || ''}} \
-          ${{ matrix.os == 'windows-latest' && '--config-settings=setup-args="-Dvsenv=true"' || ''}}
+      - name: Install Our Package
+        run: |
+          # --no-deps: deps (incl. mkl) come from the conda env above, as a
+          # conda-forge recipe would.
+          python -m pip install --no-build-isolation --no-deps --verbose --editable . \
+            --config-setting=compile-args=-v \
+            ${{ matrix.coverage && '--config-settings=setup-args="-Db_coverage=true"' || ''}} \
+            ${{ matrix.os == 'windows-latest' && '--config-settings=setup-args="-Dvsenv=true"' || ''}}
 
-    - name: Run Tests
-      run: |
-        ${{ matrix.coverage && 'coverage run -m' || '' }} pytest -s -v
-        ${{ matrix.coverage && 'coverage xml' || '' }}
+      - name: Run Tests
+        run: |
+          ${{ matrix.coverage && 'coverage run -m' || '' }} pytest -s -v
+          ${{ matrix.coverage && 'coverage xml' || '' }}
 
-    - name: Upload coverage
-      if: ${{ matrix.coverage }}
-      uses: codecov/codecov-action@v4
-      with:
-        verbose: true # optional (default = false)
-        token: ${{ secrets.CODECOV_TOKEN }} # required
+      - name: Upload coverage
+        if: ${{ matrix.coverage }}
+        uses: codecov/codecov-action@v4
+        with:
+          verbose: true # optional (default = false)
+          token: ${{ secrets.CODECOV_TOKEN }} # required
 
   build-and-test-pypi-mkl:
     name: Testing (Python ${{ matrix.python-version }}, on ${{ matrix.os }}, with PyPI MKL)
@@ -105,22 +108,22 @@ jobs:
         python-version: ["3.12", "3.13", "3.14"]
 
     steps:
-    - uses: actions/checkout@v5
-      with:
-        fetch-depth: 0
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Install our package against PyPI MKL
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install --verbose ".[test]"
+      - name: Install our package against PyPI MKL
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --verbose ".[test]"
 
-    - name: Run Tests
-      run: pytest -s -v
+      - name: Run Tests
+        run: pytest -s -v
 
   build_sdist:
     name: Build source distribution
@@ -139,33 +142,31 @@ jobs:
           path: dist/*.tar.gz
 
   release:
-    needs: [
-      build_sdist
-    ]
+    needs: [build_sdist]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     defaults:
       run:
         shell: bash -l {0}
     steps:
-    - uses: actions/download-artifact@v4
-      with:
-        # unpacks all CIBW artifacts into dist/
-        pattern: cibw-*
-        path: dist
-        merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          # unpacks all CIBW artifacts into dist/
+          pattern: cibw-*
+          path: dist
+          merge-multiple: true
 
-    - name: Release to github
-      uses: softprops/action-gh-release@v2
-      with:
-        files: dist/*
-        generate_release_notes: true
-        prerelease: false
+      - name: Release to github
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
+          prerelease: false
 
-    - name: Upload wheels to pypi
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
-        skip-existing: true
-        packages-dir: ./dist/
+      - name: Upload wheels to pypi
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          skip-existing: true
+          packages-dir: ./dist/
