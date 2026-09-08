@@ -2,7 +2,8 @@
 [build-system]
 build-backend = 'mesonpy'
 requires = [
-    "meson-python>=0.15.0",
+    # >=0.21.0 for abi3t (stable ABI for free-threaded builds) support.
+    "meson-python>=0.21.0",
     "Cython>=3.1.0",
     "setuptools_scm[toml]>=6.2",
     "numpy>=2.2.0",
@@ -14,6 +15,10 @@ requires = [
     "mkl-include>=2023.0",
     # Needed to locate MKLConfig.cmake; see pydiso/meson.build.
     "cmake",
+    # mkl-static is deliberately NOT listed here: it's an 827MB download
+    # only needed for `-Dmkl-link=static` (see meson.options), which most
+    # builds don't use. Install it yourself first (pip or conda) and build
+    # with `--no-build-isolation` to use that option.
 ]
 
 [project]
@@ -73,7 +78,7 @@ coverage = [
 ]
 
 build = [
-    "meson-python>=0.15.0",
+    "meson-python>=0.21.0",
     "meson",
     "ninja",
     "numpy>=2.2.0",
@@ -87,6 +92,58 @@ Homepage = 'https://simpeg.xyz'
 Repository = 'https://github.com/simpeg/pydiso.git'
 
 [tool.setuptools_scm]
+
+[tool.meson-python]
+# Build one abi3 wheel per platform instead of one per Python version. On
+# free-threaded 3.15+ this also gets the combined abi3.abi3t tag
+# automatically; free-threaded builds before 3.15 have no stable ABI to
+# target at all, so those need `-Dpython.allow_limited_api=false` passed
+# at build time to opt back out (meson-python otherwise refuses to build
+# at all in that combination).
+limited-api = true
+
+[tool.cibuildwheel]
+# cp312-* covers 3.12-3.15 (GIL-enabled) as a single abi3 wheel per
+# platform. Free-threaded builds before 3.15 have no stable ABI at all
+# (see the override below); 3.15's free-threaded build gets the combined
+# abi3.abi3t tag automatically, covering both 3.15 variants in one wheel.
+build = ["cp312-*", "cp314t-*", "cp315t-*"]
+skip = "*-musllinux*"
+# 64-bit only: MKL_ARCH is hardcoded to intel64 in pydiso/meson.build, and
+# MKL isn't meaningfully available for 32-bit anyway. Without this,
+# cibuildwheel also tries win32 and manylinux_i686 by default and fails.
+archs = "auto64"
+# Statically linked (see meson.options): MKL itself has no separate
+# runtime dependency at all, so nothing to find via PKG_CONFIG_PATH/
+# CMAKE_PREFIX_PATH tricks at import time on an end user's machine.
+# iomp threading still needs libiomp5 as an ordinary shared library
+# dependency - cibuildwheel's default repair step (auditwheel/delvewheel)
+# bundles that into the wheel automatically, the same way it would
+# bundle e.g. OpenBLAS, so there's no separate runtime dependency to
+# declare for that either. Build isolation is disabled and every build
+# requirement (including mkl-static, which isn't a regular build
+# dependency - 827MB, only relevant here) is installed by before-build
+# instead: pip's isolated build environment is a separate, throwaway
+# prefix from whatever before-build installs into, so mkl-static needs
+# to land in the *same* prefix as mkl-devel for the CMake config to find
+# it - only possible without isolation. `vsenv=true` forces MSVC on
+# Windows - the runner also has a MinGW gcc on PATH that meson would
+# otherwise pick up instead (see the python-package-conda.yml workflow
+# for the same issue with a source build).
+before-build = "pip install meson-python>=0.21.0 ninja Cython>=3.1.0 setuptools_scm[toml]>=6.2 numpy>=2.2.0 mkl-devel>=2023.0 mkl-include>=2023.0 cmake mkl-static"
+build-frontend = { name = "pip", args = ["--no-build-isolation"] }
+config-settings = { setup-args = ["-Dmkl-link=static", "-Dmkl-threading=iomp", "-Dvsenv=true"] }
+
+[[tool.cibuildwheel.overrides]]
+# Free-threaded before 3.15 has no stable ABI to target; meson-python
+# refuses to even attempt the build otherwise (see [tool.meson-python]).
+# The base config-settings has to be repeated in full here: overriding a
+# key that also exists in the base replaces its value entirely rather
+# than appending to it, even with inherit.config-settings = "append".
+select = "cp314t-*"
+config-settings = { setup-args = [
+    "-Dmkl-link=static", "-Dmkl-threading=iomp", "-Dvsenv=true", "-Dpython.allow_limited_api=false",
+] }
 
 [tool.pytest.ini_options]
 # Default "prepend" import mode would shadow an installed pydiso with this

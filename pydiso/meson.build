@@ -37,7 +37,7 @@ mkl_threading = _threading_map[_threading_opt]
 
 mkl_version_req = '>=2023.0'
 
-use_sdl = get_option('use-sdl')
+mkl_link_opt = get_option('mkl-link')
 
 mkl_required = not get_option('dist_ignore_mkl_dep')
 
@@ -50,7 +50,19 @@ mkl_cmake_args = ['-DMKL_ARCH=intel64', '-DMKL_INTERFACE=' + mkl_interface]
 mkl_sdl_library_names = ['mkl_rt']
 mkl_dynamic_library_names = ['mkl_core', 'mkl_' + mkl_threading]
 
-if use_sdl
+# A static build has no mkl_core.dll etc. at all (it's compiled directly
+# into the extension), but the OpenMP/TBB threading runtime is still a
+# separate shared library either way, from a separate pip package
+# (intel-openmp/tbb) - only relevant if that's the chosen threading.
+_threading_runtime_library_names = {
+  'sequential': [],
+  'intel_thread': ['libiomp5md'],
+  'gnu_thread': [],
+  'tbb_thread': ['tbb12'],
+}
+mkl_static_library_names = _threading_runtime_library_names[mkl_threading]
+
+if mkl_link_opt == 'sdl'
     mkl_dep = dependency('MKL',
         method: 'cmake',
         modules: ['MKL::MKL'],
@@ -59,6 +71,19 @@ if use_sdl
         required: mkl_required,
     )
     mkl_library_names = mkl_sdl_library_names
+elif mkl_link_opt == 'static'
+    # mkl-static (not installed automatically - see pyproject.toml).
+    mkl_dep = dependency('MKL',
+        method: 'cmake',
+        modules: ['MKL::MKL'],
+        cmake_args: mkl_cmake_args + [
+            '-DMKL_LINK=static',
+            '-DMKL_THREADING=' + mkl_threading,
+        ],
+        version: mkl_version_req,
+        required: mkl_required,
+    )
+    mkl_library_names = mkl_static_library_names
 else
     # find mkl
     mkl_dep = dependency('MKL',
@@ -95,8 +120,14 @@ foreach _name : mkl_library_names
   _mkl_library_names_quoted += ['"' + _name + '"']
 endforeach
 
+if _mkl_library_names_quoted.length() == 0
+  _mkl_library_names_repr = '()'
+else
+  _mkl_library_names_repr = '(' + ', '.join(_mkl_library_names_quoted) + ',)'
+endif
+
 _mkl_libs_config = configuration_data()
-_mkl_libs_config.set('MKL_LIBRARY_NAMES_REPR', '(' + ', '.join(_mkl_library_names_quoted) + ',)')
+_mkl_libs_config.set('MKL_LIBRARY_NAMES_REPR', _mkl_library_names_repr)
 
 mkl_libs_py = configure_file(
     input: '_mkl_libs.py.in',
@@ -133,6 +164,12 @@ if host_machine.system() != 'windows'
     ]
 endif
 
+# Limited to the 3.12 API subset so this produces one abi3 wheel instead
+# of one per Python version (see pyproject.toml's `limited-api` setting).
+# Meson itself gates this on the `python.allow_limited_api` option, so
+# `-Dpython.allow_limited_api=false` cleanly disables it (needed for
+# free-threaded builds before 3.15, which have no stable ABI at all)
+# without needing a conditional here.
 py.extension_module(
     '_mkl_solver',
     cython_file,
@@ -142,6 +179,7 @@ py.extension_module(
     install: true,
     subdir: module_path,
     dependencies : [py_dep, np_dep, mkl_dep],
+    limited_api: '3.12',
 )
 
 python_sources = [

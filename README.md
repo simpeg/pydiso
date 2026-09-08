@@ -52,3 +52,27 @@ and scipy.
 and that release's PyPI wheel is also missing a symlink CMake needs, so the build succeeds
 but the extension fails to import. conda-forge's macOS packaging doesn't have that gap - use
 conda there instead.
+
+### Linking MKL statically
+
+By default pydiso links MKL as a single dynamic library (`mkl_rt`). Two other options are
+available via `-Dmkl-link=`:
+
+- `dynamic`: link the specific interface/threading/core libraries needed instead of `mkl_rt`.
+- `static`: link those same libraries statically, so they're compiled directly into the
+  extension. With `-Dmkl-threading=seq` (the default), this produces a fully self-contained
+  extension with no MKL runtime dependency at all - no `mkl` package needed at import time.
+  With `iomp`/`tbb` threading, the threading runtime itself is still a separate shared
+  library (`intel-openmp`/`tbb`), but MKL's own libraries are not.
+
+Static linking needs the `mkl-static` package, which isn't installed automatically (it's an
+827MB download only relevant to this option). Install it yourself first - `conda install
+mkl-static` or `pip install mkl-static` - then build with `--no-build-isolation`:
+
+`pip install --no-build-isolation --no-deps -Csetup-args=-Dmkl-link=static .`
+
+The prebuilt wheels on PyPI (see `.github/workflows/wheels.yml`) are built this way with
+`iomp` threading: `cibuildwheel`'s default repair step (`auditwheel`/`delvewheel`) bundles
+the resulting `libiomp5` dependency into the wheel automatically, the same way it would
+bundle e.g. OpenBLAS, so those wheels end up with no separate runtime MKL dependency either
+while still solving with multiple threads.

@@ -1,0 +1,37 @@
+name: Build wheels
+
+# Building downloads mkl-static (see [tool.cibuildwheel] in pyproject.toml)
+# for every build, so this only runs on release tags or on demand rather
+# than on every push/PR.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: pypa/cibuildwheel@v4.2.1
+
+      - name: Strip the mkl dependency from these statically linked wheels
+        shell: bash
+        run: |
+          python -m pip install --upgrade wheel
+          python .github/strip_wheel_dependency.py wheelhouse/*.whl --dest-dir stripped_wheelhouse
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cibw-wheels-${{ matrix.os }}
+          path: stripped_wheelhouse/*.whl
