@@ -18,13 +18,12 @@ print(get_version())'''
   default_options: [
     'buildtype=debugoptimized',
     'b_ndebug=if-release',
-    # Before invoking CMake for real, meson guesses whether a config
-    # package might exist by checking PATH entries stripped of a trailing
-    # "bin"/"sbin" - missing Windows' pip/venv "Scripts" layout, so it
-    # gives up before ever trying real CMake (which would succeed). Ask
-    # mkl-devel's own metadata where MKLConfig.cmake actually is instead
-    # of guessing; a user-supplied `-Dcmake_prefix_path=` still wins, and
-    # this is a no-op when mkl-devel isn't pip-installed, e.g. conda-forge.
+    # Meson's own pre-check for a CMake config package strips a trailing
+    # "bin"/"sbin" off PATH entries, missing Windows' venv "Scripts"
+    # layout - so it gives up before trying real CMake. Ask mkl-devel's
+    # metadata for MKLConfig.cmake's location instead; a user's
+    # `-Dcmake_prefix_path=` still wins, and this is a no-op when
+    # mkl-devel isn't pip-installed (e.g. conda-forge).
     'cmake_prefix_path=' + run_command('python',
       [
         '-c',

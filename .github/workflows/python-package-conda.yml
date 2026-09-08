@@ -77,14 +77,11 @@ jobs:
 
       - name: Install Our Package
         run: |
-          # --no-deps: deps (incl. mkl) come from the conda env above, as a
-          # conda-forge recipe would. [tool.meson-python] targets the
-          # limited API unconditionally, which free-threaded builds before
-          # 3.15 can't do at all (meson-python hard-fails otherwise) - opt
-          # back out specifically for 3.14t. Once 3.15 is added to this
-          # matrix, its free-threaded build should use the limited API
-          # (abi3t) rather than being caught by this too, hence checking
-          # python-version here rather than just matrix.free-threaded.
+          # --no-deps: deps come from the conda env above, as conda-forge
+          # would. Opt out of [tool.meson-python]'s unconditional
+          # limited-API target for 3.14t specifically (no stable ABI
+          # exists before 3.15) - checked by version, not just
+          # free-threaded, so a future 3.15t entry isn't caught too.
           python -m pip install --no-build-isolation --no-deps --verbose --editable . \
             --config-setting=compile-args=-v \
             ${{ matrix.coverage && '--config-settings=setup-args="-Db_coverage=true"' || ''}} \

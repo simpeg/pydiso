@@ -1,13 +1,10 @@
 """Remove a dependency from a built wheel's metadata in place.
 
-cibuildwheel builds these wheels with MKL statically linked (see
-[tool.cibuildwheel] and meson.options in pyproject.toml), so unlike a
-source build they have no runtime dependency on the separate `mkl`
-package at all - but pyproject.toml's `dependencies` list is static and
-shared with the source build, which does need it (see the discussion in
-pyproject.toml). This strips it from these wheels specifically, after
-the fact, since meson-python has no way to make it conditional on how a
-given wheel was built.
+These wheels statically link MKL (see [tool.cibuildwheel] in
+pyproject.toml), so they have no runtime dependency on the `mkl`
+package - but `dependencies` is static and shared with the source
+build, which does need it. Strips it from these wheels after the fact,
+since meson-python can't make it conditional on how a wheel was built.
 """
 
 import argparse

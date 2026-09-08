@@ -44,16 +44,15 @@ mkl_required = not get_option('dist_ignore_mkl_dep')
 mkl_cmake_args = ['-DMKL_ARCH=intel64', '-DMKL_INTERFACE=' + mkl_interface]
 
 # Runtime DLL names for whichever variant gets linked; _init_helper.py
-# uses these to find MKL's DLL directory on Windows (see _mkl_libs.py.in).
-# The interface layer (mkl_intel_lp64/ilp64) and mkl_gnu_thread aren't
-# shipped as Windows DLLs, only import libs, so they're left out.
+# uses these to find MKL's DLL directory on Windows. The interface layer
+# (mkl_intel_lp64/ilp64) and mkl_gnu_thread aren't shipped as DLLs, only
+# import libs, so they're left out.
 mkl_sdl_library_names = ['mkl_rt']
 mkl_dynamic_library_names = ['mkl_core', 'mkl_' + mkl_threading]
 
-# A static build has no mkl_core.dll etc. at all (it's compiled directly
-# into the extension), but the OpenMP/TBB threading runtime is still a
-# separate shared library either way, from a separate pip package
-# (intel-openmp/tbb) - only relevant if that's the chosen threading.
+# A static build has no mkl_core.dll etc. (compiled directly into the
+# extension), but OpenMP/TBB threading is still a separate shared library
+# from a separate pip package (intel-openmp/tbb), if that's the choice.
 _threading_runtime_library_names = {
   'sequential': [],
   'intel_thread': ['libiomp5md'],
@@ -100,9 +99,8 @@ else
 
     mkl_may_use_sdl = not use_ilp64 and _threading_opt in ['auto', 'iomp']
 
-    # Insert a second try with MKL, because we may be rejecting older versions
-    # or missing the requested dynamic variant. If so, we need to retry
-    # with MKL SDL, and drop the version constraint.
+    # Retry with MKL SDL (dropping the version constraint) if the dynamic
+    # variant wasn't found - may be an older version or a missing component.
     if not mkl_dep.found() and mkl_may_use_sdl
         mkl_dep = dependency('MKL',
             method: 'cmake',
@@ -145,11 +143,11 @@ cython_c_args = [numpy_nodepr_api, '-DCYTHON_CCOMPLEX=0']
 
 module_path = 'pydiso'
 
-# PyPI's `mkl` wheel puts its shared libraries under `<prefix>/lib`, which
-# isn't on the loader's default search path from a few directories down in
-# site-packages. rpath both possible depths (venv vs. plain prefix install)
-# so that's found without needing LD_LIBRARY_PATH/DYLD_LIBRARY_PATH; mirrors
-# mkl-service. No-op where those dirs don't exist, e.g. conda-forge builds.
+# PyPI's `mkl` wheel puts its libraries under `<prefix>/lib`, off the
+# loader's default search path from site-packages. rpath both possible
+# depths (venv vs. plain prefix) so it's found without
+# LD_LIBRARY_PATH/DYLD_LIBRARY_PATH, mirroring mkl-service. No-op for
+# conda-forge builds, where those dirs don't exist.
 rpath_link_args = []
 if host_machine.system() != 'windows'
     if host_machine.system() == 'darwin'
@@ -164,12 +162,10 @@ if host_machine.system() != 'windows'
     ]
 endif
 
-# Limited to the 3.12 API subset so this produces one abi3 wheel instead
-# of one per Python version (see pyproject.toml's `limited-api` setting).
-# Meson itself gates this on the `python.allow_limited_api` option, so
-# `-Dpython.allow_limited_api=false` cleanly disables it (needed for
-# free-threaded builds before 3.15, which have no stable ABI at all)
-# without needing a conditional here.
+# Limited to the 3.12 API subset for one abi3 wheel per platform (see
+# pyproject.toml's `limited-api`). Meson gates this on the
+# `python.allow_limited_api` option, so `-Dpython.allow_limited_api=false`
+# disables it cleanly for free-threaded builds, no conditional needed here.
 py.extension_module(
     '_mkl_solver',
     cython_file,

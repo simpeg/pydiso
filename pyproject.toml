@@ -7,17 +7,15 @@ requires = [
     "Cython>=3.1.0",
     "setuptools_scm[toml]>=6.2",
     "numpy>=2.2.0",
-    # Headers and CMake config files for Intel oneMKL; see pydiso/meson.build
-    # for how MKLConfig.cmake gets located. No upper bound: Intel hasn't
-    # published MKL for macOS past 2023.2, so pip resolves that older
-    # version there while getting the latest elsewhere.
+    # CMake config + headers for MKL (meson.build locates MKLConfig.cmake
+    # via mkl-devel). No upper bound: Intel's last macOS MKL is 2023.2, so
+    # macOS resolves that while other platforms get the latest.
     "mkl-devel>=2023.0",
     "mkl-include>=2023.0",
     # Needed to locate MKLConfig.cmake; see pydiso/meson.build.
     "cmake",
-    # mkl-static is deliberately NOT listed here: it's an 827MB download
-    # only needed for `-Dmkl-link=static` (see meson.options), which most
-    # builds don't use. Install it yourself first (pip or conda) and build
+    # Not listed: mkl-static is an 827MB download, only needed for
+    # `-Dmkl-link=static` (meson.options). Install it manually and build
     # with `--no-build-isolation` to use that option.
 ]
 
@@ -43,9 +41,9 @@ dependencies = [
     # Minimums follow SPEC 0: https://scientific-python.org/specs/spec-0000/
     "numpy>=2.2.0",
     "scipy>=1.15.0",
-    # Runtime Intel oneMKL shared libraries (see mkl-devel above for the
-    # macOS caveat). conda-forge installs with `pip install --no-deps`
-    # (as for numpy/scipy) and supplies the `mkl` conda package instead.
+    # Runtime MKL libraries (see mkl-devel above re: macOS). conda-forge
+    # installs with `pip install --no-deps` and supplies its own mkl
+    # package instead, as it does for numpy/scipy.
     "mkl>=2023.0",
 ]
 classifiers = [
@@ -94,72 +92,64 @@ Repository = 'https://github.com/simpeg/pydiso.git'
 [tool.setuptools_scm]
 
 [tool.meson-python]
-# Build one abi3 wheel per platform instead of one per Python version. On
-# free-threaded 3.15+ this also gets the combined abi3.abi3t tag
-# automatically; free-threaded builds before 3.15 have no stable ABI to
-# target at all, so those need `-Dpython.allow_limited_api=false` passed
-# at build time to opt back out (meson-python otherwise refuses to build
-# at all in that combination).
+# One abi3 wheel per platform instead of one per Python version.
+# Free-threaded builds opt out via `-Dpython.allow_limited_api=false`
+# for now: Cython 3.3.0 doesn't yet generate correct code for abi3t
+# (Py_TARGET_ABI3T) - only an experimental branch does (cython/cython#7399).
+# Revisit once Cython ships real support.
 limited-api = true
 
 [tool.cibuildwheel]
-# cp312-* covers 3.12-3.15 (GIL-enabled) as a single abi3 wheel per
-# platform. Free-threaded builds before 3.15 have no stable ABI at all
-# (see the override below); 3.15's free-threaded build gets the combined
-# abi3.abi3t tag automatically, covering both 3.15 variants in one wheel.
+# cp312-* covers 3.12-3.15 (GIL-enabled) as one abi3 wheel. Both
+# free-threaded builds fall back to per-version wheels below (see
+# [tool.meson-python]).
 build = ["cp312-*", "cp314t-*", "cp315t-*"]
 skip = "*-musllinux*"
-# 64-bit only: MKL_ARCH is hardcoded to intel64 in pydiso/meson.build, and
-# MKL isn't meaningfully available for 32-bit anyway. Without this,
-# cibuildwheel also tries win32 and manylinux_i686 by default and fails.
+# 64-bit only: MKL_ARCH is hardcoded to intel64 (pydiso/meson.build) and
+# MKL isn't meaningfully available for 32-bit. Without this, cibuildwheel
+# also tries win32/manylinux_i686 by default and fails.
 archs = "auto64"
-# Statically linked (see meson.options): MKL itself has no separate
-# runtime dependency at all, so nothing to find via PKG_CONFIG_PATH/
-# CMAKE_PREFIX_PATH tricks at import time on an end user's machine.
-# iomp threading still needs libiomp5 as an ordinary shared library
-# dependency - cibuildwheel's default repair step (auditwheel/delvewheel)
-# bundles that into the wheel automatically, the same way it would
-# bundle e.g. OpenBLAS, so there's no separate runtime dependency to
-# declare for that either. Build isolation is disabled and every build
-# requirement (including mkl-static, which isn't a regular build
-# dependency - 827MB, only relevant here) is installed by before-build
-# instead: pip's isolated build environment is a separate, throwaway
-# prefix from whatever before-build installs into, so mkl-static needs
-# to land in the *same* prefix as mkl-devel for the CMake config to find
-# it - only possible without isolation. `vsenv=true` forces MSVC on
-# Windows - the runner also has a MinGW gcc on PATH that meson would
-# otherwise pick up instead (see the python-package-conda.yml workflow
-# for the same issue with a source build).
-before-build = "pip install meson-python>=0.21.0 ninja Cython>=3.1.0 setuptools_scm[toml]>=6.2 numpy>=2.2.0 mkl-devel>=2023.0 mkl-include>=2023.0 cmake mkl-static"
+# Statically linked (meson.options), so MKL needs no runtime dependency
+# at import time. iomp threading still needs libiomp5, which the repair
+# step (auditwheel/delvewheel) bundles automatically like any other
+# shared dependency (e.g. OpenBLAS). Isolation is off so before-build can
+# install mkl-static (827MB, opt-in) into the same prefix as mkl-devel -
+# pip's isolated build env is a separate prefix CMake wouldn't find it
+# in. vsenv=true forces MSVC over the MinGW gcc also on the Windows
+# runner's PATH (see python-package-conda.yml for the same issue).
+# --upgrade + numpy>=2.5.0 (above the project's >=2.2.0 floor): cp315t
+# needs numpy 2.5+ to compile under Py_TARGET_ABI3T, but manylinux images
+# ship an older numpy that already satisfies the looser floor.
+before-build = "pip install --upgrade meson-python>=0.21.0 ninja Cython>=3.1.0 setuptools_scm[toml]>=6.2 numpy>=2.5.0 mkl-devel>=2023.0 mkl-include>=2023.0 cmake mkl-static"
 build-frontend = { name = "pip", args = ["--no-build-isolation"] }
 config-settings = { setup-args = ["-Dmkl-link=static", "-Dmkl-threading=iomp", "-Dvsenv=true"] }
 
 [[tool.cibuildwheel.overrides]]
-# Free-threaded before 3.15 has no stable ABI to target; meson-python
-# refuses to even attempt the build otherwise (see [tool.meson-python]).
-# The base config-settings has to be repeated in full here: overriding a
-# key that also exists in the base replaces its value entirely rather
-# than appending to it, even with inherit.config-settings = "append".
-select = "cp314t-*"
+# Both free-threaded builds use the regular API - see [tool.meson-python].
+# Repeated in full: overriding a shared key replaces rather than appends,
+# even with inherit.config-settings = "append".
+select = ["cp314t-*", "cp315t-*"]
 config-settings = { setup-args = [
     "-Dmkl-link=static", "-Dmkl-threading=iomp", "-Dvsenv=true", "-Dpython.allow_limited_api=false",
 ] }
 
 [tool.cibuildwheel.linux]
-# cibuildwheel bind-mounts the whole runner filesystem at /host inside the
-# manylinux container by default, so a directory GitHub Actions has
-# restored via actions/cache (see wheels.yml) on the *runner* is reachable
-# from in here too - redirect pip's cache there so before-build's mkl-static
-# download (247MB compressed, still large enough to matter) gets reused
-# across runs instead of re-fetched from PyPI every time. Windows needs no
-# such redirect: it isn't containerized, so pip already finds its own
-# default cache directory on the same filesystem actions/cache restores.
+# cibuildwheel bind-mounts the runner filesystem at /host by default, so
+# redirect pip's cache there to reuse actions/cache's restore (wheels.yml)
+# for mkl-static's download across runs. Windows needs no redirect: it
+# isn't containerized, so pip's own default cache dir already works.
 environment = { PIP_CACHE_DIR = "/host/home/runner/.cache/pip" }
 
+[tool.cibuildwheel.windows]
+# delvewheel has no rpath equivalent, so it won't find libiomp5md.dll
+# under intel-openmp's <prefix>/Library/bin on its own. %VIRTUAL_ENV% is
+# cibuildwheel's build venv, set by the time this repair command runs.
+repair-wheel-command = 'delvewheel repair --add-path %VIRTUAL_ENV%\Library\bin -w {dest_dir} -v {wheel}'
+
 [tool.pytest.ini_options]
-# Default "prepend" import mode would shadow an installed pydiso with this
-# source checkout's own pydiso/ directory (which lacks the compiled
-# extension). importlib mode avoids that by not touching sys.path.
+# Default "prepend" mode would shadow an installed pydiso with this
+# source tree's own pydiso/ (no compiled extension); importlib mode avoids
+# that by not touching sys.path.
 addopts = "--import-mode=importlib"
 
 [tool.coverage.run]

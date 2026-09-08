@@ -1,14 +1,10 @@
 # Adapted from mkl-service (https://github.com/IntelPython/mkl-service),
-# mkl/_init_helper.py, under the BSD-3-Clause license below. Differences
-# from upstream: this checks "not conda" instead of "is a real venv" (the
-# latter misses a bare, non-venv Python, e.g. GitHub Actions'
-# setup-python); the directory is found by trying, in order, MKLROOT (a
-# manually installed oneAPI toolkit, if the user has set it - takes
-# priority since it's an explicit, deliberate choice), the `mkl` package's
-# own metadata, then a "<prefix>/Library/bin" guess as a last resort; and
-# the library name(s) to look for come from _mkl_libs.py (build-time
-# generated) rather than a hardcoded "mkl_rt", since a non-SDL build
-# doesn't link that one at all.
+# mkl/_init_helper.py, BSD-3-Clause below. Differences from upstream:
+# checks "not conda" instead of "is a real venv" (misses bare, non-venv
+# Python, e.g. GitHub Actions' setup-python); tries MKLROOT, then the mkl
+# package's metadata, then a "<prefix>/Library/bin" guess; library names
+# come from build-generated _mkl_libs.py rather than a hardcoded
+# "mkl_rt", since a non-SDL build doesn't link that one at all.
 #
 # Copyright (c) 2025, Intel Corporation
 #
@@ -52,11 +48,9 @@ def _has_any_dll(directory):
 
 
 def _mklroot_dll_dir():
-    # A manually installed oneAPI toolkit, e.g. via Intel's own installer
-    # rather than pip/conda. Checked first: an explicit MKLROOT is a
-    # deliberate choice that should win over guessing from installed
-    # packages. "bin" is current oneAPI layout; "redist/intel64" was used
-    # by older (pre-2024) toolkit releases.
+    # An explicit MKLROOT (e.g. Intel's own installer) wins over guessing
+    # from installed packages. "bin" is the current oneAPI layout;
+    # "redist/intel64" is the pre-2024 layout.
     root = os.environ.get("MKLROOT")
     if not root:
         return None
