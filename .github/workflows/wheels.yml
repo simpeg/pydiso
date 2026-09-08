@@ -1,13 +1,15 @@
 name: Build wheels
 
-# Building downloads mkl-static (see [tool.cibuildwheel] in pyproject.toml)
-# for every build, so this only runs on release tags or on demand rather
-# than on every push/PR.
 on:
   push:
     tags:
       - 'v*'
+  pull_request:
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build_wheels:
