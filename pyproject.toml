@@ -145,6 +145,17 @@ config-settings = { setup-args = [
     "-Dmkl-link=static", "-Dmkl-threading=iomp", "-Dvsenv=true", "-Dpython.allow_limited_api=false",
 ] }
 
+[tool.cibuildwheel.linux]
+# cibuildwheel bind-mounts the whole runner filesystem at /host inside the
+# manylinux container by default, so a directory GitHub Actions has
+# restored via actions/cache (see wheels.yml) on the *runner* is reachable
+# from in here too - redirect pip's cache there so before-build's mkl-static
+# download (247MB compressed, still large enough to matter) gets reused
+# across runs instead of re-fetched from PyPI every time. Windows needs no
+# such redirect: it isn't containerized, so pip already finds its own
+# default cache directory on the same filesystem actions/cache restores.
+environment = { PIP_CACHE_DIR = "/host/home/runner/.cache/pip" }
+
 [tool.pytest.ini_options]
 # Default "prepend" import mode would shadow an installed pydiso with this
 # source checkout's own pydiso/ directory (which lacks the compiled
