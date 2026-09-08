@@ -25,16 +25,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Cache pip downloads (mkl-static is 247-827MB - see pyproject.toml)
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/pip
-            ~\AppData\Local\pip\Cache
-          key: pip-cache-${{ runner.os }}-${{ hashFiles('pyproject.toml') }}
-          restore-keys: |
-            pip-cache-${{ runner.os }}-
-
       - uses: pypa/cibuildwheel@v4.2.1
 
       - uses: actions/upload-artifact@v4

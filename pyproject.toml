@@ -141,11 +141,6 @@ config-settings = { setup-args = [
 ] }
 
 [tool.cibuildwheel.linux]
-# cibuildwheel bind-mounts the runner filesystem at /host by default, so
-# redirect pip's cache there to reuse actions/cache's restore (wheels.yml)
-# for mkl-static's download across runs. Windows needs no redirect: it
-# isn't containerized, so pip's own default cache dir already works.
-environment = { PIP_CACHE_DIR = "/host/home/runner/.cache/pip" }
 # Chains the mkl-stripping script after the default repair command, right
 # on cibuildwheel's own {dest_dir} - see strip_wheel_dependency.py.
 repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel} && python {project}/.github/strip_wheel_dependency.py {dest_dir}"
