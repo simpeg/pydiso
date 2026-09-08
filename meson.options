@@ -1,5 +1,5 @@
-option('use-sdl', type: 'boolean', value: true,
-       description: 'Use the single dynamic library.')
+option('mkl-link', type: 'combo', choices: ['sdl', 'dynamic', 'static'], value: 'sdl',
+       description: 'How to link MKL: single dynamic library, per-component dynamic libraries, or static libraries (needs mkl-static, not installed automatically).')
 
 option('use-ilp64', type: 'boolean', value: false,
        description: 'Use ILP64 (64-bit integer) BLAS and LAPACK interfaces')

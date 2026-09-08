@@ -16,130 +16,115 @@ jobs:
       fail-fast: False
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.11", "3.12", "3.13", "3.14"]
-        mkl-version: ['2024', '2025']
+        python-version: ["3.12", "3.13", "3.14"]
+        mkl-version: ["2025", "2026"]
         free-threaded: [true, false]
         include:
           - os: ubuntu-latest
             python-version: "3.12"
-            mkl-version: "2024"
+            mkl-version: "2025"
             coverage: true
           - os: macos-15-intel
-            python-version: "3.11"
+            python-version: "3.12"
+            # Intel has not published MKL for macOS past 2023.2.
             mkl-version: "2023"
             free-threaded:
           - os: macos-15-intel
-            python-version: "3.12"
+            python-version: "3.13"
             mkl-version: "2023"
             free-threaded:
         exclude:
-          - python-version: "3.11"
-            free-threaded: true
+          # Free-threaded builds don't exist prior to Python 3.13.
           - python-version: "3.12"
             free-threaded: true
+          # Don't build free-threaded versions for experimental Python 3.13.
           - python-version: "3.13"
             free-threaded: true
-            mkl-version: "2025"
-          - python-version: "3.14"
-            mkl-version: "2025"
 
     steps:
-    - uses: actions/checkout@v5
-      with:
-        fetch-depth: 0
-
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: "3.13"
-
-    - name: Create Conda environment file
-      run: |
-        python -m pip install pyyaml
-        python .github/make_ci_environ.py
-      env:
-        PYTHON_VERSION: ${{ matrix.python-version}}
-        MKL_VERSION: ${{ matrix.mkl-version }}
-        FREE_THREADED: ${{ matrix.free-threaded && 'true' || 'false' }}
-        DO_COVERAGE: ${{ matrix.coverage && 'true' || 'false' }}
-        ENV_NAME: pydiso-ci
-
-    - name: Setup Conda
-      uses: conda-incubator/setup-miniconda@v3
-      with:
-        auto-update-conda: true
-        environment-file: environment_ci.yml
-        activate-environment: pydiso-ci
-
-    - name: Conda information
-      run: |
-        conda info
-        conda list
-        conda config --show
-
-    - name: Install Our Package
-      run: |
-        python -m pip install --no-build-isolation --verbose --editable . \
-          --config-setting=compile-args=-v \
-          ${{ matrix.coverage && '--config-settings=setup-args="-Db_coverage=true"' || ''}} \
-          ${{ matrix.os == 'windows-latest' && '--config-settings=setup-args="-Dvsenv=true"' || ''}}
-
-    - name: Run Tests
-      run: |
-        ${{ matrix.coverage && 'coverage run -m' || '' }} pytest -s -v
-        ${{ matrix.coverage && 'coverage xml' || '' }}
-
-    - name: Upload coverage
-      if: ${{ matrix.coverage }}
-      uses: codecov/codecov-action@v4
-      with:
-        verbose: true # optional (default = false)
-        token: ${{ secrets.CODECOV_TOKEN }} # required
-
-  build_sdist:
-    name: Build source distribution
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - name: Build sdist
-        run: pipx run build --sdist -Csetup-args="-Ddist_ignore_mkl_dep=true"
-
-      - uses: actions/upload-artifact@v4
+      - name: Set up Python
+        uses: actions/setup-python@v7
         with:
-          name: cibw-sdist
-          path: dist/*.tar.gz
+          python-version: "3.13"
 
-  release:
-    needs: [
-      build_sdist
-    ]
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-    defaults:
-      run:
-        shell: bash -l {0}
+      - name: Create Conda environment file
+        run: |
+          python -m pip install pyyaml
+          python .github/make_ci_environ.py
+        env:
+          PYTHON_VERSION: ${{ matrix.python-version}}
+          MKL_VERSION: ${{ matrix.mkl-version }}
+          FREE_THREADED: ${{ matrix.free-threaded && 'true' || 'false' }}
+          DO_COVERAGE: ${{ matrix.coverage && 'true' || 'false' }}
+          ENV_NAME: pydiso-ci
+
+      - name: Setup Conda
+        uses: conda-incubator/setup-miniconda@v4
+        with:
+          auto-update-conda: true
+          environment-file: environment_ci.yml
+          activate-environment: pydiso-ci
+
+      - name: Conda information
+        run: |
+          conda info
+          conda list
+          conda config --show
+
+      - name: Install Our Package
+        run: |
+          # --no-deps: deps come from the conda env above, as conda-forge
+          # would. Opt out of [tool.meson-python]'s unconditional
+          # limited-API target for 3.14t specifically (no stable ABI
+          # exists before 3.15) - checked by version, not just
+          # free-threaded, so a future 3.15t entry isn't caught too.
+          python -m pip install --no-build-isolation --no-deps --verbose --editable . \
+            --config-setting=compile-args=-v \
+            ${{ matrix.coverage && '--config-settings=setup-args="-Db_coverage=true"' || ''}} \
+            ${{ matrix.os == 'windows-latest' && '--config-settings=setup-args="-Dvsenv=true"' || ''}} \
+            ${{ matrix.python-version == '3.14' && matrix.free-threaded && '--config-settings=setup-args="-Dpython.allow_limited_api=false"' || ''}}
+
+      - name: Run Tests
+        run: |
+          ${{ matrix.coverage && 'coverage run -m' || '' }} pytest -s -v
+          ${{ matrix.coverage && 'coverage xml' || '' }}
+
+      - name: Upload coverage
+        if: ${{ matrix.coverage }}
+        uses: codecov/codecov-action@v7
+        with:
+          verbose: true # optional (default = false)
+          token: ${{ secrets.CODECOV_TOKEN }} # required
+
+  build-and-test-pypi-mkl:
+    name: Testing (Python ${{ matrix.python-version }}, on ${{ matrix.os }}, with PyPI MKL)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: False
+      matrix:
+        # macOS excluded: Intel's PyPI mkl-devel wheel (frozen at 2023.2)
+        # is missing a symlink CMake needs, so MKL fails to import. See README.
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.12", "3.13", "3.14"]
+
     steps:
-    - uses: actions/download-artifact@v4
-      with:
-        # unpacks all CIBW artifacts into dist/
-        pattern: cibw-*
-        path: dist
-        merge-multiple: true
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
-    - name: Release to github
-      uses: softprops/action-gh-release@v2
-      with:
-        files: dist/*
-        generate_release_notes: true
-        prerelease: false
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Upload wheels to pypi
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
-        skip-existing: true
-        packages-dir: ./dist/
+      - name: Install our package against PyPI MKL
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --verbose ".[test]"
+
+      - name: Run Tests
+        run: pytest -s -v

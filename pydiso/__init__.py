@@ -4,6 +4,12 @@ __copyright__ = "2021, SimPEG Developers, http://simpeg.xyz"
 
 from importlib.metadata import version, PackageNotFoundError
 
+# Makes a pip-installed (as opposed to conda) MKL's DLLs findable on
+# Windows; see _init_helper.py for details.
+from . import _init_helper
+
+del _init_helper
+
 # Version
 try:
     # - Released versions just tags:       0.8.0

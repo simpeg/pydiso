@@ -1,0 +1,2 @@
+# Generated at build time; see pydiso/meson.build.
+MKL_LIBRARY_NAMES = @MKL_LIBRARY_NAMES_REPR@
