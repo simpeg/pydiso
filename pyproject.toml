@@ -120,9 +120,16 @@ archs = "auto64"
 # --upgrade + numpy>=2.5.0 (above the project's >=2.2.0 floor): cp315t
 # needs numpy 2.5+ to compile under Py_TARGET_ABI3T, but manylinux images
 # ship an older numpy that already satisfies the looser floor.
-before-build = "pip install --upgrade meson-python>=0.21.0 ninja Cython>=3.1.0 setuptools_scm[toml]>=6.2 numpy>=2.5.0 mkl-devel>=2023.0 mkl-include>=2023.0 cmake mkl-static"
+# wheel: needed by strip_wheel_dependency.py, run from repair-wheel-command.
+before-build = "pip install --upgrade meson-python>=0.21.0 ninja Cython>=3.1.0 setuptools_scm[toml]>=6.2 numpy>=2.5.0 mkl-devel>=2023.0 mkl-include>=2023.0 cmake mkl-static wheel"
 build-frontend = { name = "pip", args = ["--no-build-isolation"] }
 config-settings = { setup-args = ["-Dmkl-link=static", "-Dmkl-threading=iomp", "-Dvsenv=true"] }
+# Runs the real test suite against each built (and already mkl-stripped,
+# see repair-wheel-command below) wheel before it's trusted - catches
+# e.g. the delvewheel/libiomp5 bundling issue this would have caught
+# immediately.
+test-requires = "pytest"
+test-command = "pytest {project}/tests -v"
 
 [[tool.cibuildwheel.overrides]]
 # Both free-threaded builds use the regular API - see [tool.meson-python].
@@ -139,12 +146,16 @@ config-settings = { setup-args = [
 # for mkl-static's download across runs. Windows needs no redirect: it
 # isn't containerized, so pip's own default cache dir already works.
 environment = { PIP_CACHE_DIR = "/host/home/runner/.cache/pip" }
+# Chains the mkl-stripping script after the default repair command, right
+# on cibuildwheel's own {dest_dir} - see strip_wheel_dependency.py.
+repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel} && python {project}/.github/strip_wheel_dependency.py {dest_dir}"
 
 [tool.cibuildwheel.windows]
 # delvewheel has no rpath equivalent, so it won't find libiomp5md.dll
 # under intel-openmp's <prefix>/Library/bin on its own. %VIRTUAL_ENV% is
 # cibuildwheel's build venv, set by the time this repair command runs.
-repair-wheel-command = 'delvewheel repair --add-path %VIRTUAL_ENV%\Library\bin -w {dest_dir} -v {wheel}'
+# Chained after it: strip_wheel_dependency.py, same as Linux above.
+repair-wheel-command = 'delvewheel repair --add-path %VIRTUAL_ENV%\Library\bin -w {dest_dir} -v {wheel} && python {project}\.github\strip_wheel_dependency.py {dest_dir}'
 
 [tool.pytest.ini_options]
 # Default "prepend" mode would shadow an installed pydiso with this
