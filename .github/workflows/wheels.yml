@@ -52,6 +52,12 @@ jobs:
     needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    environment:
+      name: pypi-release
+      url: https://pypi.org/project/pydiso/
+    permissions:
+      contents: write  # for softprops/action-gh-release, creating the GitHub release
+      id-token: write  # for PyPI trusted publishing (OIDC)
     steps:
       - uses: actions/download-artifact@v8
         with:
@@ -70,7 +76,5 @@ jobs:
       - name: Upload distributions to pypi
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
           skip-existing: true
           packages-dir: ./dist/
