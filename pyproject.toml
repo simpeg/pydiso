@@ -7,21 +7,23 @@ requires = [
     "Cython>=3.1.0",
     "setuptools_scm[toml]>=6.2",
     "numpy>=2.2.0",
-    # CMake config + headers for MKL (meson.build locates MKLConfig.cmake
-    # via mkl-devel). No upper bound: Intel's last macOS MKL is 2023.2, so
-    # macOS resolves that while other platforms get the latest.
+    # Prebuilt pkg-config binary (Windows has no system one; it isn't
+    # guaranteed elsewhere). >=3.0.7.post0: earlier releases silently
+    # no-op'd when PKG_CONFIG_PATH is set, which the pkg_config_path default
+    # in meson.build relies on (pypackaging-native/pkgconf-pypi#116).
+    "pkgconf>=3.0.7.post0",
+    # pkg-config files + headers for MKL, located by meson.build. No upper
+    # bound: Intel's last macOS MKL is 2023.2, so macOS resolves that while
+    # other platforms get the latest.
     "mkl-devel>=2023.0",
     "mkl-include>=2023.0",
-    # Needed to locate MKLConfig.cmake; see pydiso/meson.build.
-    "cmake",
-    # Not listed: mkl-static is an 827MB download, only needed for
-    # `-Dmkl-link=static` (meson.options). Install it manually and build
-    # with `--no-build-isolation` to use that option.
 ]
 
 [project]
 name = 'pydiso'
 dynamic = ["version"]
+license = "MIT"
+license-files = ["LICENSE"]
 description = "Wrapper for intel's pardiso implementation in the MKL"
 readme = 'README.md'
 requires-python = '>=3.12'
@@ -50,7 +52,6 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Cython",
     "Topic :: Scientific/Engineering",
@@ -62,9 +63,6 @@ classifiers = [
     "Operating System :: MacOS",
     "Natural Language :: English",
 ]
-
-[project.license]
-file = 'LICENSE'
 
 [project.optional-dependencies]
 test = [
@@ -105,29 +103,14 @@ limited-api = true
 # [tool.meson-python]).
 build = ["cp312-*", "cp314t-*", "cp315t-*"]
 skip = "*-musllinux*"
-# 64-bit only: MKL_ARCH is hardcoded to intel64 (pydiso/meson.build) and
-# MKL isn't meaningfully available for 32-bit. Without this, cibuildwheel
-# also tries win32/manylinux_i686 by default and fails.
+# 64-bit only: MKL isn't meaningfully available for 32-bit. Without this,
+# cibuildwheel also tries win32/manylinux_i686 by default and fails.
 archs = "auto64"
-# Statically linked (meson.options), so MKL needs no runtime dependency
-# at import time. iomp threading still needs libiomp5, which the repair
-# step (auditwheel/delvewheel) bundles automatically like any other
-# shared dependency (e.g. OpenBLAS). Isolation is off so before-build can
-# install mkl-static (827MB, opt-in) into the same prefix as mkl-devel -
-# pip's isolated build env is a separate prefix CMake wouldn't find it
-# in. vsenv=true forces MSVC over the MinGW gcc also on the Windows
-# runner's PATH (see python-package-conda.yml for the same issue).
-# --upgrade + numpy>=2.5.0 (above the project's >=2.2.0 floor): cp315t
-# needs numpy 2.5+ to compile under Py_TARGET_ABI3T, but manylinux images
-# ship an older numpy that already satisfies the looser floor.
-# wheel: needed by strip_wheel_dependency.py, run from repair-wheel-command.
-before-build = "pip install --upgrade meson-python>=0.21.0 ninja Cython>=3.1.0 setuptools_scm[toml]>=6.2 numpy>=2.5.0 mkl-devel>=2023.0 mkl-include>=2023.0 cmake mkl-static wheel"
-build-frontend = { name = "pip", args = ["--no-build-isolation"] }
-config-settings = { setup-args = ["-Dmkl-link=static", "-Dmkl-threading=iomp", "-Dvsenv=true"] }
-# Runs the real test suite against each built (and already mkl-stripped,
-# see repair-wheel-command below) wheel before it's trusted - catches
-# e.g. the delvewheel/libiomp5 bundling issue this would have caught
-# immediately.
+# vsenv=true forces MSVC over the MinGW gcc also on the Windows runner's
+# PATH (see python-package-conda.yml for the same issue).
+config-settings = { setup-args = ["-Dvsenv=true"] }
+# Runs the real test suite against each finished wheel, installed with its
+# real dependencies (the `mkl` package from PyPI).
 test-requires = "pytest"
 test-command = "pytest {project}/tests -v"
 
@@ -136,21 +119,20 @@ test-command = "pytest {project}/tests -v"
 # Repeated in full: overriding a shared key replaces rather than appends,
 # even with inherit.config-settings = "append".
 select = ["cp314t-*", "cp315t-*"]
-config-settings = { setup-args = [
-    "-Dmkl-link=static", "-Dmkl-threading=iomp", "-Dvsenv=true", "-Dpython.allow_limited_api=false",
-] }
+config-settings = { setup-args = ["-Dvsenv=true", "-Dpython.allow_limited_api=false"] }
 
 [tool.cibuildwheel.linux]
-# Chains the mkl-stripping script after the default repair command, right
-# on cibuildwheel's own {dest_dir} - see strip_wheel_dependency.py.
-repair-wheel-command = "auditwheel repair -w {dest_dir} {wheel} && python {project}/.github/strip_wheel_dependency.py {dest_dir}"
+# The manylinux images preset PKG_CONFIG_PATH, which meson ranks above the
+# default in meson.build that finds PyPI's mkl-devel. Pin the isolated build
+# environment to a known directory so its .pc files can be added explicitly.
+before-build = "rm -rf /tmp/build-env"
+build-frontend = { name = "build", args = ["--env-dir=/tmp/build-env"] }
+environment = { PKG_CONFIG_PATH = "/tmp/build-env/lib/pkgconfig:$PKG_CONFIG_PATH" }
+# MKL comes from the `mkl` dependency at runtime, so it isn't bundled.
+repair-wheel-command = 'auditwheel repair --exclude "libmkl*" -w {dest_dir} {wheel}'
 
 [tool.cibuildwheel.windows]
-# delvewheel has no rpath equivalent, so it won't find libiomp5md.dll
-# under intel-openmp's <prefix>/Library/bin on its own. %VIRTUAL_ENV% is
-# cibuildwheel's build venv, set by the time this repair command runs.
-# Chained after it: strip_wheel_dependency.py, same as Linux above.
-repair-wheel-command = 'delvewheel repair --add-path %VIRTUAL_ENV%\Library\bin -w {dest_dir} -v {wheel} && python {project}\.github\strip_wheel_dependency.py {dest_dir}'
+repair-wheel-command = 'delvewheel repair --exclude mkl_rt.*.dll -w {dest_dir} -v {wheel}'
 
 [tool.pytest.ini_options]
 # Default "prepend" mode would shadow an installed pydiso with this

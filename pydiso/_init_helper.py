@@ -2,9 +2,7 @@
 # mkl/_init_helper.py, BSD-3-Clause below. Differences from upstream:
 # checks "not conda" instead of "is a real venv" (misses bare, non-venv
 # Python, e.g. GitHub Actions' setup-python); tries MKLROOT, then the mkl
-# package's metadata, then a "<prefix>/Library/bin" guess; library names
-# come from build-generated _mkl_libs.py rather than a hardcoded
-# "mkl_rt", since a non-SDL build doesn't link that one at all.
+# package's metadata, then a "<prefix>/Library/bin" guess.
 #
 # Copyright (c) 2025, Intel Corporation
 #
@@ -36,15 +34,9 @@ import os
 import os.path
 import sys
 
-try:
-    from ._mkl_libs import MKL_LIBRARY_NAMES
-except ImportError:
-    # Not generated, e.g. a non-meson/editable build predating this file.
-    MKL_LIBRARY_NAMES = ("mkl_rt",)
-
 
 def _has_any_dll(directory):
-    return any(glob.glob(os.path.join(directory, name + "*.dll")) for name in MKL_LIBRARY_NAMES)
+    return bool(glob.glob(os.path.join(directory, "mkl_rt*.dll")))
 
 
 def _mklroot_dll_dir():
@@ -69,8 +61,7 @@ def _mkl_package_dll_dir():
         return None
 
     for f in dist.files or ():
-        base = os.path.basename(str(f)).lower()
-        if any(base.startswith(name.lower()) for name in MKL_LIBRARY_NAMES):
+        if os.path.basename(str(f)).lower().startswith("mkl_rt"):
             located = str(dist.locate_file(f))
             if os.path.isfile(located):
                 return os.path.dirname(os.path.normpath(located))

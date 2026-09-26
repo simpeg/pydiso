@@ -76,7 +76,7 @@ if __name__ == "__main__":
     
     deps = parse_pyproject(pyproject_path, optional_sections_to_skip=optional_to_skip)
     deps.add("mkl-devel")
-    deps.add("cmake")
+    deps.add("pkg-config")
     deps.add(f"mkl={mkl_vers}")
     env_data = create_env_yaml(deps, name=env_name, python_version=py_vers, free_threaded=is_free_threaded)
 

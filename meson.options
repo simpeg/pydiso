@@ -1,12 +1,3 @@
-option('mkl-link', type: 'combo', choices: ['sdl', 'dynamic', 'static'], value: 'sdl',
-       description: 'How to link MKL: single dynamic library, per-component dynamic libraries, or static libraries (needs mkl-static, not installed automatically).')
-
-option('use-ilp64', type: 'boolean', value: false,
-       description: 'Use ILP64 (64-bit integer) BLAS and LAPACK interfaces')
-
-option('mkl-threading', type: 'string', value: 'auto',
-        description: 'MKL threading method, one of: `seq`, `iomp`, `gomp`, `tbb`')
-
 option('dist_ignore_mkl_dep', type: 'boolean', value: false,
        description: 'Mark the mkl dep as optional, for use during source distribution archiving.'
 )
