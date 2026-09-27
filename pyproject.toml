@@ -40,9 +40,11 @@ keywords = [
 dependencies = [
     # TODO: update to "pin-compatible" once possible, see
     # https://github.com/mesonbuild/meson-python/issues/29
-    # Minimums follow SPEC 0: https://scientific-python.org/specs/spec-0000/
-    "numpy>=2.2.0",
-    "scipy>=1.15.0",
+    # Minimums are the oldest releases with Python 3.12 wheels (requires-python
+    # is >=3.12); the extension is built against newer numpy headers but
+    # stays compatible with these.
+    "numpy>=1.26.0",
+    "scipy>=1.11.2",
     # Runtime MKL libraries (see mkl-devel above re: macOS). conda-forge
     # installs with `pip install --no-deps` and supplies its own mkl
     # package instead, as it does for numpy/scipy.
